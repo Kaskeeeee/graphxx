@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(circular_buffer_lib
-        DESCRIPTION "Circular buffer library")
+        DESCRIPTION "Graph library")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
