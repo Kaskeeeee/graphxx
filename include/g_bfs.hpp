@@ -49,7 +49,7 @@ public:
 };
 
 template <concepts::Graph G> class BFS {
-  Graph &_graph;
+  G &_graph;
   TreeNode<int> real_tree;
 
 public:
@@ -81,7 +81,7 @@ template <concepts::Graph G> void BFS<G>::visit(int source) {
     int vertex = queue.front();
     queue.pop();
 
-    for (auto [adjacent] : _graph.adjacents({vertex})) {
+    for (auto adjacent : _graph.out_edges({vertex})) {
       if (bfs_tree[adjacent].status == VertexStatus::READY) {
         bfs_tree[adjacent].status = VertexStatus::WAITING;
         bfs_tree[adjacent].distance = bfs_tree[vertex].distance + 1;

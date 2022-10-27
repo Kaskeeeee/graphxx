@@ -8,21 +8,15 @@ using namespace std;
 void printGraph(AdjacencyListDigraph &graph) {
   for (auto vertex : graph.vertices()) {
     cout << "V[" << vertex.id << "]: ";
-    for (auto edge : graph.edges()) {
-      if (edge.source == vertex.id) {
-        cout << " -> V[" << edge.target << "]";
-      }
+    for (auto edge : graph.out_edges(vertex)) {
+      cout << " -> V[" << edge.target << "]";
     }
     cout << "\n";
   }
 }
 
-template <typename T> void add(T a, T b) { a + b; }
-
 int main() {
   AdjacencyListDigraph a;
-  algorithms::BFS bfs = {a};
-  add(3, 3);
 
   while (true) {
     int opt = -1;
@@ -31,7 +25,7 @@ int main() {
     cout << "2. add edge\n";
     cout << "3. remove vertex\n";
     cout << "4. remove edge\n";
-    cout << "5. print bfs";
+    cout << "5. print bfs\n";
     cin >> opt;
     switch (opt) {
     case 1: {
@@ -64,15 +58,13 @@ int main() {
           a.remove_edge(edge);
         }
       }
-    }
+    } break;
     case 5: {
       int u;
       cout << "Source vertex: ";
       cin >> u;
 
-      bfs.visit(u);
       cout << "BFS TREE:\n";
-      bfs.print_tree();
       cout << "+++++++++++++++++++++++++++++++++\n";
     }
     }

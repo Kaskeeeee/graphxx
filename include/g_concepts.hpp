@@ -15,17 +15,27 @@ concept Iterable = requires(T v) {
 
 template <typename T>
 concept VertexIterable = requires(T v) {
-                           typename T::InternalStructIterator<Vertex>;
                            v.vertices();
                            requires Iterable<decltype(v.vertices()), Vertex>;
                          };
 
 template <typename T>
 concept EdgeIterable = requires(T v) {
-                         typename T::InternalStructIterator<Edge>;
                          v.edges();
                          requires Iterable<decltype(v.edges()), Edge>;
                        };
+
+template <typename T>
+concept OutEdgesIterable = requires(T v) {
+                             v.out_edges();
+                             requires Iterable<decltype(v.out_edges()), Edge>;
+                           };
+
+template <typename T>
+concept InEdgesIterable = requires(T v) {
+                            v.in_edges();
+                            requires Iterable<decltype(v.in_edges()), Edge>;
+                          };
 
 template <typename T>
 concept BasicGraphEditable =

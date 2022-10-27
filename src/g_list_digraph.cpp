@@ -2,94 +2,6 @@
 #include <iterator>
 
 namespace graph {
-// VertexContainer definition start
-AdjacencyListDigraph::VertexContainer::VertexContainer(AdjacencyListDigraph *g)
-    : _g{g} {};
-
-AdjacencyListDigraph::VertexContainer::It
-AdjacencyListDigraph::VertexContainer::begin() {
-  return {_g->_adj.begin()};
-}
-
-AdjacencyListDigraph::VertexContainer::It
-AdjacencyListDigraph::VertexContainer::end() {
-  return {_g->_adj.end()};
-}
-
-AdjacencyListDigraph::VertexContainer::It::It(
-    AdjacencyListDigraph::VIterator it)
-    : _it{it} {}
-Vertex AdjacencyListDigraph::VertexContainer::It::operator*() {
-  auto id = (*_it).first;
-  Vertex vertex{id};
-  return vertex;
-}
-
-AdjacencyListDigraph::VertexContainer::It &
-AdjacencyListDigraph::VertexContainer::It::operator++() {
-  _it++;
-  return *this;
-}
-
-AdjacencyListDigraph::VertexContainer::It
-AdjacencyListDigraph::VertexContainer::It::operator++(int) {
-  It tmp = *this;
-  ++(*this);
-  return tmp;
-}
-
-bool AdjacencyListDigraph::VertexContainer::It::operator==(const It &other) {
-  return _it == other._it;
-}
-
-bool AdjacencyListDigraph::VertexContainer::It::operator!=(const It &other) {
-  return _it != other._it;
-}
-// VertexContainer definition end
-
-// EdgeContainer definition start
-AdjacencyListDigraph::EdgeContainer::EdgeContainer(AdjacencyListDigraph *g)
-    : _g{g} {};
-
-AdjacencyListDigraph::EdgeContainer::It
-AdjacencyListDigraph::EdgeContainer::begin() {
-  return {_g->_edge_map.begin()};
-}
-
-AdjacencyListDigraph::EdgeContainer::It
-AdjacencyListDigraph::EdgeContainer::end() {
-  return {_g->_edge_map.end()};
-}
-
-AdjacencyListDigraph::EdgeContainer::It::It(AdjacencyListDigraph::EIterator it)
-    : _it{it} {}
-
-Edge AdjacencyListDigraph::EdgeContainer::It::operator*() {
-  return (*_it).second;
-}
-
-AdjacencyListDigraph::EdgeContainer::It &
-AdjacencyListDigraph::EdgeContainer::It::operator++() {
-  _it++;
-  return *this;
-}
-
-AdjacencyListDigraph::EdgeContainer::It
-AdjacencyListDigraph::EdgeContainer::It::operator++(int) {
-  It tmp = *this;
-  ++(*this);
-  return tmp;
-}
-
-bool AdjacencyListDigraph::EdgeContainer::It::operator==(const It &other) {
-  return _it == other._it;
-}
-
-bool AdjacencyListDigraph::EdgeContainer::It::operator!=(const It &other) {
-  return _it != other._it;
-}
-// EdgeContainer definition end
-
 Vertex AdjacencyListDigraph::add_vertex() {
   while (_adj.contains(_next_vid)) {
     ++_next_vid;
@@ -147,11 +59,55 @@ bool AdjacencyListDigraph::remove_edge(const Edge &e) {
   return true;
 }
 
-AdjacencyListDigraph::VertexContainer AdjacencyListDigraph::vertices() {
-  return {this};
+// VertexMapIt
+void AdjacencyListDigraph::VertexMapIt::next() { ++_it; };
+Vertex AdjacencyListDigraph::VertexMapIt::value() { return Vertex{_it->first}; }
+AdjacencyListDigraph::VertexMapIt::VertexMapIt(AdjacencyList::iterator it)
+    : _Super{it} {}
+
+// EdgeMapIt
+void AdjacencyListDigraph::EdgeMapIt::next() { ++_it; }
+Edge AdjacencyListDigraph::EdgeMapIt::value() { return _it->second; }
+AdjacencyListDigraph::EdgeMapIt::EdgeMapIt(EdgeMap::iterator it)
+    : _Super{it} {};
+
+// OutEdgeMapIt
+void AdjacencyListDigraph::OutEdgeMapIt::next() { ++_it; }
+Edge AdjacencyListDigraph::OutEdgeMapIt::value() { return _edge_map.at(*_it); }
+AdjacencyListDigraph::OutEdgeMapIt::OutEdgeMapIt(EdgeList::iterator it,
+                                                 EdgeMap &edge_map)
+    : _Super{it}, _edge_map{edge_map} {};
+
+// InEdgeMapIt
+void AdjacencyListDigraph::InEdgeMapIt::next() {
+  while (_it != _edge_map.end()) {
+    _it++;
+    if (_it->second.target == _target.id) {
+      return;
+    }
+  }
+}
+Edge AdjacencyListDigraph::InEdgeMapIt::value() { return _it->second; }
+AdjacencyListDigraph::InEdgeMapIt::InEdgeMapIt(EdgeMap::iterator it,
+                                               EdgeMap &edge_map,
+                                               const Vertex &target)
+    : _Super{it}, _edge_map{edge_map}, _target{target} {};
+
+AdjacencyListDigraph::Container1 AdjacencyListDigraph::vertices() {
+  return {_adj};
 }
 
-AdjacencyListDigraph::EdgeContainer AdjacencyListDigraph::edges() {
-  return {this};
+AdjacencyListDigraph::Container2 AdjacencyListDigraph::edges() {
+  return {_edge_map};
 };
+
+AdjacencyListDigraph::Container3
+AdjacencyListDigraph::out_edges(const Vertex &v) {
+  return {_adj.at(v.id), _edge_map};
+}
+
+AdjacencyListDigraph::Container4
+AdjacencyListDigraph::in_edges(const Vertex &v) {
+  return {_edge_map, v};
+}
 } // namespace graph

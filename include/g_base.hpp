@@ -11,4 +11,6 @@ struct Edge {
   Id id;
   Id source, target;
 };
+
+struct None {};
 } // namespace graph
