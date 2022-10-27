@@ -1,5 +1,6 @@
 #pragma once
 #include "g_base.hpp"
+#include "g_container.hpp"
 #include "g_iterator.hpp"
 
 #include <list>
@@ -25,21 +26,16 @@ protected:
   friend class OutEdgeMapIt;
   friend class InEdgeMapIt;
 
-  struct Container1;
-  struct Container2;
-  struct Container3;
-  struct Container4;
-
 public:
   Vertex add_vertex();
   Edge add_edge(const Vertex &, const Vertex &);
   bool remove_vertex(const Vertex &);
   bool remove_edge(const Edge &);
 
-  Container1 vertices();
-  Container2 edges();
-  Container3 out_edges(const Vertex &);
-  Container4 in_edges(const Vertex &);
+  container::Container<VertexMapIt> vertices();
+  container::Container<EdgeMapIt> edges();
+  container::Container<OutEdgeMapIt> out_edges(const Vertex &);
+  container::Container<InEdgeMapIt> in_edges(const Vertex &);
 
 private:
   AdjacencyList _adj;
@@ -56,31 +52,12 @@ public:
   Vertex value();
   VertexMapIt(AdjacencyList::iterator it);
 };
-
-struct AdjacencyListDigraph::Container1 {
-  VertexMapIt begin() { return VertexMapIt(_adj.begin()); }
-  VertexMapIt end() { return VertexMapIt(_adj.end()); }
-
-  Container1(AdjacencyList &adj) : _adj{adj} {};
-
-  AdjacencyList &_adj;
-};
-
 class AdjacencyListDigraph::EdgeMapIt
     : public it::MapIterator<EdgeMapIt, Edge, EdgeMap::iterator> {
 public:
   void next();
   Edge value();
   EdgeMapIt(EdgeMap::iterator it);
-};
-
-struct AdjacencyListDigraph::Container2 {
-  EdgeMapIt begin() { return EdgeMapIt(_map.begin()); }
-  EdgeMapIt end() { return EdgeMapIt(_map.end()); }
-
-  Container2(EdgeMap &map) : _map{map} {};
-
-  EdgeMap &_map;
 };
 
 class AdjacencyListDigraph::OutEdgeMapIt
@@ -94,16 +71,6 @@ private:
   EdgeMap &_edge_map;
 };
 
-struct AdjacencyListDigraph::Container3 {
-  OutEdgeMapIt begin() { return OutEdgeMapIt(_list.begin(), _map); }
-  OutEdgeMapIt end() { return OutEdgeMapIt(_list.end(), _map); }
-
-  Container3(EdgeList &list, EdgeMap &map) : _list{list}, _map{map} {};
-
-  EdgeList &_list;
-  EdgeMap &_map;
-};
-
 class AdjacencyListDigraph::InEdgeMapIt
     : public it::MapIterator<InEdgeMapIt, Edge, EdgeMap::iterator> {
 public:
@@ -114,16 +81,6 @@ public:
 private:
   EdgeMap &_edge_map;
   Vertex _target;
-};
-
-struct AdjacencyListDigraph::Container4 {
-  InEdgeMapIt begin() { return InEdgeMapIt(_map.begin(), _map, _v); }
-  InEdgeMapIt end() { return InEdgeMapIt(_map.end(), _map, _v); }
-
-  Container4(EdgeMap &map, Vertex v) : _map{map}, _v{v} {};
-
-  EdgeMap &_map;
-  Vertex _v;
 };
 
 } // namespace graph
