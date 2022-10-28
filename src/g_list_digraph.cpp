@@ -41,7 +41,7 @@ bool AdjacencyListDigraph::remove_vertex(const Vertex &v) {
       edge_map_it++;
     }
 
-    if (edge.target = v.id) {
+    if (edge.target == v.id) {
       _adj.at(edge.source).remove(edge.id);
     }
   }
@@ -93,69 +93,20 @@ AdjacencyListDigraph::InEdgeMapIt::InEdgeMapIt(EdgeMap::iterator it,
                                                const Vertex &target)
     : _Super{it}, _edge_map{edge_map}, _target{target} {};
 
-container::Container<AdjacencyListDigraph::VertexMapIt>
-AdjacencyListDigraph::vertices() {
-  struct C {
-    VertexMapIt begin() { return VertexMapIt(_adj.begin()); }
-    VertexMapIt end() { return VertexMapIt(_adj.end()); }
-
-    C(AdjacencyList &adj) : _adj{adj} {};
-
-    AdjacencyList &_adj;
-  };
-
-  container::Container<VertexMapIt> container = {C{_adj}};
-
-  return container;
+AdjacencyListDigraph::Vertices AdjacencyListDigraph::vertices() {
+  return {_adj};
 }
 
-container::Container<AdjacencyListDigraph::EdgeMapIt>
-AdjacencyListDigraph::edges() {
-  struct C {
-    EdgeMapIt begin() { return EdgeMapIt(_map.begin()); }
-    EdgeMapIt end() { return EdgeMapIt(_map.end()); }
-
-    C(EdgeMap &map) : _map{map} {};
-
-    EdgeMap &_map;
-  };
-
-  container::Container<EdgeMapIt> container = {C{_edge_map}};
-
-  return container;
+AdjacencyListDigraph::Edges AdjacencyListDigraph::edges() {
+  return {_edge_map};
 };
 
-container::Container<AdjacencyListDigraph::OutEdgeMapIt>
+AdjacencyListDigraph::OutEdges
 AdjacencyListDigraph::out_edges(const Vertex &v) {
-  struct C {
-    OutEdgeMapIt begin() { return OutEdgeMapIt(_list.begin(), _map); }
-    OutEdgeMapIt end() { return OutEdgeMapIt(_list.end(), _map); }
-
-    C(EdgeList &list, EdgeMap &map) : _list{list}, _map{map} {};
-
-    EdgeList &_list;
-    EdgeMap &_map;
-  };
-
-  container::Container<OutEdgeMapIt> container = {C{_adj.at(v.id), _edge_map}};
-  return container;
+  return {_adj.at(v.id), _edge_map};
 }
 
-container::Container<AdjacencyListDigraph::InEdgeMapIt>
-AdjacencyListDigraph::in_edges(const Vertex &v) {
-  struct C {
-    InEdgeMapIt begin() { return InEdgeMapIt(_map.begin(), _map, _v); }
-    InEdgeMapIt end() { return InEdgeMapIt(_map.end(), _map, _v); }
-
-    C(EdgeMap &map, Vertex v) : _map{map}, _v{v} {};
-
-    EdgeMap &_map;
-    Vertex _v;
-  };
-
-  container::Container<AdjacencyListDigraph::InEdgeMapIt> container = {
-      C{_edge_map, v}};
-
-  return container;
+AdjacencyListDigraph::InEdges AdjacencyListDigraph::in_edges(const Vertex &v) {
+  return {_edge_map, _edge_map, v};
 }
 } // namespace graph

@@ -26,16 +26,22 @@ protected:
   friend class OutEdgeMapIt;
   friend class InEdgeMapIt;
 
+  using Vertices = container::C<AdjacencyListDigraph::VertexMapIt,
+                                AdjacencyListDigraph::AdjacencyList>;
+  using Edges = container::C<EdgeMapIt, EdgeMap>;
+  using OutEdges = container::C<OutEdgeMapIt, EdgeList, EdgeMap>;
+  using InEdges = container::C<InEdgeMapIt, EdgeMap, EdgeMap, Vertex>;
+
 public:
   Vertex add_vertex();
   Edge add_edge(const Vertex &, const Vertex &);
   bool remove_vertex(const Vertex &);
   bool remove_edge(const Edge &);
 
-  container::Container<VertexMapIt> vertices();
-  container::Container<EdgeMapIt> edges();
-  container::Container<OutEdgeMapIt> out_edges(const Vertex &);
-  container::Container<InEdgeMapIt> in_edges(const Vertex &);
+  Vertices vertices();
+  Edges edges();
+  OutEdges out_edges(const Vertex &);
+  InEdges in_edges(const Vertex &);
 
 private:
   AdjacencyList _adj;
