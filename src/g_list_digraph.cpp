@@ -8,7 +8,7 @@ Vertex AdjacencyListDigraph::add_vertex() {
   }
 
   Vertex v = {_next_vid};
-  _adj.insert({_next_vid, {}});
+  _adj[_next_vid] = {};
   ++_next_vid;
   return v;
 };
@@ -21,7 +21,7 @@ Edge AdjacencyListDigraph::add_edge(const Vertex &u, const Vertex &v) {
   Edge e = {_next_eid, u.id, v.id};
   ++_next_eid;
   _adj.at(u.id).push_back(e.id);
-  _edge_map.insert({e.id, e});
+  _edge_map[e.id] = e;
   return e;
 }
 

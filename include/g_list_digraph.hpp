@@ -5,7 +5,6 @@
 
 #include <list>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace graph {
@@ -26,8 +25,7 @@ protected:
   friend class OutEdgeMapIt;
   friend class InEdgeMapIt;
 
-  using Vertices = container::C<AdjacencyListDigraph::VertexMapIt,
-                                AdjacencyListDigraph::AdjacencyList>;
+  using Vertices = container::C<VertexMapIt, AdjacencyList>;
   using Edges = container::C<EdgeMapIt, EdgeMap>;
   using OutEdges = container::C<OutEdgeMapIt, EdgeList, EdgeMap>;
   using InEdges = container::C<InEdgeMapIt, EdgeMap, EdgeMap, Vertex>;
