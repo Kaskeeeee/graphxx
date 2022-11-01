@@ -56,6 +56,7 @@ bool AdjacencyListDigraph::remove_edge(const Edge &e) {
 
   auto edge = _edge_map.at(e.id);
   _adj.at(edge.source).remove(e.id);
+  _edge_map.erase(e.id);
   return true;
 }
 

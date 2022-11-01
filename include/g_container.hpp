@@ -8,14 +8,15 @@ namespace container {
 
 template <int...> struct seq {};
 template <int N, int... S> struct gens : gens<N - 1, N - 1, S...> {};
-template <int... S> struct gens<0, S...> {
-  typedef seq<S...> type;
-};
+template <int... S> struct gens<0, S...> { typedef seq<S...> type; };
 
 template <typename MapIt, typename RawContainer, typename... Args> class C {
 public:
   MapIt begin() { return dispatch(_container.begin()); }
   MapIt end() { return dispatch(_container.end()); }
+
+  bool empty() const { return _container.empty(); }
+  size_t size() const { return _container.size(); }
 
   C(RawContainer container, const Args &...args)
       : _container{container}, _args{args...} {};
