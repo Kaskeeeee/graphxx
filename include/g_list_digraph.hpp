@@ -14,6 +14,7 @@ protected:
   using EdgeList = std::list<Id>;
   using AdjacencyList = std::unordered_map<Id, EdgeList>;
   using EdgeMap = std::unordered_map<Id, Edge>;
+  using EdgeVector = std::vector<Edge>;
 
   class VertexMapIt;
   class EdgeMapIt;
@@ -28,7 +29,7 @@ protected:
   using Vertices = container::C<VertexMapIt, AdjacencyList>;
   using Edges = container::C<EdgeMapIt, EdgeMap>;
   using OutEdges = container::C<OutEdgeMapIt, EdgeList, EdgeMap>;
-  using InEdges = container::C<InEdgeMapIt, EdgeMap, EdgeMap, Vertex>;
+  using InEdges = container::C<InEdgeMapIt, EdgeVector>;
 
 public:
   Vertex add_vertex();
@@ -56,6 +57,7 @@ public:
   Vertex value();
   VertexMapIt(AdjacencyList::iterator it);
 };
+
 class AdjacencyListDigraph::EdgeMapIt
     : public it::MapIterator<EdgeMapIt, Edge, EdgeMap::iterator> {
 public:
@@ -76,15 +78,11 @@ private:
 };
 
 class AdjacencyListDigraph::InEdgeMapIt
-    : public it::MapIterator<InEdgeMapIt, Edge, EdgeMap::iterator> {
+    : public it::MapIterator<InEdgeMapIt, Edge, EdgeVector::iterator> {
 public:
   void next();
   Edge value();
-  InEdgeMapIt(EdgeMap::iterator it, EdgeMap &edge_map, const Vertex &target);
-
-private:
-  EdgeMap &_edge_map;
-  Vertex _target;
+  InEdgeMapIt(EdgeVector::iterator it);
 };
 
 } // namespace graph

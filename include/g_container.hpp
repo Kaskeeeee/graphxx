@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <tuple>
 
@@ -8,41 +9,23 @@ namespace container {
 
 template <int...> struct seq {};
 template <int N, int... S> struct gens : gens<N - 1, N - 1, S...> {};
-template <int... S> struct gens<0, S...> {
-  typedef seq<S...> type;
-};
+template <int... S> struct gens<0, S...> { typedef seq<S...> type; };
 
 template <typename MapIt, typename RawContainer, typename... Args> class C {
 public:
   MapIt begin() { return dispatch(_container.begin()); }
   MapIt end() { return dispatch(_container.end()); }
 
-  bool empty() const {
-    if (!_needs_manual_count) {
-      return _container.empty();
-    }
-    return size() == 0;
-  }
+  bool empty() { return _container.empty(); }
 
-  size_t size() const {
-    if (!_needs_manual_count) {
-      return _container.size();
-    }
-
-    size_t count = 0;
-    for (auto it = begin(); it != end(); ++it) {
-      ++count;
-    }
-    return count;
-  }
+  size_t size() { return _container.size(); }
 
   MapIt erase(MapIt it) {
     return MapIt{_container.erase(it.get_original_iterator())};
   }
 
-  C(RawContainer container, bool needs_manual_count, const Args &...args)
-      : _container{container},
-        _needs_manual_count{needs_manual_count}, _args{args...} {};
+  C(RawContainer &container, const Args &...args)
+      : _container{container}, _args{args...} {};
 
 private:
   MapIt dispatch(decltype(std::declval<RawContainer>().begin()) position) {
@@ -55,8 +38,7 @@ private:
     return MapIt(position, std::get<S>(_args)...);
   }
 
-  RawContainer _container;
-  bool _needs_manual_count;
+  RawContainer &_container;
   std::tuple<Args...> _args;
 };
 

@@ -81,34 +81,30 @@ AdjacencyListDigraph::OutEdgeMapIt::OutEdgeMapIt(EdgeList::iterator it,
     : _Super{it}, _edge_map{edge_map} {};
 
 // InEdgeMapIt
-void AdjacencyListDigraph::InEdgeMapIt::next() {
-  while (_it != _edge_map.end()) {
-    _it++;
-    if (_it->second.target == _target.id) {
-      return;
-    }
-  }
-}
-Edge AdjacencyListDigraph::InEdgeMapIt::value() { return _it->second; }
-AdjacencyListDigraph::InEdgeMapIt::InEdgeMapIt(EdgeMap::iterator it,
-                                               EdgeMap &edge_map,
-                                               const Vertex &target)
-    : _Super{it}, _edge_map{edge_map}, _target{target} {};
+void AdjacencyListDigraph::InEdgeMapIt::next() { ++_it; };
+Edge AdjacencyListDigraph::InEdgeMapIt::value() { return *_it; }
+AdjacencyListDigraph::InEdgeMapIt::InEdgeMapIt(EdgeVector::iterator it)
+    : _Super{it} {};
 
 AdjacencyListDigraph::Vertices AdjacencyListDigraph::vertices() {
-  return {_adj, false};
+  return {_adj};
 }
 
 AdjacencyListDigraph::Edges AdjacencyListDigraph::edges() {
-  return {_edge_map, false};
+  return {_edge_map};
 };
 
 AdjacencyListDigraph::OutEdges
 AdjacencyListDigraph::out_edges(const Vertex &v) {
-  return {_adj.at(v.id), false, _edge_map};
+  return {_adj.at(v.id), _edge_map};
 }
 
 AdjacencyListDigraph::InEdges AdjacencyListDigraph::in_edges(const Vertex &v) {
-  return {_edge_map, true, _edge_map, v};
+  std::vector<Edge> in_edges_list;
+  for (auto [id, edge] : _edge_map) {
+    if (edge.target == v.id)
+      in_edges_list.push_back(edge);
+  }
+  return {in_edges_list};
 }
 } // namespace graph

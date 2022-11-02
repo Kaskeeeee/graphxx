@@ -15,7 +15,7 @@ TEST_CASE("Template container methods test", "[Container]") {
     VectorMapIt(std::vector<int>::iterator it) : _Super(it){};
   };
 
-  container::C<VectorMapIt, std::vector<int>> container(V, false);
+  container::C<VectorMapIt, std::vector<int>> container(V);
 
   SECTION("Container retrieves the same values as the wrapped one") {
     for (int i = 0; i < 10; i++) {
