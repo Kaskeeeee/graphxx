@@ -32,8 +32,8 @@
 *.out
 *.app
 
-# Build
+# Build directory
 build
 
-# .vscode
+# Vscode settings directory
 .vscode
