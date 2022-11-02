@@ -8,14 +8,14 @@
 namespace graph {
 namespace algorithms {
 
-struct DFSVertex {
-  VertexStatus status;
-  int parent = -1;
-  int discovery_time = -1;
-  int finishing_time = -1;
-};
-
 template <concepts::Graph G> class DFS {
+  struct DFSVertex {
+    VertexStatus status;
+    int parent = -1;
+    int discovery_time = -1;
+    int finishing_time = -1;
+  };
+
   using DFSForest = std::unordered_map<Id, DFSVertex>;
 
 public:

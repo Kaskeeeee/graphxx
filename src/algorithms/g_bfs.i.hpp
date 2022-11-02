@@ -1,3 +1,4 @@
+#include "algorithms/g_algorithms_base.hpp"
 #include "algorithms/g_bfs.hpp"
 #include "g_concepts.hpp"
 #include <functional>

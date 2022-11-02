@@ -1,5 +1,5 @@
-#include "algorithms/g_dfs.hpp"
 #include "algorithms/g_algorithms_base.hpp"
+#include "algorithms/g_dfs.hpp"
 #include "g_concepts.hpp"
 #include <functional>
 #include <queue>
