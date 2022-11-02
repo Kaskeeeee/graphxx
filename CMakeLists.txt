@@ -12,17 +12,22 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/demos/simple_interactive.cp
 
 target_include_directories(${PROJECT_NAME}
                            PUBLIC include/
-                           PRIVATE src/)
+                           PUBLIC include/algorithms
+                           PRIVATE src/
+                           PRIVATE src/algorithms)
 
 target_sources(${PROJECT_NAME}
                PUBLIC include/g_base.hpp
                PUBLIC include/g_concepts.hpp
-               PUBLIC include/g_list_digraph.hpp
-               PUBLIC include/g_iterator.hpp
-               PUBLIC include/g_container.hpp
-               PUBLIC include/g_matrix_digraph.hpp
-               PRIVATE src/g_list_digraph.cpp
-               PRIVATE src/g_matrix_digraph.cpp)
+               PUBLIC include/g_list_graph.hpp
+               PUBLIC include/g_matrix_graph.hpp
+               PUBLIC include/algorithms/g_algorithms_base.hpp
+               PUBLIC include/algorithms/g_bfs.hpp
+               PUBLIC include/algorithms/g_dfs.hpp
+               PRIVATE src/g_list_graph.i.hpp
+               PRIVATE src/g_matrix_graph.i.hpp
+               PRIVATE src/algorithms/g_bfs.i.hpp
+               PRIVATE src/algorithms/g_dfs.i.hpp)
 
 #COMMANDS:
 # mkdir build

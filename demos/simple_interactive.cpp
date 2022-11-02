@@ -1,11 +1,11 @@
 #include "algorithms/g_bfs.hpp"
-#include "g_list_digraph.hpp"
+#include "g_list_graph.hpp"
 #include <bits/stdc++.h>
 
 using namespace graph;
 using namespace std;
 
-void printGraph(AdjacencyListDigraph &graph) {
+void printGraph(AdjacencyListGraph<GraphType::Directed> &graph) {
   for (auto vertex : graph.vertices()) {
     cout << "V[" << vertex.id << "]: ";
     for (auto edge : graph.out_edges(vertex)) {
@@ -16,7 +16,7 @@ void printGraph(AdjacencyListDigraph &graph) {
 }
 
 int main() {
-  AdjacencyListDigraph a;
+  AdjacencyListGraph<GraphType::Directed> a;
 
   while (true) {
     int opt = -1;
@@ -38,13 +38,13 @@ int main() {
       cout << "Insert v: ";
       cin >> v;
 
-      a.add_edge({u}, {v});
+      a.add_edge(Vertex{u}, Vertex{v});
     } break;
     case 3: {
       int u;
       cout << "Remove vertex: ";
       cin >> u;
-      a.remove_vertex({u});
+      a.remove_vertex(Vertex{u});
     } break;
     case 4: {
       int u, v;
