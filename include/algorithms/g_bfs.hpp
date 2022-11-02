@@ -1,15 +1,12 @@
 #pragma once
 
+#include "g_algorithms_base.hpp"
 #include "g_concepts.hpp"
 #include <functional>
+#include <unordered_map>
 
 namespace graph {
 namespace algorithms {
-enum class VertexStatus {
-  READY,
-  WAITING,
-  PROCESSED,
-};
 
 struct BFSVertex {
   VertexStatus status;
@@ -35,3 +32,5 @@ private:
 
 } // namespace algorithms
 } // namespace graph
+
+#include "g_bfs.i.hpp"
