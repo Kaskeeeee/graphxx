@@ -3,7 +3,7 @@
 #include "g_iterator.hpp"
 #include <vector>
 
-TEST_CASE("Template container methods test", "[Container]") {
+TEST_CASE("template container wraps a STL container", "[container]") {
   using namespace graph;
   std::vector<int> V;
 
@@ -17,7 +17,7 @@ TEST_CASE("Template container methods test", "[Container]") {
 
   container::C<VectorMapIt, std::vector<int>> container(V);
 
-  SECTION("Container retrieves the same values as the wrapped one") {
+  SECTION("container retrieves the same values as the wrapped one") {
     for (int i = 0; i < 10; i++) {
       V.push_back(i);
     }
@@ -28,7 +28,7 @@ TEST_CASE("Template container methods test", "[Container]") {
     }
   }
 
-  SECTION("Container gives the same values as the wrapped one") {
+  SECTION("container gives the same size and empty values as the wrapped one") {
     for (int i = 0; i < 10; i++) {
       V.push_back(i);
     }
