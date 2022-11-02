@@ -1,4 +1,4 @@
-#include "g_bfs.hpp"
+#include "algorithms/g_bfs.hpp"
 #include "g_list_digraph.hpp"
 #include <bits/stdc++.h>
 
