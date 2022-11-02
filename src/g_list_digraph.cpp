@@ -20,7 +20,8 @@ Edge AdjacencyListDigraph::add_edge(const Vertex &u, const Vertex &v) {
 
   Edge e = {_next_eid, u.id, v.id};
   ++_next_eid;
-  _adj.at(u.id).push_back(e.id);
+  _adj[v.id];
+  _adj[u.id].push_back(e.id);
   _edge_map[e.id] = e;
   return e;
 }
@@ -95,19 +96,19 @@ AdjacencyListDigraph::InEdgeMapIt::InEdgeMapIt(EdgeMap::iterator it,
     : _Super{it}, _edge_map{edge_map}, _target{target} {};
 
 AdjacencyListDigraph::Vertices AdjacencyListDigraph::vertices() {
-  return {_adj};
+  return {_adj, false};
 }
 
 AdjacencyListDigraph::Edges AdjacencyListDigraph::edges() {
-  return {_edge_map};
+  return {_edge_map, false};
 };
 
 AdjacencyListDigraph::OutEdges
 AdjacencyListDigraph::out_edges(const Vertex &v) {
-  return {_adj.at(v.id), _edge_map};
+  return {_adj.at(v.id), false, _edge_map};
 }
 
 AdjacencyListDigraph::InEdges AdjacencyListDigraph::in_edges(const Vertex &v) {
-  return {_edge_map, _edge_map, v};
+  return {_edge_map, true, _edge_map, v};
 }
 } // namespace graph

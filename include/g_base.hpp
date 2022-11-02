@@ -3,14 +3,15 @@
 namespace graph {
 using Id = int;
 
-struct Vertex {
+struct Identifiable {
   Id id;
+
+  bool valid() { return id >= 0; }
 };
 
-struct Edge {
-  Id id;
+struct Vertex : Identifiable {};
+
+struct Edge : Identifiable {
   Id source, target;
 };
-
-struct None {};
 } // namespace graph

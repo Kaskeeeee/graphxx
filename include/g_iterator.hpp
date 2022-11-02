@@ -30,6 +30,8 @@ public:
 
   bool operator!=(const Derived &other) { return _it != other._it; }
 
+  ItType get_original_iterator() { return _it; }
+
 protected:
   using _Super = MapIterator;
   ItType _it;
