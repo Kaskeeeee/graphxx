@@ -4,16 +4,16 @@
 #include <unordered_map>
 
 namespace graph{
-    template <typename T> class NodeMap {
+    template <typename T> class VertexPropertyMap {
         protected:       
-            std::unordered_map<Id, T> _node_with_prop;
+            std::unordered_map<Id, T> _vertex_with_prop;
         public:
             T& operator [] (const Vertex &v){
-                return _node_with_prop.at(v.id);
+                return _vertex_with_prop.at(v.id);
             };
 
             void setProperty(const Vertex &v, const T &value){
-                _node_with_prop[v.id] = value;
+                _vertex_with_prop[v.id] = value;
             }
 
 
