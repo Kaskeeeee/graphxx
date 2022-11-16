@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "g_list_graph.hpp"
+#include "list_graph.hpp"
 
 namespace digraph_test {
 
@@ -33,7 +33,7 @@ TEST_CASE("digraph is built correctly", "[digraph]") {
     g.remove_vertex(z);
     REQUIRE(g.vertices().empty());
 
-    REQUIRE_FALSE(g.remove_vertex(v));
+    REQUIRE_THROWS(g.remove_vertex(v));
   }
 
   SECTION("edges can be inserted and removed") {
@@ -52,7 +52,7 @@ TEST_CASE("digraph is built correctly", "[digraph]") {
     g.remove_edge(e4);
     REQUIRE(g.edges().empty());
 
-    REQUIRE_FALSE(g.remove_edge(e4));
+    REQUIRE_THROWS(g.remove_edge(e4));
   }
 }
 

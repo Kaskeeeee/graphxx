@@ -1,5 +1,5 @@
 #pragma once
-#include "g_base.hpp"
+#include "base.hpp"
 
 #include <concepts>
 
@@ -47,6 +47,7 @@ concept BasicGraphEditable =
     };
 
 template <typename T>
-concept Graph = VertexIterable<T> && EdgeIterable<T> && BasicGraphEditable<T>;
+concept Graph = VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
+                InEdgesIterable<T> && BasicGraphEditable<T>;
 } // namespace concepts
 } // namespace graph
