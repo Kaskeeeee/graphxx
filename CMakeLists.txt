@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(GraphLib
-        DESCRIPTION "Graph library"
-        #VERSION 1.0
-        LANGUAGES CXX
+        DESCRIPTION     "Graph library"
+        HOMEPAGE_URL    "https://github.com/Kaskeeeee/graph"
+        LANGUAGES       CXX
 )
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # clang-tidy
+set(CMAKE_CXX_STANDARD                  20)
+set(CMAKE_CXX_STANDARD_REQUIRED         ON)
+set(CMAKE_CXX_EXTENSIONS                OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS       ON) # clang-tidy
 
 #add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/demos/simple_interactive.cpp)
 
@@ -23,9 +24,11 @@ target_sources(graph_lib
         PUBLIC ${PROJECT_SOURCE_DIR}/include/graph_concepts.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/list_graph.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/matrix_graph.hpp
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/id_manager.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/algorithms_base.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/bfs.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/src/id_manager.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/list_graph.i.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/matrix_graph.i.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms/bfs.i.hpp

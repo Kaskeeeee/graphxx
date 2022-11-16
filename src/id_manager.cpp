@@ -1,5 +1,3 @@
-#pragma once
-
 #include "id_manager.hpp"
 #include <cassert>
 #include <limits>
