@@ -8,14 +8,13 @@ namespace graph{
         protected:       
             std::unordered_map<Id, T> _vertex_with_prop;
         public:
-            T& operator [] (const Vertex &v){
-                return _vertex_with_prop.at(v.id);
+            T& operator [] (const Vertex& v){
+                return _vertex_with_prop[v.id];
             };
 
-            void setProperty(const Vertex &v, const T &value){
-                _vertex_with_prop[v.id] = value;
-            }
-
+            T& operator [] (Vertex&& v){
+                return _vertex_with_prop[v.id];
+            };
 
     };
 }

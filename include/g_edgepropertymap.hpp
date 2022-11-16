@@ -8,13 +8,13 @@ namespace graph{
         protected:       
             std::unordered_map<Id, T> _edge_with_prop;
         public:
-            T& operator [] (const Edge &e){
-                return _edge_with_prop.at(e.id);
+            T& operator [] (const Edge& e){
+                return _edge_with_prop[e.id];
             };
 
-            void setProperty(const Edge &e, const T &value){
-                _edge_with_prop[e.id] = value;
-            }
+            T& operator [] (Edge&& e){
+                return _edge_with_prop[e.id];
+            };
 
 
     };
