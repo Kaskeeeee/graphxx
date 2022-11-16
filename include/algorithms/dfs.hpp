@@ -1,7 +1,7 @@
 #pragma once
 
-#include "g_algorithms_base.hpp"
-#include "g_concepts.hpp"
+#include "algorithms_base.hpp"
+#include "graph_concepts.hpp"
 #include <functional>
 #include <unordered_map>
 
@@ -36,4 +36,4 @@ private:
 } // namespace algorithms
 } // namespace graph
 
-#include "g_dfs.i.hpp"
+#include "algorithms/dfs.i.hpp"

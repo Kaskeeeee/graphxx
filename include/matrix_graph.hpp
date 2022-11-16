@@ -1,5 +1,6 @@
 #pragma once
-#include "g_base.hpp"
+#include "base.hpp"
+#include "id_manager.hpp"
 
 #include <unordered_map>
 
@@ -12,23 +13,26 @@ protected:
   using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
-  Vertex add_vertex();
-  Edge add_edge(const Vertex &, const Vertex &);
-  bool remove_vertex(const Vertex &);
-  bool remove_edge(const Edge &);
+  AdjacencyMatrixGraph();
 
-  decltype(auto) vertices();
-  decltype(auto) edges();
-  decltype(auto) out_edges(const Vertex &);
-  decltype(auto) in_edges(const Vertex &);
+  Vertex add_vertex();
+  void remove_vertex(const Vertex &);
+
+  Edge add_edge(const Vertex &, const Vertex &);
+  void remove_edge(const Edge &);
+
+  auto vertices();
+  auto edges();
+  auto out_edges(const Vertex &);
+  auto in_edges(const Vertex &);
 
 private:
   AdjacencyMatrix _adj;
   EdgeMap _edge_map;
 
-  Id _next_vid = 0;
-  Id _next_eid = 0;
+  utils::IdManager _vertex_id_manager;
+  utils::IdManager _edge_id_manager;
 };
 } // namespace graph
 
-#include "g_matrix_graph.i.hpp"
+#include "matrix_graph.i.hpp"

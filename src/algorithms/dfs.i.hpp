@@ -1,6 +1,6 @@
-#include "algorithms/g_algorithms_base.hpp"
-#include "algorithms/g_dfs.hpp"
-#include "g_concepts.hpp"
+#include "algorithms/algorithms_base.hpp"
+#include "algorithms/dfs.hpp"
+#include "graph_concepts.hpp"
 #include <functional>
 #include <queue>
 
@@ -13,7 +13,7 @@ template <concepts::Graph G> void DFS<G>::init() {
   _time = 0;
   _dfs_forest.clear();
   for (Vertex vertex : _graph.vertices()) {
-    _dfs_forest[vertex.id] = DFSVertex{VertexStatus::READY};
+    _dfs_forest[vertex] = DFSVertex{VertexStatus::READY};
   }
 }
 
@@ -26,7 +26,7 @@ DFS<G>::DFSForest DFS<G>::visit(std::function<void(Vertex)> f) {
   init();
 
   for (Vertex vertex : _graph.vertices()) {
-    if (_dfs_forest[vertex.id].status == VertexStatus::READY) {
+    if (_dfs_forest[vertex].status == VertexStatus::READY) {
       visit_rec(vertex);
     }
   }
@@ -38,11 +38,11 @@ template <concepts::Graph G>
 void DFS<G>::visit_rec(Vertex vertex, std::function<void(Vertex)> f) {
   f(vertex);
 
-  _dfs_forest[vertex.id].status = VertexStatus::WAITING;
-  _dfs_forest[vertex.id].discovery_time = ++_time;
+  _dfs_forest[vertex].status = VertexStatus::WAITING;
+  _dfs_forest[vertex].discovery_time = ++_time;
 
   for (Edge out_edge : _graph.out_edges(vertex)) {
-    Id adjacent = out_edge.target;
+    Id adjacent = out_edge.v;
 
     if (_dfs_forest[adjacent].status == VertexStatus::READY) {
       _dfs_forest[adjacent].parent = vertex;
@@ -50,8 +50,8 @@ void DFS<G>::visit_rec(Vertex vertex, std::function<void(Vertex)> f) {
     }
   }
 
-  _dfs_forest[vertex.id].status = VertexStatus::PROCESSED;
-  _dfs_forest[vertex.id].finishing_time = ++_time;
+  _dfs_forest[vertex].status = VertexStatus::PROCESSED;
+  _dfs_forest[vertex].finishing_time = ++_time;
 }
 
 } // namespace algorithms

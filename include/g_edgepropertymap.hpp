@@ -1,5 +1,5 @@
 #pragma once
-#include "g_base.hpp"
+#include "base.hpp"
 
 #include <unordered_map>
 
@@ -16,6 +16,8 @@ namespace graph{
                 return _edge_with_prop[e.id];
             };
 
-
-    };
-}
+  void setProperty(const Edge &e, const T &value) {
+    _edge_with_prop[e.id] = value;
+  }
+};
+} // namespace graph

@@ -1,5 +1,5 @@
-#include "algorithms/g_bfs.hpp"
-#include "g_list_graph.hpp"
+#include "algorithms/bfs.hpp"
+#include "list_graph.hpp"
 #include <bits/stdc++.h>
 
 using namespace graph;
