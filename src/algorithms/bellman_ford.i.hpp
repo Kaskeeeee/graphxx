@@ -24,13 +24,14 @@ BellmanFord<G, WeightType>::BellmanFordTree BellmanFord<G, WeightType>::visit(
   // Relax edges |nodes| - 1 times
   for (int i = 0; i < _graph.vertices().size() - 1; i++) {
     for (auto edge : _graph.edges()) {
-      if (_bf_tree[edge.u].distance != MAX_WEIGHT &&
-          !sum_will_overflow(_bf_tree[edge.u].distance, edges_weights[edge]) &&
-          _bf_tree[edge.u].distance + edges_weights[edge] <
-              _bf_tree[edge.v].distance) {
-        _bf_tree[edge.v].distance =
-            _bf_tree[edge.u].distance + edges_weights[edge];
-        _bf_tree[edge.v].previous = edge.u;
+      auto &source = _bf_tree[edge.u];
+      auto &target = _bf_tree[edge.v];
+
+      if (source.distance != MAX_WEIGHT &&
+          !sum_will_overflow(source.distance, edges_weights[edge]) &&
+          source.distance + edges_weights[edge] < target.distance) {
+        target.distance = source.distance + edges_weights[edge];
+        target.previous = edge.u;
       }
     }
   }
@@ -39,10 +40,12 @@ BellmanFord<G, WeightType>::BellmanFordTree BellmanFord<G, WeightType>::visit(
   // if value changes then we have a negative cycle in the graph and we cannot
   // find the shortest distances
   for (auto edge : _graph.edges()) {
-    if (_bf_tree[edge.u].distance != MAX_WEIGHT &&
-        !sum_will_overflow(_bf_tree[edge.u].distance, edges_weights[edge]) &&
-        _bf_tree[edge.u].distance + edges_weights[edge] <
-            _bf_tree[edge.v].distance) {
+    auto &source = _bf_tree[edge.u];
+    auto &target = _bf_tree[edge.v];
+
+    if (source.distance != MAX_WEIGHT &&
+        !sum_will_overflow(source.distance, edges_weights[edge]) &&
+        source.distance + edges_weights[edge] < target.distance) {
       throw exception::NegativeCycleException();
     }
   }
