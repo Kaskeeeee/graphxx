@@ -1,3 +1,4 @@
+#include "exceptions.hpp"
 #include "id_manager.hpp"
 #include "matrix_graph.hpp"
 #include <cassert>
@@ -19,7 +20,9 @@ template <GraphType T> Vertex AdjacencyMatrixGraph<T>::add_vertex() {
 
 template <GraphType T>
 Edge AdjacencyMatrixGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
-  assert(_adj.contains(u) && _adj.contains(v));
+  if (!_adj.contains(u) || !_adj.contains(v)) {
+    throw exceptions::NoSuchVertexException();
+  }
 
   auto id = _edge_id_manager.allocate();
 
@@ -36,7 +39,10 @@ Edge AdjacencyMatrixGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
 
 template <GraphType T>
 void AdjacencyMatrixGraph<T>::remove_vertex(const Vertex &v) {
-  assert(_adj.contains(v));
+  if (!_adj.contains(v)) {
+    throw exceptions::NoSuchVertexException();
+  }
+
   _adj.erase(v);
 
   auto it = _edge_map.begin();
@@ -55,7 +61,9 @@ void AdjacencyMatrixGraph<T>::remove_vertex(const Vertex &v) {
 
 template <GraphType T>
 void AdjacencyMatrixGraph<T>::remove_edge(const Edge &e) {
-  assert(_edge_map.contains(e));
+  if (!_edge_map.contains(e)) {
+    throw exceptions::NoSuchEdgeException();
+  }
 
   _edge_map.erase(e);
   _adj.at(e.u).erase(e.v);

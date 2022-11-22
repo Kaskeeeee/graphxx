@@ -25,10 +25,12 @@ target_sources(graph_lib
         PUBLIC ${PROJECT_SOURCE_DIR}/include/list_graph.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/matrix_graph.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/id_manager.hpp
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/exceptions.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/algorithms_base.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/bfs.hpp
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/id_manager.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/src/exceptions.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/list_graph.i.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/matrix_graph.i.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms/bfs.i.hpp

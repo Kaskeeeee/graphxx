@@ -1,5 +1,6 @@
 #pragma once
 #include "base.hpp"
+#include "exceptions.hpp"
 #include "id_manager.hpp"
 #include "list_graph.hpp"
 #include <cassert>
@@ -22,7 +23,9 @@ template <GraphType T> Vertex AdjacencyListGraph<T>::add_vertex() {
 
 template <GraphType T>
 Edge AdjacencyListGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
-  assert(_adj.contains(u) && _adj.contains(v));
+  if (!_adj.contains(u) || !_adj.contains(v)) {
+    throw exceptions::NoSuchVertexException();
+  }
 
   auto id = _edge_id_manager.allocate();
   Edge e{id, u, v};
@@ -38,7 +41,9 @@ Edge AdjacencyListGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
 
 template <GraphType T>
 void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
-  assert(_adj.contains(v));
+  if (!_adj.contains(v)) {
+    throw exceptions::NoSuchVertexException();
+  }
 
   _vertex_id_manager.free(v);
   _adj.erase(v);
@@ -65,7 +70,9 @@ void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
 };
 
 template <GraphType T> void AdjacencyListGraph<T>::remove_edge(const Edge &e) {
-  assert(_edge_map.contains(e));
+  if (!_edge_map.contains(e)) {
+    throw exceptions::NoSuchEdgeException();
+  }
 
   _edge_id_manager.free(e);
   _adj.at(e.u).remove(e);
