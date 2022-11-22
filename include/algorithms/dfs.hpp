@@ -5,8 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph {
-namespace algorithms {
+namespace graph::algorithms {
 
 template <concepts::Graph G> class DFS {
   struct DFSVertex {
@@ -33,7 +32,6 @@ private:
   int _time = 0;
 };
 
-} // namespace algorithms
-} // namespace graph
+} // namespace graph::algorithms
 
 #include "algorithms/dfs.i.hpp"

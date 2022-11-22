@@ -1,8 +1,7 @@
 #include "exceptions.hpp"
 #include "base.hpp"
 
-namespace graph {
-namespace exceptions {
+namespace graph::exceptions {
 char *OutOfIdsException::what() { return "Out of IDs exception"; };
 
 char *NoSuchVertexException::what() {
@@ -12,5 +11,9 @@ char *NoSuchVertexException::what() {
 char *NoSuchEdgeException::what() {
   return "Edge is missing from graph exeception";
 };
-} // namespace exceptions
-} // namespace graph
+
+char *NegativeCycleException::what() {
+  return "Found negative cycle in the graph";
+};
+
+} // namespace graph::exceptions

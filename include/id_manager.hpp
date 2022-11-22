@@ -18,4 +18,5 @@ private:
   Id _countup;
   std::set<Id> _pool;
 };
+
 } // namespace graph::utils

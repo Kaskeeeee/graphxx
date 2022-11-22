@@ -1,7 +1,5 @@
 #pragma once
-namespace graph {
-
-namespace algorithms {
+namespace graph::algorithms {
 
 enum class VertexStatus {
   READY,
@@ -9,9 +7,4 @@ enum class VertexStatus {
   PROCESSED,
 };
 
-template <typename T>
-concept IsNumberLike = std::is_arithmetic_v<T>;
-
-} // namespace algorithms
-
-} // namespace graph
+} // namespace graph::algorithms

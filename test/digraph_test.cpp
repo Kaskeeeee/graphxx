@@ -1,6 +1,9 @@
 #include "catch.hpp"
 #include "list_graph.hpp"
 
+#include <algorithm>
+#include <vector>
+
 namespace digraph_test {
 
 using namespace graph;
@@ -33,7 +36,7 @@ TEST_CASE("digraph is built correctly", "[digraph]") {
     g.remove_vertex(z);
     REQUIRE(g.vertices().empty());
 
-    // REQUIRE_THROWS(g.remove_vertex(v));
+    REQUIRE_THROWS(g.remove_vertex(v));
   }
 
   SECTION("edges can be inserted and removed") {
@@ -52,22 +55,14 @@ TEST_CASE("digraph is built correctly", "[digraph]") {
     g.remove_edge(e4);
     REQUIRE(g.edges().empty());
 
-    // REQUIRE_THROWS(g.remove_edge(e4));
+    REQUIRE_THROWS(g.remove_edge(e4));
   }
 }
 
 TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
   AdjacencyListGraph<GraphType::Directed> g;
 
-  SECTION("creating edges with new vertices adds them to graph") {
-    Vertex u{100};
-    Vertex v{200};
-    g.add_edge(u, v);
-    for (Vertex vertex : g.vertices())
-      REQUIRE((vertex.id == u.id || vertex.id == v.id));
-  }
-
-  SECTION("removing a vertex the connected edges are deleted") {
+  SECTION("removing a vertex will remove also the connected edges") {
     Vertex u = g.add_vertex();
     Vertex v = g.add_vertex();
     Edge e1 = g.add_edge(u, v);
@@ -87,8 +82,12 @@ TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
     REQUIRE_FALSE(g.out_edges(u).empty());
     REQUIRE_FALSE(g.out_edges(v).empty());
     REQUIRE(g.out_edges(z).empty());
-    for (Edge edge : g.out_edges(v))
-      REQUIRE((edge.id == e2.id || edge.id == e3.id));
+
+    std::vector<Edge> out_edges{g.out_edges(v).begin(), g.out_edges(v).end()};
+    std::sort(out_edges.begin(), out_edges.end());
+
+    REQUIRE(out_edges[0] == e2.id);
+    REQUIRE(out_edges[1] == e3.id);
   }
 
   SECTION("the incoming edges are calculated correctly") {
@@ -99,8 +98,12 @@ TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
 
     REQUIRE(g.in_edges(u).empty());
     REQUIRE_FALSE(g.in_edges(v).empty());
-    for (Edge edge : g.out_edges(v))
-      REQUIRE((edge.id == e1.id || edge.id == e2.id));
+
+    std::vector<Edge> in_edges{g.in_edges(v).begin(), g.in_edges(v).end()};
+    std::sort(in_edges.begin(), in_edges.end());
+
+    REQUIRE(in_edges[0] == e1.id);
+    REQUIRE(in_edges[1] == e2.id);
   }
 }
 

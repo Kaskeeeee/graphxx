@@ -2,8 +2,7 @@
 #include "base.hpp"
 #include <exception>
 
-namespace graph {
-namespace exceptions {
+namespace graph::exceptions {
 
 struct OutOfIdsException : std::exception {
   char *what();
@@ -17,5 +16,8 @@ struct NoSuchEdgeException : std::exception {
   char *what();
 };
 
-} // namespace exceptions
-} // namespace graph
+struct NegativeCycleException : std::exception {
+  char *what();
+};
+
+} // namespace graph::exceptions

@@ -57,12 +57,12 @@ void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
       edge_map_it++;
     }
 
-    if (edge.u == v) {
+    if (edge.v == v && edge.u != v) {
       _adj.at(edge.u).remove(edge);
     }
 
     if constexpr (T == GraphType::Undirected) {
-      if (edge.u == v) {
+      if (edge.u == v && edge.v != v) {
         _adj.at(edge.v).remove(edge);
       }
     }

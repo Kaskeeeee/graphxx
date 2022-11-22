@@ -4,9 +4,8 @@
 #include <functional>
 #include <queue>
 
-namespace graph {
+namespace graph::algorithms {
 
-namespace algorithms {
 template <concepts::Graph G> DFS<G>::DFS(G &g) : _graph{g} {};
 
 template <concepts::Graph G> void DFS<G>::init() {
@@ -54,5 +53,4 @@ void DFS<G>::visit_rec(Vertex vertex, std::function<void(Vertex)> f) {
   _dfs_forest[vertex].finishing_time = ++_time;
 }
 
-} // namespace algorithms
-} // namespace graph
+} // namespace graph::algorithms

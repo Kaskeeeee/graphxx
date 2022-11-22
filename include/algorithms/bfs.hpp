@@ -5,8 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph {
-namespace algorithms {
+namespace graph::algorithms {
 
 template <concepts::Graph G> class BFS {
   struct BFSVertex {
@@ -30,7 +29,6 @@ private:
   BFSTree _bfs_tree;
 };
 
-} // namespace algorithms
-} // namespace graph
+} // namespace graph::algorithms
 
 #include "algorithms/bfs.i.hpp"

@@ -4,9 +4,7 @@
 #include <functional>
 #include <queue>
 
-namespace graph {
-
-namespace algorithms {
+namespace graph::algorithms {
 
 template <concepts::Graph G> BFS<G>::BFS(G &g) : _graph{g} {};
 
@@ -55,5 +53,4 @@ BFS<G>::BFSTree BFS<G>::visit(Vertex source, std::function<void(Vertex)> f) {
   return _bfs_tree;
 }
 
-} // namespace algorithms
-} // namespace graph
+} // namespace graph::algorithms

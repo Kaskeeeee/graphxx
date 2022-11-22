@@ -35,6 +35,7 @@ private:
   utils::IdManager _vertex_id_manager;
   utils::IdManager _edge_id_manager;
 };
+
 } // namespace graph
 
 #include "list_graph.i.hpp"
