@@ -116,8 +116,12 @@ target_link_options(graph
 # COVERAGE da testare
 # ###############################################################################
 if(COVERAGE)
+        # GET GCC MAJOR VERSION
+        string(REGEX REPLACE "\\..*" "" GCC_MAJOR ${CMAKE_CXX_COMPILER_VERSION})
+
         add_custom_target(coverage
                 COMMAND gcovr
+                --gcov-executable gcov-${GCC_MAJOR}
                 --root ${PROJECT_SOURCE_DIR}
                 -v
                 --html --html-details coverage.html
@@ -203,7 +207,7 @@ add_test(NAME digraphTest
 add_test(NAME valgrindTest
         COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
         --track-origins=yes
-        graph_test
+        ${CMAKE_BINARY_DIR}/graph_test
 )
 
 # ###############################################################################
@@ -227,3 +231,6 @@ add_custom_target(clean_all
 # <generator> test              execute tests
 # <generator> install           install executables
 # <generator> clean_all         delete /doc and /bin
+
+# COMPILE ON MACOS
+# cmake -DCMAKE_CXX_COMPILER=/usr/local/bin/g++-12 ..
