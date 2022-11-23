@@ -2,60 +2,52 @@
 #include "base.hpp"
 
 #include <concepts>
+#include <ranges>
 
 namespace graph::concepts {
-template <typename T, typename RT>
-concept Iterable = requires(T v) {
-  v.begin();
-  v.end();
-  v.begin()++;
-  { *v.begin() } -> std::convertible_to<RT>;
-};
 
 template <typename T>
 concept VertexIterable = requires(T v) {
-  v.vertices();
-  requires Iterable<decltype(v.vertices()), Vertex>;
-};
+                           requires std::ranges::range<decltype(v.vertices())>;
+                           {
+                             *(v.vertices().begin())
+                             } -> std::convertible_to<Vertex>;
+                         };
 
 template <typename T>
 concept EdgeIterable = requires(T v) {
-  v.edges();
-  requires Iterable<decltype(v.edges()), Edge>;
-};
+                         requires std::ranges::range<decltype(v.edges())>;
+                         { *(v.edges().begin()) } -> std::convertible_to<Edge>;
+                       };
 
 template <typename T>
-concept OutEdgesIterable = requires(T v) {
-  v.out_edges();
-  requires Iterable<decltype(v.out_edges()), Edge>;
-};
+concept OutEdgesIterable =
+    requires(T v, const Vertex &vertex) {
+      requires std::ranges::range<decltype(v.out_edges(vertex))>;
+      { *(v.out_edges(vertex).begin()) } -> std::convertible_to<Edge>;
+    };
 
 template <typename T>
-concept InEdgesIterable = requires(T v) {
-  v.in_edges();
-  requires Iterable<decltype(v.in_edges()), Edge>;
-};
+concept InEdgesIterable =
+    requires(T v, const Vertex &vertex) {
+      requires std::ranges::range<decltype(v.in_edges(vertex))>;
+      { *(v.in_edges(vertex).begin()) } -> std::convertible_to<Edge>;
+    };
 
 template <typename T>
-concept BasicGraphEditable = requires(T v, const Vertex &v1, const Vertex &v2,
-                                      const Edge &e) {
-  v.add_vertex();
-  v.add_edge(v1, v2);
-  v.remove_vertex(v1);
-  v.remove_edge(e);
-};
+concept GraphEditable =
+    requires(T v, const Vertex &v1, const Vertex &v2, const Edge &e) {
+      v.add_vertex();
+      v.add_edge(v1, v2);
+      v.remove_vertex(v1);
+      v.remove_edge(e);
+    };
 
 template <typename T>
-concept ConstantComplexityGetSize = requires(T v) {
-  { v.vertices().size() } -> std::integral;
-  { v.edges().size() } -> std::integral;
-};
-
-template <typename T>
-concept IsNumberLike = std::is_arithmetic_v<T>;
+concept Numeric = std::is_arithmetic_v<T>;
 
 template <typename T>
 concept Graph = VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
-    InEdgesIterable<T> && BasicGraphEditable<T> && ConstantComplexityGetSize<T>;
+                InEdgesIterable<T> && GraphEditable<T>;
 
 } // namespace graph::concepts

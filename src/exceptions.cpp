@@ -2,18 +2,20 @@
 #include "base.hpp"
 
 namespace graph::exceptions {
-char *OutOfIdsException::what() { return "Out of IDs exception"; };
+GraphException::GraphException(std::string message) : _message{message} {};
 
-char *NoSuchVertexException::what() {
-  return "Vertex is missing from graph exception";
-};
+const char *GraphException::what() const noexcept { return _message.c_str(); };
 
-char *NoSuchEdgeException::what() {
-  return "Edge is missing from graph exeception";
-};
+OutOfIdsException::OutOfIdsException()
+    : GraphException("Out of IDs exception"){};
 
-char *NegativeCycleException::what() {
-  return "Found negative cycle in the graph";
-};
+NoSuchVertexException::NoSuchVertexException()
+    : GraphException("Vertex is missing from graph exception"){};
+
+NoSuchEdgeException::NoSuchEdgeException()
+    : GraphException("Edge is missing from graph exeception"){};
+
+InvariantViolationException::InvariantViolationException(std::string message)
+    : GraphException("Invariant violation exception: " + message){};
 
 } // namespace graph::exceptions

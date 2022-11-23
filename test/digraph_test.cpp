@@ -65,7 +65,7 @@ TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
   SECTION("removing a vertex will remove also the connected edges") {
     Vertex u = g.add_vertex();
     Vertex v = g.add_vertex();
-    Edge e1 = g.add_edge(u, v);
+    g.add_edge(u, v);
     REQUIRE_FALSE(g.edges().empty());
     g.remove_vertex(u);
     REQUIRE(g.edges().empty());
@@ -75,7 +75,7 @@ TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
     Vertex u = g.add_vertex();
     Vertex v = g.add_vertex();
     Vertex z = g.add_vertex();
-    Edge e1 = g.add_edge(u, v);
+    g.add_edge(u, v);
     Edge e2 = g.add_edge(v, v);
     Edge e3 = g.add_edge(v, z);
 

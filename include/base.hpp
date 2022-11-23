@@ -24,7 +24,7 @@ struct Vertex : Identifiable {
   bool valid() const { return id >= 0; }
 
   bool operator==(const Vertex &other) const {
-    return !other.valid() && !valid() || id == other.id;
+    return (!other.valid() && !valid()) || (id == other.id);
   }
 };
 
@@ -41,8 +41,8 @@ struct Edge : Identifiable {
   bool valid() const { return id >= 0 && u.valid() && v.valid(); }
 
   bool operator==(const Edge &other) const {
-    return !other.valid() && !valid() ||
-           id == other.id && u == other.u && v == other.v;
+    return (!other.valid() && !valid()) ||
+           (id == other.id && u == other.u && v == other.v);
   }
 
   Vertex u, v;
