@@ -6,8 +6,7 @@
 
 namespace graph::algorithms {
 
-template <concepts::Graph G, concepts::IsNumberLike WeightType>
-class BellmanFord {
+template <concepts::Graph G, concepts::Numeric WeightType> class BellmanFord {
   struct BellmanFordNode {
     WeightType distance;
     Id previous_hop;
@@ -16,9 +15,8 @@ class BellmanFord {
 
 public:
   BellmanFord(G &g);
-  BellmanFordTree
-  visit(const Vertex &v,
-        const std::unordered_map<Id, WeightType> &edges_weights);
+  BellmanFordTree visit(const Vertex &v,
+                        std::unordered_map<Id, WeightType> &edges_weights);
 
 private:
   G &_graph;

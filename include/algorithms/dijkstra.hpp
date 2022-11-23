@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 namespace graph::algorithms {
-template <concepts::Graph G, concepts::IsNumberLike WeightType> class Dijkstra {
+template <concepts::Graph G, concepts::Numeric WeightType> class Dijkstra {
   struct DijkstraNode {
     WeightType distance;
     Id previous_hop;
@@ -16,7 +16,7 @@ template <concepts::Graph G, concepts::IsNumberLike WeightType> class Dijkstra {
 public:
   Dijkstra(const G &graph);
   DijkstraTree visit(const Vertex &source,
-                     std::unordered_map<Id, WeightType> weights);
+                     std::unordered_map<Id, WeightType> &weights);
 
 private:
   G &_graph;

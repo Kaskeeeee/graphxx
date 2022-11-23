@@ -1,18 +1,21 @@
 #include "base.hpp"
 #include "dijkstra.hpp"
+#include "exceptions.hpp"
 #include "graph_concepts.hpp"
+#include "utils.hpp"
+
 #include <queue>
 #include <unordered_map>
 #include <vector>
 
 namespace graph::algorithms {
-template <concepts::Graph G, concepts::IsNumberLike WeightType>
+template <concepts::Graph G, concepts::Numeric WeightType>
 Dijkstra<G, WeightType>::Dijkstra(const G &graph) : _graph{graph} {};
 
-template <concepts::Graph G, concepts::IsNumberLike WeightType>
+template <concepts::Graph G, concepts::Numeric WeightType>
 Dijkstra<G, WeightType>::DijkstraTree
 Dijkstra<G, WeightType>::visit(const Vertex &source,
-                               std::unordered_map<Id, WeightType> weights) {
+                               std::unordered_map<Id, WeightType> &weights) {
   _tree.clear();
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 
@@ -54,8 +57,14 @@ Dijkstra<G, WeightType>::visit(const Vertex &source,
     auto [u, u_distance] = top_pair.first;
 
     for (auto edge : _graph.out_edges(u)) {
+      if (weights[edge] < 0) {
+        throw exception::InvariantViolationException(
+            "negative edge weight found");
+      }
+
       auto alternative_distance = u_distance + weights[edge];
-      if (alternative_distance < _tree[edge.v].distance) {
+      if (!sum_will_overflow(u_distance, weights[edge]) &&
+          alternative_distance < _tree[edge.v].distance) {
         _tree[edge.v].distance = alternative_distance;
         _tree[edge.v].previous_hop = u;
         queue.push(std::make_pair(v, alternative_distance));
