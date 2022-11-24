@@ -34,9 +34,9 @@ BFS<G>::BFSTree BFS<G>::visit(Vertex source, std::function<void(Vertex)> f) {
     Id vertex_id = queue.front();
     queue.pop();
 
-    f({vertex_id});
+    f(Vertex{vertex_id});
 
-    for (Edge out_edge : _graph.out_edges({vertex_id})) {
+    for (Edge out_edge : _graph.out_edges(Vertex{vertex_id})) {
       Id adjacent = out_edge.v;
 
       if (_bfs_tree[adjacent].status == VertexStatus::READY) {

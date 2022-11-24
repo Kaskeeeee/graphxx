@@ -15,20 +15,20 @@ template <concepts::Graph G> class DFS {
     int finishing_time = -1;
   };
 
-  using DFSForest = std::unordered_map<Id, DFSVertex>;
+  using DFSTree = std::unordered_map<Id, DFSVertex>;
 
 public:
   DFS(G &g);
 
-  DFSForest visit();
-  DFSForest visit(std::function<void(Vertex)> f);
+  DFSTree visit(Vertex source);
+  DFSTree visit(Vertex source, std::function<void(Vertex)> f);
 
 private:
   void init();
   void visit_rec(Vertex vertex, std::function<void(Vertex)> f);
 
   G &_graph;
-  DFSForest _dfs_forest;
+  DFSTree _dfs_tree;
   int _time = 0;
 };
 
