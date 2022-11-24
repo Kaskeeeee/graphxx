@@ -14,7 +14,7 @@ template <concepts::Graph G, concepts::Numeric WeightType> class Dijkstra {
   using DijkstraTree = std::unordered_map<Id, DijkstraNode>;
 
 public:
-  Dijkstra(const G &graph);
+  Dijkstra(G &graph);
   DijkstraTree visit(const Vertex &source,
                      std::unordered_map<Id, WeightType> &weights);
 
@@ -24,4 +24,4 @@ private:
 };
 } // namespace graph::algorithms
 
-#include "dijkstra.i.hpp"
+#include "algorithms/dijkstra.i.hpp"

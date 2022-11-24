@@ -10,7 +10,7 @@
 
 namespace graph::algorithms {
 template <concepts::Graph G, concepts::Numeric WeightType>
-Dijkstra<G, WeightType>::Dijkstra(const G &graph) : _graph{graph} {};
+Dijkstra<G, WeightType>::Dijkstra(G &graph) : _graph{graph} {};
 
 template <concepts::Graph G, concepts::Numeric WeightType>
 Dijkstra<G, WeightType>::DijkstraTree
@@ -54,11 +54,11 @@ Dijkstra<G, WeightType>::visit(const Vertex &source,
     }
     queue.pop();
 
-    auto [u, u_distance] = top_pair.first;
+    auto [u, u_distance] = top_pair;
 
     for (auto edge : _graph.out_edges(u)) {
       if (weights[edge] < 0) {
-        throw exception::InvariantViolationException(
+        throw exceptions::InvariantViolationException(
             "negative edge weight found");
       }
 
@@ -67,7 +67,7 @@ Dijkstra<G, WeightType>::visit(const Vertex &source,
           alternative_distance < _tree[edge.v].distance) {
         _tree[edge.v].distance = alternative_distance;
         _tree[edge.v].previous_hop = u;
-        queue.push(std::make_pair(v, alternative_distance));
+        queue.push(std::make_pair(edge.v, alternative_distance));
       }
     }
   }
