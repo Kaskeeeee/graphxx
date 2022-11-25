@@ -50,6 +50,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/bfs.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/bellman_ford.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/tarjan.hpp
 )
 
 # src
@@ -65,6 +66,7 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/bfs.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/dfs.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/bellman_ford.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/tarjan.i.hpp
 )
 
 # ###############################################################################
