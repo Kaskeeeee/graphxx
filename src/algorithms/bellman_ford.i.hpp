@@ -10,8 +10,9 @@ template <concepts::Graph G, concepts::Numeric WeightType>
 BellmanFord<G, WeightType>::BellmanFord(G &g) : _graph{g} {};
 
 template <concepts::Graph G, concepts::Numeric WeightType>
-BellmanFord<G, WeightType>::BellmanFordTree BellmanFord<G, WeightType>::visit(
-    const Vertex &v, std::unordered_map<Id, WeightType> &edges_weights) {
+template <concepts::Subscriptable<Id, WeightType> C>
+BellmanFord<G, WeightType>::BellmanFordTree
+BellmanFord<G, WeightType>::visit(const Vertex &v, C &&edges_weights) {
 
   _bf_tree.clear();
   constexpr auto distance_upperbound = std::numeric_limits<WeightType>::max();

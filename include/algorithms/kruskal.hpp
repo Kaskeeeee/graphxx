@@ -18,7 +18,9 @@ template <concepts::Graph G, concepts::Numeric WeightType> class Kruskal {
 
 public:
   Kruskal(G &g);
-  KruskalTree visit(std::unordered_map<Id, WeightType> &edges_weights);
+
+  template <concepts::Subscriptable<Id, WeightType> C>
+  KruskalTree visit(C &&edges_weights);
 
   // Method that finds the representative vertex of the cluster
   Id find_representative(Id id);

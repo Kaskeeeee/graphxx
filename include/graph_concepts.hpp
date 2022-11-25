@@ -46,6 +46,12 @@ concept GraphEditable =
 template <typename T>
 concept Numeric = std::is_arithmetic_v<T>;
 
+template <typename Container, typename Key, typename Value>
+concept Subscriptable =
+    requires(const Container &c, const Key &k, const Value &v) {
+      { c[k] } -> std::convertible_to<Value>;
+    };
+
 template <typename T>
 concept Graph = VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
                 InEdgesIterable<T> && GraphEditable<T>;

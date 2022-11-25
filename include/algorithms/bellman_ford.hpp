@@ -15,8 +15,9 @@ template <concepts::Graph G, concepts::Numeric WeightType> class BellmanFord {
 
 public:
   BellmanFord(G &g);
-  BellmanFordTree visit(const Vertex &v,
-                        std::unordered_map<Id, WeightType> &edges_weights);
+
+  template <concepts::Subscriptable<Id, WeightType> C>
+  BellmanFordTree visit(const Vertex &v, C &&edges_weights);
 
 private:
   G &_graph;

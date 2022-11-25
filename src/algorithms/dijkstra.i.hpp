@@ -13,9 +13,9 @@ template <concepts::Graph G, concepts::Numeric WeightType>
 Dijkstra<G, WeightType>::Dijkstra(G &graph) : _graph{graph} {};
 
 template <concepts::Graph G, concepts::Numeric WeightType>
+template <concepts::Subscriptable<Id, WeightType> C>
 Dijkstra<G, WeightType>::DijkstraTree
-Dijkstra<G, WeightType>::visit(const Vertex &source,
-                               std::unordered_map<Id, WeightType> &weights) {
+Dijkstra<G, WeightType>::visit(const Vertex &source, C &&weights) {
   _tree.clear();
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 

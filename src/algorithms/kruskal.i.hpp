@@ -18,8 +18,9 @@ Id Kruskal<G, WeightType>::find_representative(Id id) {
 };
 
 template <concepts::Graph G, concepts::Numeric WeightType>
-Kruskal<G, WeightType>::KruskalTree Kruskal<G, WeightType>::visit(
-    std::unordered_map<Id, WeightType> &edges_weights) {
+template <concepts::Subscriptable<Id, WeightType> C>
+Kruskal<G, WeightType>::KruskalTree
+Kruskal<G, WeightType>::visit(C &&edges_weights) {
 
   _k_tree.clear();
   _clusters.clear();
