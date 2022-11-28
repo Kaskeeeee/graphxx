@@ -7,13 +7,10 @@
 
 namespace dijsktra_test {
 using namespace graph;
+using namespace graph::algorithms;
 
 TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   AdjacencyListGraph<GraphType::Directed> g{};
-
-  std::cout << "test" << std::endl;
-  algorithms::Dijkstra<AdjacencyListGraph<GraphType::Directed>, int> dijsktra{
-      g};
 
   std::unordered_map<Id, int> weights;
 
@@ -49,7 +46,7 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
     weights[a_to_b] = -1;
 
-    REQUIRE_THROWS(dijsktra.visit(a, weights));
+    REQUIRE_THROWS(dijkstra::visit(g, a, weights));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -59,14 +56,14 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
     weights[c_to_f] = 7;
 
-    auto tree = dijsktra.visit(a, weights);
+    auto tree = dijkstra::visit(g, a, weights);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
-    REQUIRE(tree[c].distance == 2);
+    REQUIRE(tree[c].distance == 1);
     REQUIRE(tree[d].distance == 2);
     REQUIRE(tree[e].distance == 2);
-    REQUIRE(tree[f].distance == 2);
+    REQUIRE(tree[f].distance == 3);
   }
 
   SECTION("finds the previous hop with all positive weights") {
@@ -74,21 +71,19 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
       weights[edge] = 1;
     }
 
-    auto tree = dijsktra.visit(a, weights);
+    auto tree = dijkstra::visit(g, a, weights);
 
-    REQUIRE(tree[a].previous_hop == INVALID_VERTEX);
-    REQUIRE(tree[b].previous_hop == a);
-    REQUIRE(tree[c].previous_hop == a);
-    REQUIRE(tree[d].previous_hop == c);
-    REQUIRE(tree[e].previous_hop == c);
-    REQUIRE(tree[f].previous_hop == c);
+    REQUIRE(tree[a].parent == INVALID_VERTEX);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == c);
+    REQUIRE(tree[e].parent == c);
+    REQUIRE(tree[f].parent == c);
   }
 
-  /*
-    auto a_to_a = g.add_edge(a, a); // 0->0
-    auto d_to_d = g.add_edge(d, d); // 3->3
-    auto e_to_c = g.add_edge(e, c); // 4->2
-    */
+  auto a_to_a = g.add_edge(a, a); // 0->0
+  auto d_to_d = g.add_edge(d, d); // 3->3
+  auto e_to_c = g.add_edge(e, c); // 4->2
 
   /*
    <->
@@ -99,41 +94,40 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
         --->E------>F
         <----
   */
-  /*
 
-   SECTION("finds the shortest path length with all positive weights, now with "
-           "cycles") {
-     for (auto edge : g.edges()) {
-       weights[edge] = 1;
-     }
+  SECTION("finds the shortest path length with all positive weights, now with "
+          "cycles") {
+    for (auto edge : g.edges()) {
+      weights[edge] = 1;
+    }
 
-     weights[c_to_f] = 7;
-     weights[d_to_d] = 0;
-     weights[e_to_c] = 0;
+    weights[c_to_f] = 7;
+    weights[d_to_d] = 0;
+    weights[e_to_c] = 0;
 
-     auto tree = dijsktra.visit(a, weights);
+    auto tree = dijkstra::visit(g, a, weights);
 
-     REQUIRE(tree[a].distance == 0);
-     REQUIRE(tree[b].distance == 1);
-     REQUIRE(tree[c].distance == 2);
-     REQUIRE(tree[d].distance == 2);
-     REQUIRE(tree[e].distance == 2);
-     REQUIRE(tree[f].distance == 2);
-   }
+    REQUIRE(tree[a].distance == 0);
+    REQUIRE(tree[b].distance == 1);
+    REQUIRE(tree[c].distance == 1);
+    REQUIRE(tree[d].distance == 2);
+    REQUIRE(tree[e].distance == 2);
+    REQUIRE(tree[f].distance == 3);
+  }
 
-   SECTION("finds the previous hop with all positive weights, now with cycles")
-   { for (auto edge : g.edges()) { weights[edge] = 1;
-     }
+  SECTION("finds the previous hop with all positive weights, now with cycles") {
+    for (auto edge : g.edges()) {
+      weights[edge] = 1;
+    }
 
-     auto tree = dijsktra.visit(a, weights);
+    auto tree = dijkstra::visit(g, a, weights);
 
-     REQUIRE(tree[a].previous_hop == INVALID_VERTEX);
-     REQUIRE(tree[b].previous_hop == a);
-     REQUIRE(tree[c].previous_hop == a);
-     REQUIRE(tree[d].previous_hop == c);
-     REQUIRE(tree[e].previous_hop == c);
-     REQUIRE(tree[f].previous_hop == c);
-   }
-   */
+    REQUIRE(tree[a].parent == INVALID_VERTEX);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == c);
+    REQUIRE(tree[e].parent == c);
+    REQUIRE(tree[f].parent == c);
+  }
 }
 } // namespace dijsktra_test

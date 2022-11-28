@@ -12,7 +12,7 @@ namespace graph::algorithms::dijkstra {
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Tree<WeightType> visit(const G &graph, Vertex source, C &&weights) {
+Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
   Tree<WeightType> tree;
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 
@@ -26,13 +26,13 @@ Tree<WeightType> visit(const G &graph, Vertex source, C &&weights) {
                       decltype(comparator)>
       queue{comparator};
 
-  tree[source] = {.distance = 0, .previous_hop = INVALID_VERTEX};
+  tree[source] = {.distance = 0, .parent = INVALID_VERTEX};
   queue.push(std::make_pair(source, 0));
 
   for (auto vertex : graph.vertices()) {
     if (vertex != source) {
       tree[vertex] =
-          Node{.distance = distance_upperbound, .previous_hop = INVALID_VERTEX};
+          Node{.distance = distance_upperbound, .parent = INVALID_VERTEX};
       queue.push(std::make_pair(vertex, distance_upperbound));
     }
   }
@@ -74,7 +74,7 @@ Tree<WeightType> visit(const G &graph, Vertex source, C &&weights) {
       if (!sum_will_overflow(u_distance, weights[edge]) &&
           alternative_distance < tree[edge.v].distance) {
         tree[edge.v].distance = alternative_distance;
-        tree[edge.v].previous_hop = u;
+        tree[edge.v].parent = u;
         queue.push(std::make_pair(edge.v, alternative_distance));
       }
     }

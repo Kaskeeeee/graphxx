@@ -17,7 +17,7 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Tree<WeightType> visit(const G &graph, Vertex source, C &&weights);
+Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights);
 
 } // namespace graph::algorithms::dijkstra
 
