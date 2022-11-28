@@ -48,9 +48,19 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);
     REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = dfs.visit(a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
   }
 
   auto a_to_a = g.add_edge(a, a); // 0->0
@@ -72,9 +82,19 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);
     REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = dfs.visit(a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
   }
 
   SECTION("check if visit with function work properly") {

@@ -170,15 +170,13 @@ endif(DOXYGEN_FOUND)
 # ###############################################################################
 add_executable(graph_test)
 
-# PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
 # PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/digraph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 
