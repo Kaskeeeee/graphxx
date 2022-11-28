@@ -1,19 +1,19 @@
 #include "algorithms/algorithms_base.hpp"
 #include "base.hpp"
-#include "bfs.hpp"
 #include "catch.hpp"
+#include "dfs.hpp"
 #include "list_graph.hpp"
 
 #include <algorithm>
 
-namespace bfs_test {
+namespace dfs_test {
 using namespace graph;
 using namespace algorithms;
 
-TEST_CASE("BFS Tree correct visited order", "[BFS]") {
+TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   AdjacencyListGraph<GraphType::Directed> g{};
 
-  graph::algorithms::BFS bfs{g};
+  graph::algorithms::DFS dfs{g};
 
   auto a = g.add_vertex(); // 0
   auto b = g.add_vertex(); // 1
@@ -36,31 +36,31 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = bfs.visit(a);
+    auto tree = dfs.visit(a);
 
     for (auto vertex : g.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
     }
   }
 
-  SECTION("check if all the distances from the source are correct") {
-    auto tree = bfs.visit(a);
-
-    REQUIRE(tree[a].distance == 0);
-    REQUIRE(tree[b].distance == 1);
-    REQUIRE(tree[c].distance == 1);
-    REQUIRE(tree[d].distance == 1);
-    REQUIRE(tree[e].distance == 2);
-  }
-
   SECTION("check if all parent node are correct") {
-    auto tree = bfs.visit(a);
+    auto tree = dfs.visit(a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);
     REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = dfs.visit(a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
   }
 
   auto a_to_a = g.add_edge(a, a); // 0->0
@@ -68,7 +68,6 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   auto c_to_b = g.add_edge(c, b); // 2->1
 
   /*
-   <->
     A--->B--->C
     |   <->   |
     |    <-----
@@ -78,31 +77,30 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
     ---->D--->E
   */
 
-  SECTION("check if all the distances from the source are correct, now with "
-          "cycles") {
-    auto tree = bfs.visit(a);
-
-    REQUIRE(tree[a].distance == 0);
-    REQUIRE(tree[b].distance == 1);
-    REQUIRE(tree[c].distance == 1);
-    REQUIRE(tree[d].distance == 1);
-    REQUIRE(tree[e].distance == 2);
-  }
-
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = bfs.visit(a);
+    auto tree = dfs.visit(a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);
     REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = dfs.visit(a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
   }
 
   SECTION("check if visit with function work properly") {
     std::vector<Vertex> vertices;
 
-    auto tree = bfs.visit(a, [&](Vertex v) { vertices.push_back(v); });
+    auto tree = dfs.visit(a, [&](Vertex v) { vertices.push_back(v); });
 
     for (auto vertex : g.vertices()) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -110,4 +108,4 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
     }
   }
 }
-} // namespace bfs_test
+} // namespace dfs_test

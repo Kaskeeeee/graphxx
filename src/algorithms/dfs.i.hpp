@@ -17,14 +17,14 @@ template <concepts::Graph G> void DFS<G>::init() {
 }
 
 template <concepts::Graph G> DFS<G>::DFSTree DFS<G>::visit(Vertex source) {
-  return visit(Vertex source, [](Vertex v) {});
+  return visit(source, [](Vertex) {});
 }
 
 template <concepts::Graph G>
 DFS<G>::DFSTree DFS<G>::visit(Vertex source, std::function<void(Vertex)> f) {
   init();
 
-  visit_rec(source);
+  visit_rec(source, f);
 
   return _dfs_tree;
 }
@@ -41,7 +41,7 @@ void DFS<G>::visit_rec(Vertex vertex, std::function<void(Vertex)> f) {
 
     if (_dfs_tree[adjacent].status == VertexStatus::READY) {
       _dfs_tree[adjacent].parent = vertex;
-      visit_rec({adjacent});
+      visit_rec(Vertex{adjacent}, f);
     }
   }
 
