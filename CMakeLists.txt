@@ -22,6 +22,7 @@ option(COVERAGE "Enable coverage output" OFF)
 set(COMPILER_FLAGS
         -Wall -Wextra -Wpedantic
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
+        $<$<BOOL:${COVERAGE}>:--coverage>
 )
 
 set(LINKER_FLAGS
@@ -109,7 +110,6 @@ target_include_directories(graph
 
 target_compile_options(graph
         PRIVATE ${COMPILER_FLAGS}
-        PRIVATE $<$<BOOL:${COVERAGE}>:--coverage>
 )
 
 target_link_options(graph
@@ -129,7 +129,7 @@ if(COVERAGE)
                 COMMAND gcovr
                 --gcov-executable gcov-${GCC_MAJOR}
                 --root ${PROJECT_SOURCE_DIR}
-                -v
+                -e ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
                 --html --html-details coverage.html
                 COMMENT "Generating Code Coverage"
         )
