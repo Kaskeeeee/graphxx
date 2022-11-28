@@ -51,6 +51,8 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/bellman_ford.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/tarjan.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/dijkstra.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
 )
 
 # src
@@ -67,6 +69,8 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/dfs.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/bellman_ford.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/tarjan.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/dijkstra.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
 )
 
 # ###############################################################################
@@ -115,7 +119,7 @@ target_link_options(graph
 # set_target_properties(graph PROPERTIES LINKER_LANGUAGE CXX)
 
 # ###############################################################################
-# COVERAGE da testare
+# COVERAGE da sistemare
 # ###############################################################################
 if(COVERAGE)
         # GET GCC MAJOR VERSION
@@ -132,14 +136,14 @@ if(COVERAGE)
 endif()
 
 # ###############################################################################
-# TIDY da testare
+# TIDY
 # ###############################################################################
 add_custom_target(tidy
         COMMAND clang-tidy ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} -checks=*
 )
 
 # ###############################################################################
-# DOCUMENTATION da testare
+# DOCUMENTATION
 # ###############################################################################
 find_package(Doxygen)
 
@@ -166,10 +170,15 @@ endif(DOXYGEN_FOUND)
 # ###############################################################################
 add_executable(graph_test)
 
+# PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
+# PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
+# PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/digraph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 
@@ -207,11 +216,11 @@ add_test(NAME digraphTest
         COMMAND graph_test
 )
 
-add_test(NAME valgrindTest
-        COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
-        --track-origins=yes
-        ${CMAKE_BINARY_DIR}/graph_test
-)
+# add_test(NAME valgrindTest
+# COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
+# --track-origins=yes
+# ${CMAKE_BINARY_DIR}/graph_test
+# )
 
 # ###############################################################################
 # CLEAN
