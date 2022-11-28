@@ -21,10 +21,10 @@ public:
   Edge add_edge(const Vertex &, const Vertex &);
   void remove_edge(const Edge &);
 
-  auto vertices();
-  auto edges();
-  auto out_edges(const Vertex &);
-  auto in_edges(const Vertex &);
+  auto vertices() const;
+  auto edges() const;
+  auto out_edges(const Vertex &) const;
+  auto in_edges(const Vertex &) const;
 
 private:
   AdjacencyMatrix _adj;

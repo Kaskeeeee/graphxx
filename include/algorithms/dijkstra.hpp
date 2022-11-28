@@ -1,29 +1,24 @@
 #pragma once
 #include "base.hpp"
 #include "graph_concepts.hpp"
+#include "utils.hpp"
 
 #include <unordered_map>
 
-namespace graph::algorithms {
+namespace graph::algorithms::dijkstra {
 
-template <concepts::Graph G, concepts::Numeric WeightType> class Dijkstra {
-  struct DijkstraNode {
-    WeightType distance;
-    Id previous_hop;
-  };
-
-  using DijkstraTree = std::unordered_map<Id, DijkstraNode>;
-
-public:
-  Dijkstra(G &graph);
-
-  template <concepts::Subscriptable<Id, WeightType> C>
-  DijkstraTree visit(const Vertex &source, C &&weights);
-
-private:
-  G &_graph;
-  DijkstraTree _tree;
+template <concepts::Numeric WeightType> struct Node {
+  WeightType distance;
+  Id parent;
 };
-} // namespace graph::algorithms
+
+template <concepts::Numeric WeightType>
+using Tree = std::unordered_map<Id, Node<WeightType>>;
+
+template <concepts::Graph G, concepts::Subscriptable<Id> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+Tree<WeightType> visit(const G &graph, Vertex source, C &&weights);
+
+} // namespace graph::algorithms::dijkstra
 
 #include "algorithms/dijkstra.i.hpp"

@@ -8,6 +8,7 @@
 namespace graph::algorithms {
 
 template <concepts::Graph G> class BFS {
+public:
   struct BFSVertex {
     VertexStatus status;
     int distance = -1;
@@ -16,7 +17,6 @@ template <concepts::Graph G> class BFS {
 
   using BFSTree = std::unordered_map<Id, BFSVertex>;
 
-public:
   BFS(G &g);
 
   BFSTree visit(Vertex source);

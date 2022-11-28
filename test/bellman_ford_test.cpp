@@ -1,6 +1,7 @@
 #include "base.hpp"
 #include "bellman_ford.hpp"
 #include "catch.hpp"
+#include "dijkstra.hpp"
 #include "list_graph.hpp"
 
 #include <iostream>
@@ -8,12 +9,10 @@
 
 namespace bellman_ford_test {
 using namespace graph;
+using namespace graph::algorithms;
 
 TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   AdjacencyListGraph<GraphType::Directed> g{};
-
-  algorithms::BellmanFord<AdjacencyListGraph<GraphType::Directed>, int>
-      bellman_ford{g};
 
   std::unordered_map<Id, int> weights;
 
@@ -44,7 +43,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
 
     weights[e_to_c] = -10;
 
-    REQUIRE_THROWS(bellman_ford.visit(a, weights));
+    REQUIRE_THROWS(bellman_ford::visit(g, a, weights));
   }
 
   SECTION("find the shortest path length with all positive weights") {
@@ -52,7 +51,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
       weights[edge] = 1;
     }
 
-    auto tree = bellman_ford.visit(a, weights);
+    auto tree = bellman_ford::visit(g, a, weights);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -66,21 +65,14 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
       weights[edge] = 1;
     }
 
-    auto tree = bellman_ford.visit(a, weights);
+    auto tree = bellman_ford::visit(g, a, weights);
 
-    REQUIRE(tree[a].previous_hop == INVALID_VERTEX);
-    REQUIRE(tree[b].previous_hop == a);
-    REQUIRE(tree[c].previous_hop == b);
-    REQUIRE(tree[d].previous_hop == a);
-    REQUIRE(tree[e].previous_hop == d);
+    REQUIRE(tree[a].parent == INVALID_VERTEX);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == b);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
   }
-
-  /*
-    A--->B--->  C
-    |    |     ^ |
-    |    v   1 | v -1
-    ---->D--->  E
-  */
 
   SECTION("find the shortest path length with one negative weight") {
     for (auto edge : g.edges()) {
@@ -89,7 +81,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
 
     weights[d_to_e] = -1;
 
-    auto tree = bellman_ford.visit(a, weights);
+    auto tree = bellman_ford::visit(g, a, weights);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -105,13 +97,13 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
 
     weights[d_to_e] = -1;
 
-    auto tree = bellman_ford.visit(a, weights);
+    auto tree = bellman_ford::visit(g, a, weights);
 
-    REQUIRE(tree[a].previous_hop == INVALID_VERTEX);
-    REQUIRE(tree[b].previous_hop == a);
-    REQUIRE(tree[c].previous_hop == e);
-    REQUIRE(tree[d].previous_hop == a);
-    REQUIRE(tree[e].previous_hop == d);
+    REQUIRE(tree[a].parent == INVALID_VERTEX);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == e);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
   }
 }
 } // namespace bellman_ford_test

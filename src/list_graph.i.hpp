@@ -84,23 +84,25 @@ template <GraphType T> void AdjacencyListGraph<T>::remove_edge(const Edge &e) {
   _edge_map.erase(e);
 };
 
-template <GraphType T> auto AdjacencyListGraph<T>::vertices() {
+template <GraphType T> auto AdjacencyListGraph<T>::vertices() const {
   return _adj | std::views::transform([](std::pair<Id, EdgeList> pair) {
            return Vertex(pair.first);
          });
 }
 
-template <GraphType T> auto AdjacencyListGraph<T>::edges() {
+template <GraphType T> auto AdjacencyListGraph<T>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 }
 
-template <GraphType T> auto AdjacencyListGraph<T>::out_edges(const Vertex &v) {
+template <GraphType T>
+auto AdjacencyListGraph<T>::out_edges(const Vertex &v) const {
   return _adj.at(v) |
-         std::views::transform([&](Id id) { return _edge_map[id]; });
+         std::views::transform([&](Id id) { return _edge_map.at(id); });
 }
 
-template <GraphType T> auto AdjacencyListGraph<T>::in_edges(const Vertex &v) {
+template <GraphType T>
+auto AdjacencyListGraph<T>::in_edges(const Vertex &v) const {
   return _edge_map | std::views::filter([&](std::pair<Id, Edge> pair) {
            return pair.second.v == v;
          }) |

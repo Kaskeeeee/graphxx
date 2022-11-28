@@ -8,15 +8,12 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graph::algorithms {
-template <concepts::Graph G, concepts::Numeric WeightType>
-Dijkstra<G, WeightType>::Dijkstra(G &graph) : _graph{graph} {};
+namespace graph::algorithms::dijkstra {
 
-template <concepts::Graph G, concepts::Numeric WeightType>
-template <concepts::Subscriptable<Id, WeightType> C>
-Dijkstra<G, WeightType>::DijkstraTree
-Dijkstra<G, WeightType>::visit(const Vertex &source, C &&weights) {
-  _tree.clear();
+template <concepts::Graph G, concepts::Subscriptable<Id> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+Tree<WeightType> visit(const G &graph, Vertex source, C &&weights) {
+  Tree<WeightType> tree;
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 
   using VertexDistancePair = std::pair<Vertex, WeightType>;
@@ -29,13 +26,13 @@ Dijkstra<G, WeightType>::visit(const Vertex &source, C &&weights) {
                       decltype(comparator)>
       queue{comparator};
 
-  _tree[source] = {.distance = 0, .previous_hop = INVALID_VERTEX};
+  tree[source] = {.distance = 0, .previous_hop = INVALID_VERTEX};
   queue.push(std::make_pair(source, 0));
 
-  for (auto vertex : _graph.vertices()) {
+  for (auto vertex : graph.vertices()) {
     if (vertex != source) {
-      _tree[vertex] = DijkstraNode{.distance = distance_upperbound,
-                                   .previous_hop = INVALID_VERTEX};
+      tree[vertex] =
+          Node{.distance = distance_upperbound, .previous_hop = INVALID_VERTEX};
       queue.push(std::make_pair(vertex, distance_upperbound));
     }
   }
@@ -45,18 +42,29 @@ Dijkstra<G, WeightType>::visit(const Vertex &source, C &&weights) {
   // without pushing a new element
   while (!queue.empty()) {
     // extract node and distance of min distance node
-    VertexDistancePair top_pair = queue.top();
+    auto next_pair = queue.top();
 
     // if the distance is not the one up to date, keep on popping elements
-    while (_tree[top_pair.first].distance != top_pair.second) {
+    // WARNING: to avoid undefined behavior we pop from the queue only if
+    // it still has elements inside, otherwise there may be an infinite loop
+    for (size_t i = 0; i < queue.size() - 1; ++i) {
+      if (tree[next_pair.first].distance == next_pair.second) {
+        break;
+      }
+
       queue.pop();
-      top_pair = queue.top();
+      next_pair = queue.top();
     }
+
     queue.pop();
 
-    auto [u, u_distance] = top_pair;
+    [[unlikely]] if (tree[next_pair.first].distance != next_pair.second) {
+      return tree;
+    }
 
-    for (auto edge : _graph.out_edges(u)) {
+    auto [u, u_distance] = next_pair;
+
+    for (auto edge : graph.out_edges(u)) {
       if (weights[edge] < 0) {
         throw exceptions::InvariantViolationException(
             "negative edge weight found");
@@ -64,15 +72,15 @@ Dijkstra<G, WeightType>::visit(const Vertex &source, C &&weights) {
 
       auto alternative_distance = u_distance + weights[edge];
       if (!sum_will_overflow(u_distance, weights[edge]) &&
-          alternative_distance < _tree[edge.v].distance) {
-        _tree[edge.v].distance = alternative_distance;
-        _tree[edge.v].previous_hop = u;
+          alternative_distance < tree[edge.v].distance) {
+        tree[edge.v].distance = alternative_distance;
+        tree[edge.v].previous_hop = u;
         queue.push(std::make_pair(edge.v, alternative_distance));
       }
     }
   }
 
-  return _tree;
+  return tree;
 }
 
-} // namespace graph::algorithms
+} // namespace graph::algorithms::dijkstra

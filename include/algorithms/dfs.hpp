@@ -8,6 +8,7 @@
 namespace graph::algorithms {
 
 template <concepts::Graph G> class DFS {
+public:
   struct DFSVertex {
     VertexStatus status;
     int parent = -1;
@@ -17,7 +18,6 @@ template <concepts::Graph G> class DFS {
 
   using DFSTree = std::unordered_map<Id, DFSVertex>;
 
-public:
   DFS(G &g);
 
   DFSTree visit(Vertex source);

@@ -1,26 +1,23 @@
 #pragma once
-
-#include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 #include <unordered_map>
 
-namespace graph::algorithms::bellman_ford {
+namespace graph::algorithms::floyd_warshall {
 
 template <concepts::Numeric WeightType> struct Node {
   WeightType distance;
   Id parent;
-
-  Node();
 };
 
 template <concepts::Numeric WeightType>
-using Tree = std::unordered_map<Id, Node<WeightType>>;
+using Map = std::unordered_map < Id,
+      std::unordered_map<Id, Node<WeightType>>;
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Tree<WeightType> visit(const G &graph, const Vertex &v, C &&edges_weights);
+Map<WeightType> visit(G &graph, C &&weights);
 
-} // namespace graph::algorithms::bellman_ford
+} // namespace graph::algorithms::floyd_warshall
 
-#include "algorithms/bellman_ford.i.hpp"
+#include "algorithms/floyd_warshall.i.hpp"

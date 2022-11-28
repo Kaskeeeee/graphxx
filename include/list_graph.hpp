@@ -23,10 +23,10 @@ public:
   Edge add_edge(const Vertex &u, const Vertex &v);
   void remove_edge(const Edge &e);
 
-  auto vertices();
-  auto edges();
-  auto out_edges(const Vertex &v);
-  auto in_edges(const Vertex &v);
+  auto vertices() const;
+  auto edges() const;
+  auto out_edges(const Vertex &v) const;
+  auto in_edges(const Vertex &v) const;
 
 private:
   AdjacencyList _adj;

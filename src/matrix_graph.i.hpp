@@ -73,26 +73,27 @@ void AdjacencyMatrixGraph<T>::remove_edge(const Edge &e) {
   }
 }
 
-template <GraphType T> auto AdjacencyMatrixGraph<T>::vertices() {
+template <GraphType T> auto AdjacencyMatrixGraph<T>::vertices() const {
   return _adj | std::views::transform(
                     [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
                       return Vertex{pair.first};
                     });
 }
 
-template <GraphType T> auto AdjacencyMatrixGraph<T>::edges() {
+template <GraphType T> auto AdjacencyMatrixGraph<T>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 };
 
 template <GraphType T>
-auto AdjacencyMatrixGraph<T>::out_edges(const Vertex &v) {
+auto AdjacencyMatrixGraph<T>::out_edges(const Vertex &v) const {
   return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
            return _edge_map[pair.second];
          });
 }
 
-template <GraphType T> auto AdjacencyMatrixGraph<T>::in_edges(const Vertex &v) {
+template <GraphType T>
+auto AdjacencyMatrixGraph<T>::in_edges(const Vertex &v) const {
   return _adj |
          std::views::filter(
              [&](std::pair<Id, std::unordered_map<Id, Id>> pair) {
