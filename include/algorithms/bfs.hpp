@@ -5,30 +5,19 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph::algorithms {
-
-template <concepts::Graph G> class BFS {
-public:
-  struct BFSVertex {
-    VertexStatus status;
-    int distance = -1;
-    int parent = -1;
-  };
-
-  using BFSTree = std::unordered_map<Id, BFSVertex>;
-
-  BFS(G &g);
-
-  BFSTree visit(Vertex source);
-  BFSTree visit(Vertex source, std::function<void(Vertex)> f);
-
-private:
-  void init();
-
-  G &_graph;
-  BFSTree _bfs_tree;
+namespace graph::algorithms::bfs {
+struct BFSVertex {
+  VertexStatus status;
+  int distance = -1;
+  int parent = -1;
 };
 
-} // namespace graph::algorithms
+using BFSTree = std::unordered_map<Id, BFSVertex>;
+
+template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source);
+
+template <concepts::Graph G>
+BFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f);
+} // namespace graph::algorithms::bfs
 
 #include "algorithms/bfs.i.hpp"

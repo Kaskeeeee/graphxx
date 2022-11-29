@@ -4,49 +4,44 @@
 #include <functional>
 #include <queue>
 
-namespace graph::algorithms {
+namespace graph::algorithms::dfs {
 
-template <concepts::Graph G> DFS<G>::DFS(G &g) : _graph{g} {};
+template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source) {
+  return visit(graph, source, [](Vertex) {});
+}
 
-template <concepts::Graph G> void DFS<G>::init() {
-  _time = 0;
-  _dfs_tree.clear();
-  for (Vertex vertex : _graph.vertices()) {
-    _dfs_tree[vertex] = DFSVertex{VertexStatus::READY};
+template <concepts::Graph G>
+DFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f) {
+  DFSTree tree;
+  int time = 0;
+  for (Vertex vertex : graph.vertices()) {
+    tree[vertex] = DFSVertex{VertexStatus::READY};
   }
-}
 
-template <concepts::Graph G> DFS<G>::DFSTree DFS<G>::visit(Vertex source) {
-  return visit(source, [](Vertex) {});
-}
+  visit_rec(graph, source, f, time, tree);
 
-template <concepts::Graph G>
-DFS<G>::DFSTree DFS<G>::visit(Vertex source, std::function<void(Vertex)> f) {
-  init();
-
-  visit_rec(source, f);
-
-  return _dfs_tree;
+  return tree;
 }
 
 template <concepts::Graph G>
-void DFS<G>::visit_rec(Vertex vertex, std::function<void(Vertex)> f) {
+void visit_rec(const G &graph, Vertex vertex, std::function<void(Vertex)> f,
+               int time, DFSTree &tree) {
   f(vertex);
 
-  _dfs_tree[vertex].status = VertexStatus::WAITING;
-  _dfs_tree[vertex].discovery_time = ++_time;
+  tree[vertex].status = VertexStatus::WAITING;
+  tree[vertex].discovery_time = ++time;
 
-  for (Edge out_edge : _graph.out_edges(vertex)) {
+  for (Edge out_edge : graph.out_edges(vertex)) {
     Id adjacent = out_edge.v;
 
-    if (_dfs_tree[adjacent].status == VertexStatus::READY) {
-      _dfs_tree[adjacent].parent = vertex;
-      visit_rec(Vertex{adjacent}, f);
+    if (tree[adjacent].status == VertexStatus::READY) {
+      tree[adjacent].parent = vertex;
+      visit_rec(graph, Vertex{adjacent}, f, time, tree);
     }
   }
 
-  _dfs_tree[vertex].status = VertexStatus::PROCESSED;
-  _dfs_tree[vertex].finishing_time = ++_time;
+  tree[vertex].status = VertexStatus::PROCESSED;
+  tree[vertex].finishing_time = ++time;
 }
 
-} // namespace graph::algorithms
+} // namespace graph::algorithms::dfs

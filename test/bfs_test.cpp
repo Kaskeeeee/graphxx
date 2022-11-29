@@ -12,9 +12,6 @@ using namespace algorithms;
 
 TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   AdjacencyListGraph<GraphType::Directed> g{};
-
-  graph::algorithms::BFS bfs{g};
-
   auto a = g.add_vertex(); // 0
   auto b = g.add_vertex(); // 1
   auto c = g.add_vertex(); // 2
@@ -36,7 +33,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = bfs.visit(a);
+    auto tree = graph::algorithms::bfs::visit(g, a);
 
     for (auto vertex : g.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -44,7 +41,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = bfs.visit(a);
+    auto tree = graph::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -54,7 +51,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = bfs.visit(a);
+    auto tree = graph::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -80,7 +77,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
 
   SECTION("check if all the distances from the source are correct, now with "
           "cycles") {
-    auto tree = bfs.visit(a);
+    auto tree = graph::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -90,7 +87,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = bfs.visit(a);
+    auto tree = graph::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -102,7 +99,8 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   SECTION("check if visit with function work properly") {
     std::vector<Vertex> vertices;
 
-    auto tree = bfs.visit(a, [&](Vertex v) { vertices.push_back(v); });
+    auto tree = graph::algorithms::bfs::visit(
+        g, a, [&](Vertex v) { vertices.push_back(v); });
 
     for (auto vertex : g.vertices()) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=

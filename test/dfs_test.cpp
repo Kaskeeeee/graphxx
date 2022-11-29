@@ -12,9 +12,6 @@ using namespace algorithms;
 
 TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   AdjacencyListGraph<GraphType::Directed> g{};
-
-  graph::algorithms::DFS dfs{g};
-
   auto a = g.add_vertex(); // 0
   auto b = g.add_vertex(); // 1
   auto c = g.add_vertex(); // 2
@@ -36,7 +33,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = dfs.visit(a);
+    auto tree = graph::algorithms::dfs::visit(g, a);
 
     for (auto vertex : g.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -44,7 +41,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = dfs.visit(a);
+    auto tree = graph::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -54,7 +51,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = dfs.visit(a);
+    auto tree = graph::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -78,7 +75,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = dfs.visit(a);
+    auto tree = graph::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -88,7 +85,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = dfs.visit(a);
+    auto tree = graph::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -100,7 +97,8 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   SECTION("check if visit with function work properly") {
     std::vector<Vertex> vertices;
 
-    auto tree = dfs.visit(a, [&](Vertex v) { vertices.push_back(v); });
+    auto tree = graph::algorithms::dfs::visit(
+        g, a, [&](Vertex v) { vertices.push_back(v); });
 
     for (auto vertex : g.vertices()) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
