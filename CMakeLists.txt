@@ -56,6 +56,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/dijkstra.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
 )
 
 # src
@@ -75,6 +76,7 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/dijkstra.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/a_star.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/johnson.i.hpp
 )
 
 # ###############################################################################
@@ -166,6 +168,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 

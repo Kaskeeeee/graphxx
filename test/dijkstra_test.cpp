@@ -3,8 +3,6 @@
 #include "dijkstra.hpp"
 #include "list_graph.hpp"
 
-#include <iostream>
-
 namespace dijsktra_test {
 using namespace graph;
 using namespace graph::algorithms;
