@@ -25,7 +25,7 @@ DFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f) {
 
 template <concepts::Graph G>
 void visit_rec(const G &graph, Vertex vertex, std::function<void(Vertex)> f,
-               int time, DFSTree &tree) {
+               int &time, DFSTree &tree) {
   f(vertex);
 
   tree[vertex].status = VertexStatus::WAITING;

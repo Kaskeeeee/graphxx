@@ -6,13 +6,15 @@
 
 namespace graph {
 
-template <GraphType T> class AdjacencyMatrixGraph {
+template <typename GraphType> class AdjacencyMatrixGraph {
 protected:
   using AdjacencyMap = std::unordered_map<Id, Id>;
   using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
   using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
+  using Tag = GraphType;
+  
   AdjacencyMatrixGraph();
 
   Vertex add_vertex();

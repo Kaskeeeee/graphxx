@@ -5,12 +5,12 @@
 #include <ranges>
 
 namespace graph {
-template <GraphType T>
-AdjacencyMatrixGraph<T>::AdjacencyMatrixGraph()
+template <typename GraphType>
+AdjacencyMatrixGraph<GraphType>::AdjacencyMatrixGraph()
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
-template <GraphType T> Vertex AdjacencyMatrixGraph<T>::add_vertex() {
+template <typename GraphType> Vertex AdjacencyMatrixGraph<GraphType>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -18,8 +18,8 @@ template <GraphType T> Vertex AdjacencyMatrixGraph<T>::add_vertex() {
   return v;
 };
 
-template <GraphType T>
-Edge AdjacencyMatrixGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
+template <typename GraphType>
+Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -29,7 +29,7 @@ Edge AdjacencyMatrixGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
   Edge e{id, u, v};
   _adj[u][v] = id;
 
-  if constexpr (T == GraphType::Undirected) {
+  if constexpr (std::is_same_v<GraphType, UndirectedGraph>) {
     _adj[v][u] = id;
   }
 
@@ -37,8 +37,8 @@ Edge AdjacencyMatrixGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
   return e;
 }
 
-template <GraphType T>
-void AdjacencyMatrixGraph<T>::remove_vertex(const Vertex &v) {
+template <typename GraphType>
+void AdjacencyMatrixGraph<GraphType>::remove_vertex(const Vertex &v) {
   if (!_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -59,8 +59,8 @@ void AdjacencyMatrixGraph<T>::remove_vertex(const Vertex &v) {
   }
 }
 
-template <GraphType T>
-void AdjacencyMatrixGraph<T>::remove_edge(const Edge &e) {
+template <typename GraphType>
+void AdjacencyMatrixGraph<GraphType>::remove_edge(const Edge &e) {
   if (!_edge_map.contains(e)) {
     throw exceptions::NoSuchEdgeException();
   }
@@ -68,32 +68,32 @@ void AdjacencyMatrixGraph<T>::remove_edge(const Edge &e) {
   _edge_map.erase(e);
   _adj.at(e.u).erase(e.v);
 
-  if constexpr (T == GraphType::Undirected) {
+  if constexpr (std::is_same_v<GraphType, UndirectedGraph>) {
     _adj.at(e.v).erase(e.u);
   }
 }
 
-template <GraphType T> auto AdjacencyMatrixGraph<T>::vertices() const {
+template <typename GraphType> auto AdjacencyMatrixGraph<GraphType>::vertices() const {
   return _adj | std::views::transform(
                     [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
                       return Vertex{pair.first};
                     });
 }
 
-template <GraphType T> auto AdjacencyMatrixGraph<T>::edges() const {
+template <typename GraphType> auto AdjacencyMatrixGraph<GraphType>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 };
 
-template <GraphType T>
-auto AdjacencyMatrixGraph<T>::out_edges(const Vertex &v) const {
+template <typename GraphType>
+auto AdjacencyMatrixGraph<GraphType>::out_edges(const Vertex &v) const {
   return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
            return _edge_map[pair.second];
          });
 }
 
-template <GraphType T>
-auto AdjacencyMatrixGraph<T>::in_edges(const Vertex &v) const {
+template <typename GraphType>
+auto AdjacencyMatrixGraph<GraphType>::in_edges(const Vertex &v) const {
   return _adj |
          std::views::filter(
              [&](std::pair<Id, std::unordered_map<Id, Id>> pair) {

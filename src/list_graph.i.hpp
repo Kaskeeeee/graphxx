@@ -4,16 +4,18 @@
 #include "id_manager.hpp"
 #include "list_graph.hpp"
 #include <cassert>
+#include <type_traits>
 
 #include <ranges>
 
 namespace graph {
-template <GraphType T>
-AdjacencyListGraph<T>::AdjacencyListGraph()
+template <typename GraphType>
+AdjacencyListGraph<GraphType>::AdjacencyListGraph()
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
-template <GraphType T> Vertex AdjacencyListGraph<T>::add_vertex() {
+template <typename GraphType>
+Vertex AdjacencyListGraph<GraphType>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -21,8 +23,8 @@ template <GraphType T> Vertex AdjacencyListGraph<T>::add_vertex() {
   return v;
 };
 
-template <GraphType T>
-Edge AdjacencyListGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
+template <typename GraphType>
+Edge AdjacencyListGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -30,7 +32,7 @@ Edge AdjacencyListGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
   auto id = _edge_id_manager.allocate();
   Edge e{id, u, v};
 
-  if constexpr (T == GraphType::Undirected) {
+  if constexpr (std::is_same_v<GraphType, UndirectedGraph>) {
     _adj[v].push_back(e);
   }
 
@@ -39,8 +41,8 @@ Edge AdjacencyListGraph<T>::add_edge(const Vertex &u, const Vertex &v) {
   return e;
 };
 
-template <GraphType T>
-void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
+template <typename GraphType>
+void AdjacencyListGraph<GraphType>::remove_vertex(const Vertex &v) {
   if (!_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -61,7 +63,7 @@ void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
       _adj.at(edge.u).remove(edge);
     }
 
-    if constexpr (T == GraphType::Undirected) {
+    if constexpr (std::is_same_v<GraphType, UndirectedGraph>) {
       if (edge.u == v && edge.v != v) {
         _adj.at(edge.v).remove(edge);
       }
@@ -69,7 +71,8 @@ void AdjacencyListGraph<T>::remove_vertex(const Vertex &v) {
   }
 };
 
-template <GraphType T> void AdjacencyListGraph<T>::remove_edge(const Edge &e) {
+template <typename GraphType>
+void AdjacencyListGraph<GraphType>::remove_edge(const Edge &e) {
   if (!_edge_map.contains(e)) {
     throw exceptions::NoSuchEdgeException();
   }
@@ -77,32 +80,34 @@ template <GraphType T> void AdjacencyListGraph<T>::remove_edge(const Edge &e) {
   _edge_id_manager.free(e);
   _adj.at(e.u).remove(e);
 
-  if constexpr (T == GraphType::Undirected) {
+  if constexpr (std::is_same_v<GraphType, UndirectedGraph>) {
     _adj.at(e.v).remove(e);
   }
 
   _edge_map.erase(e);
 };
 
-template <GraphType T> auto AdjacencyListGraph<T>::vertices() const {
+template <typename GraphType>
+auto AdjacencyListGraph<GraphType>::vertices() const {
   return _adj | std::views::transform([](std::pair<Id, EdgeList> pair) {
            return Vertex(pair.first);
          });
 }
 
-template <GraphType T> auto AdjacencyListGraph<T>::edges() const {
+template <typename GraphType>
+auto AdjacencyListGraph<GraphType>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 }
 
-template <GraphType T>
-auto AdjacencyListGraph<T>::out_edges(const Vertex &v) const {
+template <typename GraphType>
+auto AdjacencyListGraph<GraphType>::out_edges(const Vertex &v) const {
   return _adj.at(v) |
          std::views::transform([&](Id id) { return _edge_map.at(id); });
 }
 
-template <GraphType T>
-auto AdjacencyListGraph<T>::in_edges(const Vertex &v) const {
+template <typename GraphType>
+auto AdjacencyListGraph<GraphType>::in_edges(const Vertex &v) const {
   return _edge_map | std::views::filter([&](std::pair<Id, Edge> pair) {
            return pair.second.v == v;
          }) |

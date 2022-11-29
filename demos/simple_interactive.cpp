@@ -5,7 +5,7 @@
 using namespace graph;
 using namespace std;
 
-void printGraph(AdjacencyListGraph<GraphType::Directed> &graph) {
+void printGraph(AdjacencyListGraph<DirectedGraph> &graph) {
   for (auto vertex : graph.vertices()) {
     cout << "V[" << vertex.id << "]: ";
     for (auto edge : graph.out_edges(vertex)) {
@@ -16,7 +16,7 @@ void printGraph(AdjacencyListGraph<GraphType::Directed> &graph) {
 }
 
 int main() {
-  AdjacencyListGraph<GraphType::Directed> a;
+  AdjacencyListGraph<DirectedGraph> a;
 
   while (true) {
     int opt = -1;

@@ -54,7 +54,13 @@ template <typename Container, typename Key>
 concept Subscriptable = requires(Container c, Key k) { c[k]; };
 
 template <typename T>
+concept Taggable = requires(T v) { 
+  typename T::Tag;
+  requires std::is_same_v<typename T::Tag, DirectedGraph> || std::is_same_v<typename T::Tag, UndirectedGraph>;
+};
+
+template <typename T>
 concept Graph = VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
-                InEdgesIterable<T> && GraphEditable<T>;
+                InEdgesIterable<T> && GraphEditable<T> && Taggable<T>;
 
 } // namespace graph::concepts

@@ -8,13 +8,15 @@
 
 namespace graph {
 
-template <GraphType T> class AdjacencyListGraph {
+template <typename GraphType> class AdjacencyListGraph {
 protected:
   using EdgeList = std::list<Id>;
   using AdjacencyList = std::unordered_map<Id, EdgeList>;
   using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
+  using Tag = GraphType;
+  
   AdjacencyListGraph();
 
   Vertex add_vertex();

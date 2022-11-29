@@ -48,11 +48,9 @@ struct Edge : Identifiable {
   Vertex u, v;
 };
 
-/// Enum used to distinguish if the graph is directed or undirected
-enum class GraphType {
-  Directed = 0,
-  Undirected = 1,
-};
+/// Types used to distinguish if the graph is directed or undirected
+struct DirectedGraph{};
+struct UndirectedGraph{};
 
 constexpr Id MIN_VALID_ID = 0;
 constexpr Id MAX_VALID_ID = std::numeric_limits<Id>::max();

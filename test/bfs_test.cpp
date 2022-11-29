@@ -11,7 +11,7 @@ using namespace graph;
 using namespace algorithms;
 
 TEST_CASE("BFS Tree correct visited order", "[BFS]") {
-  AdjacencyListGraph<GraphType::Directed> g{};
+  AdjacencyListGraph<DirectedGraph> g{};
   auto a = g.add_vertex(); // 0
   auto b = g.add_vertex(); // 1
   auto c = g.add_vertex(); // 2

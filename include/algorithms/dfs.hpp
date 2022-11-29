@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph::algorithms::bfs {
+namespace graph::algorithms::dfs {
 struct DFSVertex {
   VertexStatus status;
   int parent = -1;
@@ -19,6 +19,6 @@ template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source);
 
 template <concepts::Graph G>
 DFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f);
-} // namespace graph::algorithms::bfs
+} // namespace graph::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"

@@ -9,7 +9,7 @@ namespace digraph_test {
 using namespace graph;
 
 TEST_CASE("digraph is built correctly", "[digraph]") {
-  AdjacencyListGraph<GraphType::Directed> g;
+  AdjacencyListGraph<DirectedGraph> g;
 
   SECTION("empty graph has no vertices or edges") {
     auto vertices = g.vertices();
@@ -60,7 +60,7 @@ TEST_CASE("digraph is built correctly", "[digraph]") {
 }
 
 TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
-  AdjacencyListGraph<GraphType::Directed> g;
+  AdjacencyListGraph<DirectedGraph> g;
 
   SECTION("removing a vertex will remove also the connected edges") {
     Vertex u = g.add_vertex();
