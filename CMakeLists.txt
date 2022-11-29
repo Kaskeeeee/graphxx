@@ -19,6 +19,7 @@ OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
 # Compile with coverage support
 option(COVERAGE "Enable coverage output" OFF)
 
+# -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
         -Wall -Wextra -Wpedantic
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
@@ -54,6 +55,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/tarjan.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/dijkstra.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
 )
 
 # src
@@ -72,6 +74,7 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/tarjan.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/dijkstra.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/a_star.i.hpp
 )
 
 # ###############################################################################
@@ -79,21 +82,6 @@ set(SRC_ALG
 # ###############################################################################
 add_library(graph OBJECT)
 
-# target_sources(graph
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/base.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/graph_concepts.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/list_graph.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/matrix_graph.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/id_manager.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/algorithms_base.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/bfs.hpp
-# PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/src/id_manager.cpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/src/list_graph.i.hpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/src/matrix_graph.i.hpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms/bfs.i.hpp
-# PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms/dfs.i.hpp
-# )
 target_sources(graph
         PUBLIC ${INC}
         PUBLIC ${INC_ALG}
@@ -119,7 +107,7 @@ target_link_options(graph
 # set_target_properties(graph PROPERTIES LINKER_LANGUAGE CXX)
 
 # ###############################################################################
-# COVERAGE da sistemare
+# COVERAGE
 # ###############################################################################
 if(COVERAGE)
         # GET GCC MAJOR VERSION
@@ -194,6 +182,7 @@ target_link_libraries(graph_test
 )
 
 target_compile_options(graph_test
+        PRIVATE -Wno-unused-but-set-variable
         PRIVATE ${COMPILER_FLAGS}
 )
 
@@ -242,6 +231,8 @@ add_custom_target(clean_all
 # <generator> test              execute tests
 # <generator> install           install executables
 # <generator> clean_all         delete /doc and /bin
+# <generator> coverage          generate code coverage
+# <genereator> doc              generate documentation
 
 # COMPILE ON MACOS
 # cmake -DCMAKE_CXX_COMPILER=/usr/local/bin/g++-12 ..

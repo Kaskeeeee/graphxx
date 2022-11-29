@@ -16,7 +16,7 @@ template <concepts::Graph G> void BFS<G>::init() {
 }
 
 template <concepts::Graph G> BFS<G>::BFSTree BFS<G>::visit(Vertex source) {
-  return visit(source, [](Vertex v) {});
+  return visit(source, [](Vertex) {});
 }
 
 template <concepts::Graph G>
