@@ -59,6 +59,11 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
 )
 
+# include/io
+set(INC_IO
+        ${PROJECT_SOURCE_DIR}/include/io/graphviz.hpp
+)
+
 # src
 set(SRC
         ${PROJECT_SOURCE_DIR}/src/id_manager.cpp
@@ -79,6 +84,11 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/johnson.i.hpp
 )
 
+# src/io
+set(SRC_IO
+        ${PROJECT_SOURCE_DIR}/src/io/graphviz.i.hpp
+)
+
 # ###############################################################################
 # LIBRARY
 # ###############################################################################
@@ -87,15 +97,19 @@ add_library(graph OBJECT)
 target_sources(graph
         PUBLIC ${INC}
         PUBLIC ${INC_ALG}
+        PUBLIC ${INC_IO}
         PRIVATE ${SRC}
         PRIVATE ${SRC_ALG}
+        PRIVATE ${SRC_IO}
 )
 
 target_include_directories(graph
         PUBLIC ${PROJECT_SOURCE_DIR}/include
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/io
         PRIVATE ${PROJECT_SOURCE_DIR}/src
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
+        PRIVATE ${PROJECT_SOURCE_DIR}/src/io
 )
 
 target_compile_options(graph

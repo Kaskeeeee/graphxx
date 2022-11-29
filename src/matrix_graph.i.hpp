@@ -5,12 +5,12 @@
 #include <ranges>
 
 namespace graph {
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 AdjacencyMatrixGraph<GraphType>::AdjacencyMatrixGraph()
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
-template <typename GraphType> Vertex AdjacencyMatrixGraph<GraphType>::add_vertex() {
+template <concepts::Orientable GraphType> Vertex AdjacencyMatrixGraph<GraphType>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -18,7 +18,7 @@ template <typename GraphType> Vertex AdjacencyMatrixGraph<GraphType>::add_vertex
   return v;
 };
 
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
@@ -37,7 +37,7 @@ Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v)
   return e;
 }
 
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 void AdjacencyMatrixGraph<GraphType>::remove_vertex(const Vertex &v) {
   if (!_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
@@ -59,7 +59,7 @@ void AdjacencyMatrixGraph<GraphType>::remove_vertex(const Vertex &v) {
   }
 }
 
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 void AdjacencyMatrixGraph<GraphType>::remove_edge(const Edge &e) {
   if (!_edge_map.contains(e)) {
     throw exceptions::NoSuchEdgeException();
@@ -73,26 +73,26 @@ void AdjacencyMatrixGraph<GraphType>::remove_edge(const Edge &e) {
   }
 }
 
-template <typename GraphType> auto AdjacencyMatrixGraph<GraphType>::vertices() const {
+template <concepts::Orientable GraphType> auto AdjacencyMatrixGraph<GraphType>::vertices() const {
   return _adj | std::views::transform(
                     [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
                       return Vertex{pair.first};
                     });
 }
 
-template <typename GraphType> auto AdjacencyMatrixGraph<GraphType>::edges() const {
+template <concepts::Orientable GraphType> auto AdjacencyMatrixGraph<GraphType>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 };
 
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 auto AdjacencyMatrixGraph<GraphType>::out_edges(const Vertex &v) const {
   return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
            return _edge_map[pair.second];
          });
 }
 
-template <typename GraphType>
+template <concepts::Orientable GraphType>
 auto AdjacencyMatrixGraph<GraphType>::in_edges(const Vertex &v) const {
   return _adj |
          std::views::filter(

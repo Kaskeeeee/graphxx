@@ -1,6 +1,7 @@
 #pragma once
 #include "base.hpp"
 #include "id_manager.hpp"
+#include "graph_concepts.hpp"
 
 #include <list>
 #include <unordered_map>
@@ -8,7 +9,7 @@
 
 namespace graph {
 
-template <typename GraphType> class AdjacencyListGraph {
+template <concepts::Orientable GraphType> class AdjacencyListGraph {
 protected:
   using EdgeList = std::list<Id>;
   using AdjacencyList = std::unordered_map<Id, EdgeList>;

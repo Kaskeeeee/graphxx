@@ -1,12 +1,13 @@
 #pragma once
 #include "base.hpp"
 #include "id_manager.hpp"
+#include "graph_concepts.hpp"
 
 #include <unordered_map>
 
 namespace graph {
 
-template <typename GraphType> class AdjacencyMatrixGraph {
+template <concepts::Orientable GraphType> class AdjacencyMatrixGraph {
 protected:
   using AdjacencyMap = std::unordered_map<Id, Id>;
   using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
