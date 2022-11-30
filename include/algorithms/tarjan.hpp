@@ -5,10 +5,17 @@
 
 namespace graph::algorithms::tarjan {
 
-using SCCVector = std::vector<std::vector<Id>>;
+struct TarjanVertex {
+  int index = -1;
+  int low_link = -1;
+  bool on_stack = false;
+};
 
-template <concepts::Graph G>
-SCCVector visit(const G &graph);
+using StackVector = std::vector<Id>;
+using TarjanTree = std::unordered_map<Id, TarjanVertex>;
+using SCCVector = std::vector<StackVector>;
+
+template <concepts::Graph G> SCCVector visit(const G &graph);
 
 } // namespace graph::algorithms::tarjan
 

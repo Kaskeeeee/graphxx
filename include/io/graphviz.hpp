@@ -17,4 +17,4 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
 
 } // namespace graph::io::graphviz
 
-#include "graphviz.i.hpp"
+#include "io/graphviz.i.hpp"

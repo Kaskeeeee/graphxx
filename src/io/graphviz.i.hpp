@@ -10,7 +10,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
       << "{" << std::endl;
 
   for (Edge edge ::graph.edges()) {
-    out << edge.u.id << Traits::delimiter() << edge.v << " ";
+    out << edge.u.id << Traits::delimiter() << edge.v.id << " ";
     out << ";" << std::endl;
   }
 
