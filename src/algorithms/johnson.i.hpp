@@ -24,8 +24,8 @@ Map<WeightType> visit(G &graph, C &&weights) {
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
   for (auto edge : graph.edges()) {
-    edges_weights[edge] = edges_weights[edge] + bf_tree[edge.source].distance -
-                          bf_tree[edge.target].distance;
+    edges_weights[edge] = edges_weights[edge] + bf_tree[edge.u].distance -
+                          bf_tree[edge.v].distance;
   }
 
   // Remove vertex q
