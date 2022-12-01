@@ -11,7 +11,7 @@ Node<WeightType>::Node()
                                                             INVALID_VERTEX} {};
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+          concepts::Numeric WeightType>
 Map<WeightType> visit(G &graph, C &&weights) {
   Map<WeightType> map;
   for (auto edge : graph.edges()) {

@@ -11,7 +11,7 @@ Node<WeightType>::Node()
                                                             INVALID_VERTEX} {};
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+          concepts::Numeric WeightType>
 Tree<WeightType> visit(const G &graph, const Vertex &v, C &&edges_weights) {
   Tree<WeightType> tree;
   tree[v].distance = 0;

@@ -11,7 +11,7 @@
 namespace graph::algorithms::dijkstra {
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+          concepts::Numeric WeightType>
 Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
   Tree<WeightType> tree;
   auto distance_upperbound = std::numeric_limits<WeightType>::max();

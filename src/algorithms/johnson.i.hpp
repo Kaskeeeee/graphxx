@@ -5,8 +5,8 @@
 namespace graph::algorithms::johnson {
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Map<WeightType> visit(G &graph, C &&weights) {
+          concepts::Numeric WeightType>
+Map<WeightType> visit(G &graph, C &&edges_weights) {
   Map<WeightType> map;
 
   // Add new vertex
@@ -14,7 +14,7 @@ Map<WeightType> visit(G &graph, C &&weights) {
 
   // Add new edge from q to every other vertex
   for (auto vertex : graph.vertices()) {
-    auto added_edge = g.add_edge(q, vertex);
+    auto added_edge = graph.add_edge(q, vertex);
     edges_weights[added_edge] = 0;
   }
 
@@ -35,7 +35,8 @@ Map<WeightType> visit(G &graph, C &&weights) {
   for (auto vertex_source : graph.vertices()) {
     auto d_tree = dijkstra::visit(graph, vertex_source, edges_weights);
     for (auto vertex_target : graph.vertices()) {
-      map[vertex_source][vertex_target] = d_tree[vertex_target] +
+      map[vertex_source][vertex_target].parent = d_tree[vertex_target].parent;
+      map[vertex_source][vertex_target].distance = d_tree[vertex_target].distance +
                                           bf_tree[vertex_target].distance -
                                           bf_tree[vertex_source].distance;
     }
