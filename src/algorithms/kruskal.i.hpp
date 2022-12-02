@@ -31,12 +31,12 @@ Tree visit(const G &graph, C &&weights) {
       queue{comparator};
 
   // Queue ordered by ascending edge weight
-  for (auto edge : weights) {
-    queue.push(std::make_pair(edge.first, edge.second));
+  for (auto edge : graph.edges()) {
+    queue.push(std::make_pair(edge, weights[edge]));
   }
 
   // Initialize every vertex cluster with the vertex Id itself
-  for (auto vertex : _graph.vertices()) {
+  for (auto vertex : graph.vertices()) {
     map[vertex] = vertex.id;
   }
 
@@ -51,7 +51,7 @@ Tree visit(const G &graph, C &&weights) {
 
     auto edge = top_pair.first;
 
-    if (find_representative(edge.u) != find_representative(edge.v)) {
+    if (find_representative(map, edge.u) != find_representative(map, edge.v)) {
       tree.push_back(edge);
       map[edge.u] = map[edge.v];
     }
