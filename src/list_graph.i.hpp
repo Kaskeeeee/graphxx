@@ -115,4 +115,20 @@ auto AdjacencyListGraph<GraphType>::in_edges(const Vertex &v) const {
              [](std::pair<Id, Edge> pair) { return pair.second; });
 }
 
+template <concepts::Orientable GraphType>
+Vertex AdjacencyListGraph<GraphType>::get_vertex(const Id &id) const {
+  if (!_adj.contains(id)) {
+    return INVALID_VERTEX;
+  }
+  return Vertex{id};
+}
+
+template <concepts::Orientable GraphType>
+Edge AdjacencyListGraph<GraphType>::get_edge(const Id &id) const {
+  if (!_edge_map.contains(id)) {
+    return INVALID_EDGE;
+  }
+  return _edge_map.at(id);
+}
+
 } // namespace graph

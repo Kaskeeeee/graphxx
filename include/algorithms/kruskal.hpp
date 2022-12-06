@@ -8,7 +8,7 @@
 namespace graph::algorithms::kruskal {
 
 // Vector of edge Ids
-using Tree = std::vector<Edge>;
+using Tree = std::vector<Id>;
 
 // Map that divides the vertices into "clusters" and allows us to check if two
 // vertices belong to the same cluster or not and hence decide whether adding

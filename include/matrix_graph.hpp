@@ -28,6 +28,9 @@ public:
   auto edges() const;
   auto out_edges(const Vertex &) const;
   auto in_edges(const Vertex &) const;
+  
+  Vertex get_vertex(const Id &id) const;
+  Edge get_edge(const Id &id) const;
 
 private:
   AdjacencyMatrix _adj;
