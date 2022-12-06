@@ -104,4 +104,20 @@ auto AdjacencyMatrixGraph<GraphType>::in_edges(const Vertex &v) const {
                return _edge_map[pair.second[v]];
              });
 }
+
+template <concepts::Orientable GraphType>
+Vertex AdjacencyMatrixGraph<GraphType>::get_vertex(const Id &id) const {
+  if (!_adj.contains(id)) {
+    throw exceptions::NoSuchVertexException();
+  }
+  return Vertex{id};
+}
+
+template <concepts::Orientable GraphType>
+Edge AdjacencyMatrixGraph<GraphType>::get_edge(const Id &id) const {
+  if (!_edge_map.contains(id)) {
+    throw exceptions::NoSuchEdgeException();
+  }
+  return _edge_map.at(id);
+}
 } // namespace graph

@@ -34,6 +34,9 @@ public:
   auto edges() const;
   auto out_edges(const Vertex &v) const;
   auto in_edges(const Vertex &v) const;
+  
+  Vertex get_vertex(const Id &id) const;
+  Edge get_edge(const Id &id) const;
 
 private:
   AdjacencyList _adj;

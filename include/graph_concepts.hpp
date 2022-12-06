@@ -38,11 +38,13 @@ concept InEdgesIterable =
     };
 
 template <typename T>
-concept GraphEditable = requires(T v, Vertex v1, Vertex v2, Edge e) {
+concept GraphEditable = requires(T v, Vertex v1, Vertex v2, Edge e, Id id) {
                           v.add_vertex();
                           v.add_edge(v1, v2);
                           v.remove_vertex(v1);
                           v.remove_edge(e);
+                          v.get_vertex(id);
+                          v.get_edge(id);
                         };
 
 template <typename T>

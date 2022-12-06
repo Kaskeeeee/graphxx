@@ -11,8 +11,7 @@ template <concepts::Numeric WeightType> struct Node {
 };
 
 template <concepts::Numeric WeightType>
-using Map = std::unordered_map < Id,
-      std::unordered_map<Id, Node<WeightType>>;
+using Map = std::unordered_map<Id, std::unordered_map<Id, Node<WeightType>>>;
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>

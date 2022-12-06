@@ -184,6 +184,8 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 
