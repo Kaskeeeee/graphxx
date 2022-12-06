@@ -4,8 +4,6 @@
 #include "catch.hpp"
 #include "list_graph.hpp"
 
-#include <algorithm>
-
 namespace bfs_test {
 using namespace graph;
 using namespace algorithms;
@@ -106,6 +104,27 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
               vertices.end());
     }
+  }
+
+  SECTION("work in undirected graph") {
+      AdjacencyListGraph<UndirectedGraph> g1{};
+      auto a = g1.add_vertex(); // 0
+      auto b = g1.add_vertex(); // 1
+      auto c = g1.add_vertex(); // 2
+      auto d = g1.add_vertex(); // 3
+      auto e = g1.add_vertex(); // 4
+
+      auto a_to_b = g1.add_edge(a, b); // 0->1
+      auto a_to_c = g1.add_edge(a, c); // 0->2
+      auto a_to_d = g1.add_edge(a, d); // 0->3
+      auto b_to_c = g1.add_edge(b, c); // 1->2
+      auto d_to_e = g1.add_edge(d, e); // 3->4
+
+      auto tree = graph::algorithms::bfs::visit(g1, c);
+
+      for (auto vertex : g1.vertices()) {
+        REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+      }
   }
 }
 } // namespace bfs_test

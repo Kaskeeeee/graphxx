@@ -11,7 +11,6 @@ concept VertexIterable =
     requires(T v) {
       v.vertices();
       requires std::ranges::range<decltype(v.vertices())>;
-      requires std::ranges::sized_range<decltype(v.vertices())>;
       { *(v.vertices().begin()) } -> std::convertible_to<Vertex>;
     };
 
@@ -19,7 +18,6 @@ template <typename T>
 concept EdgeIterable = requires(T v) {
                          v.edges();
                          requires std::ranges::range<decltype(v.edges())>;
-                         requires std::ranges::sized_range<decltype(v.edges())>;
                          { *(v.edges().begin()) } -> std::convertible_to<Edge>;
                        };
 

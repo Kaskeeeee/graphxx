@@ -4,12 +4,12 @@
 
 namespace graph::io::graphviz {
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
-  GraphvizTraits<G::Tag> Traits;
+  typedef GraphvizTraits<typename G::Tag> Traits;
 
   out << Traits::name() << " "
       << "{" << std::endl;
 
-  for (Edge edge ::graph.edges()) {
+  for (auto edge : graph.edges()) {
     out << edge.u.id << Traits::delimiter() << edge.v.id << " ";
     out << ";" << std::endl;
   }
