@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
 
-    AdjacencyListGraph<Directedness::DIRECTED> g{};
+    AdjacencyListGraph<Directedness::UNDIRECTED> g{};
 
     std::unordered_map<int, std::string> vertex_map;
     
@@ -37,7 +37,7 @@ int main() {
     g.add_edge(v4, v2);
     g.add_edge(v4, v4);
 
-    io::graphviz::serialize(cout, g, [&](Vertex v) {return vertex_map[v]; });
+    io::graphviz::serialize(cout, g, [&](Vertex v) {return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}}; });
     
     return 0;
 }

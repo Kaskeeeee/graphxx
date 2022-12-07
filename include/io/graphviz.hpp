@@ -1,6 +1,6 @@
 /**
  * @file
- * 
+ *
  * @copyright Copyright © 2022 Graph++. All rights reserved.
  *
  * @license{<blockquote>
@@ -38,46 +38,75 @@
 
 namespace graph::io::graphviz {
 
+using GraphvizProperties = std::unordered_map<std::string, std::string>;
+
 /**
- * @brief get the correct labels for dot language based on graph directedness
+ * @brief Get the correct labels for DOT language based on graph directedness.
  * @tparam D directedness of graph object (directed/undirected)
-*/
+ */
 template <Directedness D> struct GraphvizTraits {
   static std::string name();
   static std::string delimiter();
 };
 
 /**
- * @brief writes a graph object into an output stream in graphviz DOT format
- *        so that users can make use of graphviz to draw a picture with nice layout 
+ * @brief Writes a graph object into an output stream in graphviz DOT format
+ *        so that users can make use of graphviz to draw a picture with nice
+ *        layout.
  * @tparam G type of input graph
- * @param[in] graph input graph object
  * @param[out] out output stream
-*/
+ * @param[in] graph input graph object
+ */
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
 
-/// @brief 
-/// @tparam G 
-/// @param out 
-/// @param graph 
-/// @param label_vertex 
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph, std::function<std::string(Vertex)> label_vertex);
-
-/// @brief 
-/// @tparam G 
-/// @param out 
-/// @param graph 
-/// @param label_vertex 
-/// @param label_edge 
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph, std::function<std::string(Vertex)> label_vertex, std::function<std::string(Edge)> label_edge);
+/**
+ * @brief Writes a graph object into an output stream in graphviz DOT format
+ *        so that users can make use of graphviz to draw a picture with nice
+ *        layout. It's possible to assign properties to each vertex in the graph
+ *        with `get_vertex_properties` function.
+ * @tparam G type of input graph
+ * @param[out] out output stream
+ * @param[in] graph input graph object
+ * @param[in] get_vertex_properties function that returns a propery map for each vertex
+ */
+template <concepts::Graph G>
+void serialize(std::ostream &out, const G &graph,
+               std::function<GraphvizProperties(Vertex)> get_vertex_properties);
 
 /**
- * @brief interprets a graph described using the graphviz DOT language and builds 
- *        a graph object that captures that description
+ * @brief Writes a graph object into an output stream in graphviz DOT format
+ *        so that users can make use of graphviz to draw a picture with nice
+ *        layout. It's possible to assign properties to each vertex in the graph
+ *        with `get_vertex_properties` function. It's possible to assign
+ *        properties to each edge in the graph with `get_edge_properties`
+ *        function.
  * @tparam G type of input graph
- * @param[in] in input stream
-*/
-template <concepts::Graph G> G deserialize(std::istream& in);
+ * @param[out] out output stream
+ * @param[in] graph input graph object
+ * @param[in] get_vertex_properties function that returns a propery map for each vertex
+ * @param[in] get_edge_properties function that returns a propery map for each edge
+ */
+template <concepts::Graph G>
+void serialize(std::ostream &out, const G &graph,
+               std::function<GraphvizProperties(Vertex)> get_vertex_properties,
+               std::function<GraphvizProperties(Edge)> get_edge_properties);
+
+/**
+ * @brief Interprets a graph described using the graphviz DOT language and
+ *        builds a graph object that captures that description.
+ *        You must pass an undirected graph when reading an undirected graph,
+ *        the same is true for directed graphs.
+ * @tparam G type of output graph
+ * @param[in]  in input stream
+ * @param[out] graph refrence to output graph
+ * @param[out] vertex_properties reference to map in which store the attributes of the vertices
+ * @param[out] edge_properties reference to map in which store the attributes of the edges
+ */
+template <concepts::Graph G>
+void deserialize(
+    std::istream &in, G &graph,
+    std::unordered_map<Vertex, GraphvizProperties> &vertex_properties,
+    std::unordered_map<Edge, GraphvizProperties> &edge_properties);
 
 } // namespace graph::io::graphviz
 

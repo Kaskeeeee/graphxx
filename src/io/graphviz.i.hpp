@@ -1,8 +1,11 @@
+#include "io/graphviz.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
+
 #include <fstream>
 #include <functional>
 #include <string>
+#include <map>
 
 namespace graph::io::graphviz {
 
@@ -16,27 +19,52 @@ template <> struct GraphvizTraits<Directedness::UNDIRECTED> {
 
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
-               std::function<std::string(Vertex)> label_vertex,
-               std::function<std::string(Edge)> label_edge) {
+               std::function<GraphvizProperties(Vertex)> get_vertex_properties,
+               std::function<GraphvizProperties(Edge)> get_edge_properties) {
 
   using Traits = GraphvizTraits<G::directedness>;
 
   out << Traits::name() << " " << "{" << std::endl;
 
+  // insert vertices properties
   for (auto vertex : graph.vertices()) {
-    std::string vertex_label = label_vertex(vertex);
-    if (vertex_label != "") {
-      out << vertex.id << " [label=\"" << vertex_label << "\"]" << ";" << std::endl;
+    GraphvizProperties vertex_properties = get_vertex_properties(vertex);
+    if (!vertex_properties.empty()) {
+      out << vertex.id << " [";
+      bool comma = false;
+      for(const auto &[key, value] : vertex_properties) {
+        if (comma) { 
+          out << ","; 
+        } else comma = true;
+        out << key << "=\"" << value << "\"";
+      }
+      out << "]";
+      out << ";" << std::endl;
     }
   }
 
+  // insert edges
+  std::set<Id> inserted_edges;
   for (auto edge : graph.edges()) {
+    if (!inserted_edges.contains(edge)) {
+    inserted_edges.insert(edge);
     out << edge.u.id << Traits::delimiter() << edge.v.id;
-    std::string edge_label = label_edge(edge);
-    if (edge_label != "") {
-      out << " [label=\"" << edge_label << "\"]";
+
+    // insert edge properties
+    GraphvizProperties edge_properties = get_edge_properties(edge);
+    if (!edge_properties.empty()) {
+      out << " [";
+      bool comma = false;
+      for(const auto &[key, value] : edge_properties) {
+        if (comma) { 
+          out << ","; 
+        } else comma = true;
+        out << key << "=\"" << value << "\"";
+      }
+      out << "]";
     }
     out << ";" << std::endl;
+    }
   }
 
   out << "}" << std::endl;
@@ -44,15 +72,18 @@ void serialize(std::ostream &out, const G &graph,
 
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
-               std::function<std::string(Vertex)> label_vertex) {
-  return serialize(out, graph, label_vertex, [](Edge) { return ""; });
+               std::function<GraphvizProperties(Vertex)> get_vertex_properties) {
+  GraphvizProperties empty_map;
+  return serialize(out, graph, get_vertex_properties, [&](Edge) { return empty_map; });
 }
 
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
+  GraphvizProperties empty_map;
+
   return serialize(
       out, graph, 
-      [](Vertex v) { return ""; },
-      [](Edge) { return ""; });
+      [&](Vertex) { return empty_map; },
+      [&](Edge) { return empty_map; });
 }
 
 } // namespace graph::io::graphviz
