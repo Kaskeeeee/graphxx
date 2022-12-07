@@ -1,10 +1,21 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(GraphLib
-        DESCRIPTION "Graph library"
+project(Graph++
+        DESCRIPTION "C++ graph library"
         HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
         LANGUAGES CXX
 )
+
+message("")
+message("  _____                 _                ")
+message(" / ____|               | |     _     _   ")
+message("| |  __ _ __ __ _ _ __ | |__ _| |_ _| |_ ")
+message("| | |_ | '__/ _` | '_ \\| '_ \\_   _|_   _|")
+message("| |__| | | | (_| | |_) | | | ||_|   |_|  ")
+message(" \\_____|_|  \\__,_| .__/|_| |_|           ")
+message("                 | |                     ")
+message("                 |_|                     ")
+message("")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -231,6 +242,27 @@ add_test(NAME digraphTest
 # )
 
 # ###############################################################################
+# EXAMPLES
+# ###############################################################################
+add_executable(graphviz_example)
+target_sources(graphviz_example
+        PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
+)
+
+target_include_directories(graphviz_example
+        PRIVATE ${PROJECT_SOURCE_DIR}/src
+)
+
+target_link_libraries(graphviz_example
+        PUBLIC graph
+)
+
+install(
+        TARGETS graphviz_example
+        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+)
+
+# ###############################################################################
 # CLEAN
 # ###############################################################################
 add_custom_target(clean_all
@@ -253,6 +285,3 @@ add_custom_target(clean_all
 # <generator> clean_all         delete /doc and /bin
 # <generator> coverage          generate code coverage
 # <genereator> doc              generate documentation
-
-# COMPILE ON MACOS
-# cmake -DCMAKE_CXX_COMPILER=/usr/local/bin/g++-12 ..

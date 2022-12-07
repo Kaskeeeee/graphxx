@@ -6,10 +6,8 @@
 
 namespace graph::io::graphviz {
 
-template <Directedness D> struct GraphvizTraits {
-  static std::string name() { return "digraph"; }
-  static std::string delimiter() { return "->"; }
-};
+template <Directedness D> std::string GraphvizTraits<D>::name() { return "digraph"; }
+template <Directedness D> std::string GraphvizTraits<D>::delimiter() { return "->"; }
 
 template <> struct GraphvizTraits<Directedness::UNDIRECTED> {
   static std::string name() { return "graph"; }
@@ -27,14 +25,14 @@ void serialize(std::ostream &out, const G &graph,
 
   for (auto vertex : graph.vertices()) {
     std::string vertex_label = label_vertex(vertex);
-    if (edge_label != "") {
+    if (vertex_label != "") {
       out << vertex.id << " [label=\"" << vertex_label << "\"]" << ";" << std::endl;
     }
   }
 
   for (auto edge : graph.edges()) {
     out << edge.u.id << Traits::delimiter() << edge.v.id;
-    std::string edge_label = label_edges(edge);
+    std::string edge_label = label_edge(edge);
     if (edge_label != "") {
       out << " [label=\"" << edge_label << "\"]";
     }
@@ -46,15 +44,15 @@ void serialize(std::ostream &out, const G &graph,
 
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
-               std::function<string(Vertex)> label_vertex) {
-  return serialize(out, graph, label_vertex, [](Edge) { return "" });
+               std::function<std::string(Vertex)> label_vertex) {
+  return serialize(out, graph, label_vertex, [](Edge) { return ""; });
 }
 
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
   return serialize(
       out, graph, 
-      [](Vertex v) { return "" },
-      [](Edge) { return "" });
+      [](Vertex v) { return ""; },
+      [](Edge) { return ""; });
 }
 
 } // namespace graph::io::graphviz

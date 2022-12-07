@@ -107,7 +107,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("work in undirected graph") {
-      AdjacencyListGraph<Directedness::DIRECTED> g1{};
+      AdjacencyListGraph<Directedness::UNDIRECTED> g1{};
       auto a = g1.add_vertex(); // 0
       auto b = g1.add_vertex(); // 1
       auto c = g1.add_vertex(); // 2

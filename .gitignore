@@ -36,5 +36,8 @@ bin/*
 # Build directory
 build
 
+# Doc directory
+doc
+
 # Vscode settings directory
 .vscode
