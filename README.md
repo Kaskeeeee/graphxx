@@ -1,1 +1,1 @@
-# graph
+# Graph++ Library
