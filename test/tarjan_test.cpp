@@ -8,7 +8,7 @@ using namespace graph;
 using namespace graph::algorithms;
 
 TEST_CASE("Tarjan for strongly connected components", "[tarjan]") {
-  AdjacencyListGraph<DirectedGraph> g{};
+  AdjacencyListGraph<Directedness::DIRECTED> g{};
 
   auto a = g.add_vertex();
   auto b = g.add_vertex();

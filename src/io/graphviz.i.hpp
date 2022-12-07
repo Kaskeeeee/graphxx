@@ -6,12 +6,12 @@
 
 namespace graph::io::graphviz {
 
-template <concepts::Orientable GraphType> struct GraphvizTraits {
+template <Directedness D> struct GraphvizTraits {
   static std::string name() { return "digraph"; }
   static std::string delimiter() { return "->"; }
 };
 
-template <> struct GraphvizTraits<UndirectedGraph> {
+template <> struct GraphvizTraits<Directedness::UNDIRECTED> {
   static std::string name() { return "graph"; }
   static std::string delimiter() { return "--"; }
 };
@@ -21,7 +21,7 @@ void serialize(std::ostream &out, const G &graph,
                std::function<std::string(Vertex)> label_vertex,
                std::function<std::string(Edge)> label_edge) {
 
-  using Traits = GraphvizTraits<typename G::Tag>;
+  using Traits = GraphvizTraits<G::directedness>;
 
   out << Traits::name() << " " << "{" << std::endl;
 

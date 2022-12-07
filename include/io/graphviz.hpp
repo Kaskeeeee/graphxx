@@ -37,10 +37,10 @@
 namespace graph::io::graphviz {
 
 /**
- * @brief get the correct labels for dot language based on graph type
- * @tparam GraphType type of graph object (directed/undirected)
+ * @brief get the correct labels for dot language based on graph directedness
+ * @tparam D directedness of graph object (directed/undirected)
 */
-template <concepts::Orientable GraphType> struct GraphvizTraits {
+template <Directedness D> struct GraphvizTraits {
   static std::string name();
   static std::string delimiter();
 };

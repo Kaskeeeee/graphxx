@@ -8,7 +8,7 @@ using namespace graph;
 using namespace graph::algorithms;
 
 TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
-  AdjacencyListGraph<DirectedGraph> g{};
+  AdjacencyListGraph<Directedness::DIRECTED> g{};
 
   std::unordered_map<Id, int> weights;
 

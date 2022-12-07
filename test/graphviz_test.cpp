@@ -8,6 +8,6 @@ using namespace graph;
 using namespace graph::io;
 
 TEST_CASE("Graphviz suite tests", "[graphviz]") {
-  AdjacencyListGraph<DirectedGraph> g{};
+  AdjacencyListGraph<Directedness::DIRECTED> g{};
 }
 } // namespace graphviz_test

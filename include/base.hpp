@@ -5,8 +5,8 @@ namespace graph {
 /// The id type that is used to identify vertices and edges
 using Id = int;
 
-/// Base class that represents and object that can be identified
-/// through an ID
+/// @brief base class that represents an object which is identifiable throught
+/// its id
 struct Identifiable {
   explicit constexpr Identifiable(Id id) : id{id} {};
 
@@ -15,7 +15,7 @@ struct Identifiable {
   operator Id() const { return id; }
 };
 
-/// A simple struct that represents a vertex with an ID
+/// @brief A simple struct representing a vertex of any graph which has an id
 struct Vertex : Identifiable {
   explicit constexpr Vertex(Id id) : Identifiable{id} {};
 
@@ -28,7 +28,7 @@ struct Vertex : Identifiable {
   }
 };
 
-/// A simple struct that represents an edge with ID and the vertices
+/// @brief A simple struct that represents an edge with ID and the vertices
 /// it connects
 struct Edge : Identifiable {
   explicit constexpr Edge(Id id, Vertex u, Vertex v)
@@ -48,9 +48,9 @@ struct Edge : Identifiable {
   Vertex u, v;
 };
 
-/// Types used to distinguish if the graph is directed or undirected
-struct DirectedGraph{};
-struct UndirectedGraph{};
+/// @brief enum whose values are used to distinguish between directed and
+/// undirected graphs
+enum class Directedness { DIRECTED, UNDIRECTED };
 
 constexpr Id MIN_VALID_ID = 0;
 constexpr Id MAX_VALID_ID = std::numeric_limits<Id>::max();
