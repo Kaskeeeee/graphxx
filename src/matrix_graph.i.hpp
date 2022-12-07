@@ -5,12 +5,13 @@
 #include <ranges>
 
 namespace graph {
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 AdjacencyMatrixGraph<GraphType>::AdjacencyMatrixGraph()
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
-template <concepts::Orientable GraphType> Vertex AdjacencyMatrixGraph<GraphType>::add_vertex() {
+template <concepts::Directable GraphType>
+Vertex AdjacencyMatrixGraph<GraphType>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -18,8 +19,9 @@ template <concepts::Orientable GraphType> Vertex AdjacencyMatrixGraph<GraphType>
   return v;
 };
 
-template <concepts::Orientable GraphType>
-Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
+template <concepts::Directable GraphType>
+Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u,
+                                               const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -37,7 +39,7 @@ Edge AdjacencyMatrixGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v)
   return e;
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 void AdjacencyMatrixGraph<GraphType>::remove_vertex(const Vertex &v) {
   if (!_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
@@ -59,7 +61,7 @@ void AdjacencyMatrixGraph<GraphType>::remove_vertex(const Vertex &v) {
   }
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 void AdjacencyMatrixGraph<GraphType>::remove_edge(const Edge &e) {
   if (!_edge_map.contains(e)) {
     throw exceptions::NoSuchEdgeException();
@@ -73,26 +75,28 @@ void AdjacencyMatrixGraph<GraphType>::remove_edge(const Edge &e) {
   }
 }
 
-template <concepts::Orientable GraphType> auto AdjacencyMatrixGraph<GraphType>::vertices() const {
+template <concepts::Directable GraphType>
+auto AdjacencyMatrixGraph<GraphType>::vertices() const {
   return _adj | std::views::transform(
                     [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
                       return Vertex{pair.first};
                     });
 }
 
-template <concepts::Orientable GraphType> auto AdjacencyMatrixGraph<GraphType>::edges() const {
+template <concepts::Directable GraphType>
+auto AdjacencyMatrixGraph<GraphType>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 };
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyMatrixGraph<GraphType>::out_edges(const Vertex &v) const {
   return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
            return _edge_map[pair.second];
          });
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyMatrixGraph<GraphType>::in_edges(const Vertex &v) const {
   return _adj |
          std::views::filter(
@@ -105,7 +109,7 @@ auto AdjacencyMatrixGraph<GraphType>::in_edges(const Vertex &v) const {
              });
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Vertex AdjacencyMatrixGraph<GraphType>::get_vertex(const Id &id) const {
   if (!_adj.contains(id)) {
     throw exceptions::NoSuchVertexException();
@@ -113,7 +117,7 @@ Vertex AdjacencyMatrixGraph<GraphType>::get_vertex(const Id &id) const {
   return Vertex{id};
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Edge AdjacencyMatrixGraph<GraphType>::get_edge(const Id &id) const {
   if (!_edge_map.contains(id)) {
     throw exceptions::NoSuchEdgeException();

@@ -4,7 +4,7 @@
 
 namespace graph::io::graphviz {
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
-  typedef GraphvizTraits<typename G::Tag> Traits;
+  using Traits = GraphvizTraits<G::directedness>;
 
   out << Traits::name() << " "
       << "{" << std::endl;

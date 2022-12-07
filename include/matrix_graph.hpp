@@ -1,21 +1,21 @@
 #pragma once
 #include "base.hpp"
-#include "id_manager.hpp"
 #include "graph_concepts.hpp"
+#include "id_manager.hpp"
 
 #include <unordered_map>
 
 namespace graph {
 
-template <concepts::Orientable GraphType> class AdjacencyMatrixGraph {
+template <Directedness D> class AdjacencyMatrixGraph {
 protected:
   using AdjacencyMap = std::unordered_map<Id, Id>;
   using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
   using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
-  using Tag = GraphType;
-  
+  static constexpr Directedness directedness = D;
+
   AdjacencyMatrixGraph();
 
   Vertex add_vertex();
@@ -28,7 +28,7 @@ public:
   auto edges() const;
   auto out_edges(const Vertex &) const;
   auto in_edges(const Vertex &) const;
-  
+
   Vertex get_vertex(const Id &id) const;
   Edge get_edge(const Id &id) const;
 

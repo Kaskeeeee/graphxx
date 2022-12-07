@@ -5,16 +5,16 @@
 #include "list_graph.hpp"
 
 #include <cassert>
-#include <type_traits>
 #include <ranges>
+#include <type_traits>
 
 namespace graph {
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 AdjacencyListGraph<GraphType>::AdjacencyListGraph()
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Vertex AdjacencyListGraph<GraphType>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
@@ -23,7 +23,7 @@ Vertex AdjacencyListGraph<GraphType>::add_vertex() {
   return v;
 };
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Edge AdjacencyListGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
@@ -49,7 +49,7 @@ Edge AdjacencyListGraph<GraphType>::add_edge(const Vertex &u, const Vertex &v) {
   }
 };
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 void AdjacencyListGraph<GraphType>::remove_vertex(const Vertex &v) {
   if (!_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
@@ -81,7 +81,7 @@ void AdjacencyListGraph<GraphType>::remove_vertex(const Vertex &v) {
   }
 };
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 void AdjacencyListGraph<GraphType>::remove_edge(const Edge &e) {
   if (!_edge_map.contains(e)) {
     throw exceptions::NoSuchEdgeException();
@@ -97,40 +97,38 @@ void AdjacencyListGraph<GraphType>::remove_edge(const Edge &e) {
   _edge_map.erase(e);
 };
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyListGraph<GraphType>::vertices() const {
   return _adj | std::views::transform([](std::pair<Id, EdgeList> pair) {
            return Vertex(pair.first);
          });
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyListGraph<GraphType>::edges() const {
-  return _edge_map |
-         std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
+  return _edge_map | std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
            return pair.second;
          }) |
          std::views::join;
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyListGraph<GraphType>::out_edges(const Vertex &v) const {
   return _adj.at(v) |
          std::views::transform([&](Id id) { return _edge_map.at(id); }) |
          std::views::join;
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 auto AdjacencyListGraph<GraphType>::in_edges(const Vertex &v) const {
-  return _edge_map |
-         std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
+  return _edge_map | std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
            return pair.second;
          }) |
          std::views::join |
          std::views::filter([&](Edge edge) { return edge.v == v; });
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Vertex AdjacencyListGraph<GraphType>::get_vertex(const Id &id) const {
   if (!_adj.contains(id)) {
     return INVALID_VERTEX;
@@ -138,7 +136,7 @@ Vertex AdjacencyListGraph<GraphType>::get_vertex(const Id &id) const {
   return Vertex{id};
 }
 
-template <concepts::Orientable GraphType>
+template <concepts::Directable GraphType>
 Edge AdjacencyListGraph<GraphType>::get_edge(const Id &id) const {
   if (!_edge_map.contains(id)) {
     return INVALID_EDGE;

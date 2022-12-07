@@ -9,7 +9,7 @@
 
 namespace graph {
 
-template <concepts::Orientable GraphType> class AdjacencyListGraph {
+template <Directedness D> class AdjacencyListGraph {
 
 protected:
   using EdgeList = std::list<Id>;
@@ -20,7 +20,7 @@ protected:
   using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
 
 public:
-  using Tag = GraphType;
+  static constexpr Directedness directedness = D;
 
   AdjacencyListGraph();
 
@@ -34,7 +34,7 @@ public:
   auto edges() const;
   auto out_edges(const Vertex &v) const;
   auto in_edges(const Vertex &v) const;
-  
+
   Vertex get_vertex(const Id &id) const;
   Edge get_edge(const Id &id) const;
 

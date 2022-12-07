@@ -7,12 +7,13 @@
 namespace graph::concepts {
 
 template <typename T>
-concept VertexIterable =
-    requires(T v) {
-      v.vertices();
-      requires std::ranges::range<decltype(v.vertices())>;
-      { *(v.vertices().begin()) } -> std::convertible_to<Vertex>;
-    };
+concept VertexIterable = requires(T v) {
+                           v.vertices();
+                           requires std::ranges::range<decltype(v.vertices())>;
+                           {
+                             *(v.vertices().begin())
+                             } -> std::convertible_to<Vertex>;
+                         };
 
 template <typename T>
 concept EdgeIterable = requires(T v) {
@@ -54,16 +55,15 @@ template <typename Container, typename Key>
 concept Subscriptable = requires(Container c, Key k) { c[k]; };
 
 template <typename T>
-concept Orientable = std::is_same_v<T, DirectedGraph> || std::is_same_v<T, UndirectedGraph>;
+concept DirectednessTaggable =
+    requires(T t) {
+      T::directedness;
+      requires std::is_same_v<decltype(T::directedness), Directedness>;
+    };
 
 template <typename T>
-concept Taggable = requires(T v) { 
-  typename T::Tag;
-};
-
-
-template <typename T>
-concept Graph = VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
-                InEdgesIterable<T> && GraphEditable<T> && Taggable<T>;
+concept Graph =
+    VertexIterable<T> && EdgeIterable<T> && OutEdgesIterable<T> &&
+    InEdgesIterable<T> && GraphEditable<T> && DirectednessTaggable<T>;
 
 } // namespace graph::concepts
