@@ -86,4 +86,12 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
       [&](Edge) { return empty_map; });
 }
 
+template <concepts::Graph G>
+void deserialize(
+    std::istream &in, G &graph,
+    std::unordered_map<Vertex, GraphvizProperties> &vertex_properties,
+    std::unordered_map<Edge, GraphvizProperties> &edge_properties) {
+      
+    }
+
 } // namespace graph::io::graphviz

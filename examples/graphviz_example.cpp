@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include "list_graph.hpp"
 #include "io/graphviz.hpp"
+#include "io/graphml.hpp"
 #include <fstream>
 
 using namespace graph;
@@ -38,6 +39,10 @@ int main() {
     g.add_edge(v4, v4);
 
     io::graphviz::serialize(cout, g, [&](Vertex v) {return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}}; });
-    
+
+    cout << "\n\n";
+
+    io::graphml::serialize(cout, g, [&](Vertex v) {return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}}; });
+
     return 0;
 }
