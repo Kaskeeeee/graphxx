@@ -50,9 +50,7 @@ const std::string GRAPHML_ROOT_OPEN =
 const std::string GRAPHML_ROOT_CLOSE = "</graphml>";
 
 /**
- * @brief Writes a graph object into an output stream in graphviz DOT format
- *        so that users can make use of graphviz to draw a picture with nice
- *        layout.
+ * @brief  Write a graph object into an output stream in the GraphML format. 
  * @tparam G type of input graph
  * @param[out] out output stream
  * @param[in] graph input graph object
@@ -60,9 +58,8 @@ const std::string GRAPHML_ROOT_CLOSE = "</graphml>";
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
 
 /**
- * @brief Writes a graph object into an output stream in graphviz DOT format
- *        so that users can make use of graphviz to draw a picture with nice
- *        layout. It's possible to assign properties to each vertex in the graph
+ * @brief Write a graph object into an output stream in the GraphML format. 
+ *        It's possible to assign properties to each vertex in the graph
  *        with `get_vertex_properties` function.
  * @tparam G type of input graph
  * @param[out] out output stream
@@ -75,9 +72,8 @@ void serialize(std::ostream &out, const G &graph,
                std::function<GraphMLProperties(Vertex)> get_vertex_properties);
 
 /**
- * @brief Writes a graph object into an output stream in graphviz DOT format
- *        so that users can make use of graphviz to draw a picture with nice
- *        layout. It's possible to assign properties to each vertex in the graph
+ * @brief Write a graph object into an output stream in the GraphML format. 
+ *        It's possible to assign properties to each vertex in the graph
  *        with `get_vertex_properties` function. It's possible to assign
  *        properties to each edge in the graph with `get_edge_properties`
  *        function.
