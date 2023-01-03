@@ -1,7 +1,8 @@
-#include <bits/stdc++.h>
-#include "list_graph.hpp"
-#include "io/graphviz.hpp"
 #include "io/graphml.hpp"
+#include "io/graphviz.hpp"
+#include "list_graph.hpp"
+#include "utils/graph_generator.hpp"
+#include <bits/stdc++.h>
 #include <fstream>
 
 using namespace graph;
@@ -9,40 +10,46 @@ using namespace std;
 
 int main() {
 
-    AdjacencyListGraph<Directedness::UNDIRECTED> g{};
+  AdjacencyListGraph<Directedness::DIRECTED> g{};
 
-    std::unordered_map<int, std::string> vertex_map;
-    
-    Vertex v1 = g.add_vertex(); //A
-    vertex_map.insert({v1, "A"});
+  /*std::unordered_map<int, std::string> vertex_map;
 
-    Vertex v2 = g.add_vertex();
-    vertex_map.insert({v2, "B"});
+  Vertex v1 = g.add_vertex(); //A
+  vertex_map.insert({v1, "A"});
 
-    Vertex v3 = g.add_vertex();
-    vertex_map.insert({v3, "C"});
+  Vertex v2 = g.add_vertex();
+  vertex_map.insert({v2, "B"});
 
-    Vertex v4 = g.add_vertex();
-    vertex_map.insert({v4, "D"});
+  Vertex v3 = g.add_vertex();
+  vertex_map.insert({v3, "C"});
 
-    Vertex v5 = g.add_vertex();
-    vertex_map.insert({v5, "E"});
+  Vertex v4 = g.add_vertex();
+  vertex_map.insert({v4, "D"});
 
-    g.add_edge(v1, v2);
-    g.add_edge(v2, v2);
-    g.add_edge(v1, v3);
-    g.add_edge(v3, v4);
-    g.add_edge(v5, v3);
-    g.add_edge(v4, v5);
-    g.add_edge(v5, v4);
-    g.add_edge(v4, v2);
-    g.add_edge(v4, v4);
+  Vertex v5 = g.add_vertex();
+  vertex_map.insert({v5, "E"});
 
-    io::graphviz::serialize(cout, g, [&](Vertex v) {return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}}; });
+  g.add_edge(v1, v2);
+  g.add_edge(v2, v2);
+  g.add_edge(v1, v3);
+  g.add_edge(v3, v4);
+  g.add_edge(v5, v3);
+  g.add_edge(v4, v5);
+  g.add_edge(v5, v4);
+  g.add_edge(v4, v2);
+  g.add_edge(v4, v4); */
 
-    cout << "\n\n";
+  GraphGenerator gen;
 
-    io::graphml::serialize(cout, g, [&](Vertex v) {return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}}; });
+  gen.generate_random_graph(g, 1000, 3000);
 
-    return 0;
+  io::graphviz::serialize(cout, g);
+
+  /* cout << "\n\n";
+
+  io::graphml::serialize(cout, g, [&](Vertex v) {
+    return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}};
+  }); */
+
+  return 0;
 }
