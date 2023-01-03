@@ -27,7 +27,7 @@ public:
     }
 
     std::default_random_engine generator(_seed);
-    std::uniform_int_distribution<Id> distribution(0, num_vertices);
+    std::uniform_int_distribution<Id> distribution(0, num_vertices - 1);
 
     std::unordered_map<Id, int> out_degree;
 
@@ -92,12 +92,12 @@ public:
   }
 
 private:
-  unsigned int get_seed {
+  unsigned int get_seed() {
     return std::chrono::system_clock::now().time_since_epoch().count();
   }
 
   unsigned int _seed;
   bool _fixed_seed;
-}
+};
 
 } // namespace graph

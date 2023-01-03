@@ -68,6 +68,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
+        ${PROJECT_SOURCE_DIR}/include/utils/graph_generator.hpp
 )
 
 # include/io
@@ -118,6 +119,7 @@ target_include_directories(graph
         PUBLIC ${PROJECT_SOURCE_DIR}/include
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
         PUBLIC ${PROJECT_SOURCE_DIR}/include/io
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
         PRIVATE ${PROJECT_SOURCE_DIR}/src
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
         PRIVATE ${PROJECT_SOURCE_DIR}/src/io
@@ -197,6 +199,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 
