@@ -11,7 +11,20 @@ AdjacencyMatrixGraph<D>::AdjacencyMatrixGraph()
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
 template <Directedness D>
-Vertex AdjacencyMatrixGraph<D>::add_vertex() {
+AdjacencyMatrixGraph<D>::AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph)
+    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
+      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {
+
+  for (Vertex v : graph.vertices) {
+    _adj[v] = {};
+  }
+
+  for (Edge e : graph.edges()) {
+    add_edge(e.u, e.v);
+  }
+};
+
+template <Directedness D> Vertex AdjacencyMatrixGraph<D>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -20,8 +33,7 @@ Vertex AdjacencyMatrixGraph<D>::add_vertex() {
 };
 
 template <Directedness D>
-Edge AdjacencyMatrixGraph<D>::add_edge(const Vertex &u,
-                                               const Vertex &v) {
+Edge AdjacencyMatrixGraph<D>::add_edge(const Vertex &u, const Vertex &v) {
   if (!_adj.contains(u) || !_adj.contains(v)) {
     throw exceptions::NoSuchVertexException();
   }
@@ -75,16 +87,14 @@ void AdjacencyMatrixGraph<D>::remove_edge(const Edge &e) {
   }
 }
 
-template <Directedness D>
-auto AdjacencyMatrixGraph<D>::vertices() const {
+template <Directedness D> auto AdjacencyMatrixGraph<D>::vertices() const {
   return _adj | std::views::transform(
                     [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
                       return Vertex{pair.first};
                     });
 }
 
-template <Directedness D>
-auto AdjacencyMatrixGraph<D>::edges() const {
+template <Directedness D> auto AdjacencyMatrixGraph<D>::edges() const {
   return _edge_map | std::views::transform(
                          [](std::pair<Id, Edge> pair) { return pair.second; });
 };

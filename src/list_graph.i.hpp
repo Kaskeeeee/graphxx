@@ -15,7 +15,20 @@ AdjacencyListGraph<D>::AdjacencyListGraph()
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
 template <Directedness D>
-Vertex AdjacencyListGraph<D>::add_vertex() {
+AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph &graph)
+    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
+      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {
+
+  for (Vertex v : graph.vertices) {
+    _adj[v] = {};
+  }
+
+  for (Edge e : graph.edges()) {
+    add_edge(e.u, e.v);
+  }
+};
+
+template <Directedness D> Vertex AdjacencyListGraph<D>::add_vertex() {
   auto id = _vertex_id_manager.allocate();
 
   Vertex v{id};
@@ -97,15 +110,13 @@ void AdjacencyListGraph<D>::remove_edge(const Edge &e) {
   _edge_map.erase(e);
 };
 
-template <Directedness D>
-auto AdjacencyListGraph<D>::vertices() const {
+template <Directedness D> auto AdjacencyListGraph<D>::vertices() const {
   return _adj | std::views::transform([](std::pair<Id, EdgeList> pair) {
            return Vertex(pair.first);
          });
 }
 
-template <Directedness D>
-auto AdjacencyListGraph<D>::edges() const {
+template <Directedness D> auto AdjacencyListGraph<D>::edges() const {
   return _edge_map | std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
            return pair.second;
          }) |

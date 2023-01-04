@@ -21,6 +21,7 @@ public:
   static constexpr Directedness directedness = D;
 
   AdjacencyListGraph();
+  AdjacencyListGraph(const AdjacencyListGraph &graph);
 
   Vertex add_vertex();
   void remove_vertex(const Vertex &v);
