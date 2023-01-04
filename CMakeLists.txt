@@ -68,6 +68,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/ford_fulkerson.hpp
 )
 
 # include/utils
@@ -98,6 +99,7 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/a_star.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/johnson.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/ford_fulkerson.i.hpp
 )
 
 # src/io
@@ -207,6 +209,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp

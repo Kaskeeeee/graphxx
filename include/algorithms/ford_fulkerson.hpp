@@ -3,20 +3,21 @@
 #include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
+#include <functional>
 #include <unordered_map>
 
 namespace graph::algorithms::ford_fulkerson {
 
-template <concepts::Numeric WeightType> struct EdgeFlow {
-  Id edge_id;
-  Id return_edge_id;
-  WeightType capacity;
-  WeightType flow;
-
+struct BFSVertex {
+  VertexStatus status;
+  int parent = -1;
+  int edge = -1;
 };
 
+using BFSTree = std::unordered_map<Id, BFSVertex>;
+
 template <concepts::Numeric WeightType>
-using Tree = std::unordered_map<Id, Node<WeightType>>;
+using FlowMap = std::unordered_map<Id, WeightType>;
 
 /// @brief Implementation of ford_fulkerson algorithm
 /// @tparam G graph type that is coherent with Graph concept

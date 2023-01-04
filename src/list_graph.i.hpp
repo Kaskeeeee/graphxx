@@ -15,11 +15,12 @@ AdjacencyListGraph<D>::AdjacencyListGraph()
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
 
 template <Directedness D>
-AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph &graph)
+template <Directedness DN>
+AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph<DN> &graph)
     : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
       _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {
 
-  for (Vertex v : graph.vertices) {
+  for (Vertex v : graph.vertices()) {
     _adj[v] = {};
   }
 
