@@ -44,7 +44,7 @@ int main() {
   // gen.generate_random_graph(g, 1000, 3000);
 
   fstream input_file("../build/test.txt");
-  io::graphml::deserialize(input_file, g);
+  // io::graphml::deserialize(input_file, g);
 
   /* cout << "\n\n";
 

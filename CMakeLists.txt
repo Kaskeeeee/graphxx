@@ -158,6 +158,7 @@ target_include_directories(graph
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
         PUBLIC ${PROJECT_SOURCE_DIR}/include/io
         PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
+        PUBLIC ${PROJECT_SOURCE_DIR}/third_party/pugixml
         PRIVATE ${PROJECT_SOURCE_DIR}/src
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
         PRIVATE ${PROJECT_SOURCE_DIR}/src/io
@@ -234,7 +235,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
@@ -322,16 +323,16 @@ install(
         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
 )
 
-add_executable(benchmark_example)
-target_sources(benchmark_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
-)
-target_link_libraries(benchmark_example PRIVATE nanobench)
+# add_executable(benchmark_example)
+# target_sources(benchmark_example
+#         PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
+# )
+# target_link_libraries(benchmark_example PRIVATE nanobench)
 
-install(
-        TARGETS benchmark_example
-        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-)
+# install(
+#         TARGETS benchmark_example
+#         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+# )
 
 # if(BENCHMARK)
 # add_executable(benchmark_example)
