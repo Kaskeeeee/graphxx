@@ -1,12 +1,16 @@
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "io/graphml.hpp"
+#include "pugixml.hpp"
 
 #include <fstream>
 #include <functional>
 #include <map>
 #include <set>
 #include <string>
+#include <iostream>
+#include <string.h>
+#include <unordered_map>
 
 namespace graph::io::graphml {
 
@@ -118,6 +122,66 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
   return serialize(
       out, graph, [&](Vertex) { return empty_map; },
       [&](Edge) { return empty_map; });
+}
+
+template <concepts::Graph G>
+void deserialize(
+    std::istream &in, G &graph) {
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load(in);
+
+    unordered_map<std::string, Vertex> vertices_ids = {};
+    unordered_map<std::string, std::string> attributes_names = {};
+
+    pugi::xml_node graphml_node = doc.child("graphml");
+
+    if (!graphml_node)
+      ; // TODO: unsupported format
+
+    pugi::xml_node graph_node = graphml_node.child("graph");
+    pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
+
+    // get GraphML-Attributes
+    for (pugi::xml_node key_node: graphml_node.children("key"))
+    {
+      pugi::xml_attribute attribute_id = edge_node.attribute("id");
+      pugi::xml_attribute attribute_name = edge_node.attribute("attr.name");
+      attributes_names[attribute_id] = attribute_name;
+    }
+
+    // get vertices
+    for (pugi::xml_node vertex_node: graph_node.children("node"))
+    {
+        pugi::xml_attribute vertex_id = vertex_node.attribute("id");
+        Vertex v = graph.add_vertex();
+        vertices_ids[vertex_id.value()] = v;
+
+        // vertices attributes
+        for (pugi::xml_node attribute_node: vertex_node.children("data"))
+        {
+          pugi::xml_attribute attribute_key = attribute_node.attribute("key");
+          std::string value = attribute_node.value()
+          
+          // INSERT KEY
+        }
+    }
+
+    // get edges
+    for (pugi::xml_node edge_node: graph_node.children("edge"))
+    {
+        pugi::xml_attribute source_id = edge_node.attribute("source");
+        pugi::xml_attribute target_id = edge_node.attribute("target");
+        Edge e = graph.add_edge(vertices_ids[source_id.value()], vertices_ids[target_id.value()]);
+
+        // edges attributes
+        for (pugi::xml_node attribute_node: edge_node.children("data"))
+        {
+          pugi::xml_attribute attribute_key = attribute_node.attribute("key");
+          std::string value = attribute_node.value()
+
+          // INSERT KEY
+        }
+    }
 }
 
 } // namespace graph::io::graphml

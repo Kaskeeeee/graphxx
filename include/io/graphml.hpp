@@ -90,6 +90,12 @@ void serialize(std::ostream &out, const G &graph,
                std::function<GraphMLProperties(Vertex)> get_vertex_properties,
                std::function<GraphMLProperties(Edge)> get_edge_properties);
 
+template <concepts::Graph G>
+void deserialize(
+    std::istream &in, G &graph);
+
 } // namespace graph::io::graphml
+
+
 
 #include "io/graphml.i.hpp"
