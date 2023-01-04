@@ -153,7 +153,7 @@ Edge AdjacencyListGraph<D>::get_edge(const Id &id) const {
   if (!_edge_map.contains(id)) {
     return INVALID_EDGE;
   }
-  return _edge_map.at(id);
+  return _edge_map.at(id)[0];
 }
 
 } // namespace graph
