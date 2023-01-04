@@ -68,6 +68,10 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
+)
+
+# include/utils
+set(INC_UTILS
         ${PROJECT_SOURCE_DIR}/include/utils/graph_generator.hpp
 )
 
@@ -101,6 +105,11 @@ set(SRC_IO
         ${PROJECT_SOURCE_DIR}/src/io/graphviz.i.hpp
 )
 
+# include/utils
+set(SRC_UTILS
+        ${PROJECT_SOURCE_DIR}/src/utils/graph_generator.i.hpp
+)
+
 # ###############################################################################
 # LIBRARY
 # ###############################################################################
@@ -110,9 +119,11 @@ target_sources(graph
         PUBLIC ${INC}
         PUBLIC ${INC_ALG}
         PUBLIC ${INC_IO}
+        PUBLIC ${INC_UTILS}
         PRIVATE ${SRC}
         PRIVATE ${SRC_ALG}
         PRIVATE ${SRC_IO}
+        PRIVATE ${SRC_UTILS}
 )
 
 target_include_directories(graph

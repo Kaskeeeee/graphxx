@@ -18,17 +18,56 @@ void serialize(std::ostream &out, const G &graph,
   out << XML_HEADER << std::endl;
   out << GRAPHML_ROOT_OPEN << std::endl;
 
+  std::unordered_map<std::string, std::string> vertex_key_ids;
+  std::unordered_map<std::string, std::string> edge_key_ids;
+  int key_count = 0;
+
+  // declaring GraphML-Attributes for nodes
+  for (auto vertex : graph.vertices()) {
+    GraphMLProperties vertex_properties = get_vertex_properties(vertex);
+    for (const auto &[name, value] : vertex_properties) {
+      if (vertex_key_ids.contains(name)) 
+        continue;
+      
+      std::string key_id = "k" + std::to_string(key_count++);
+      vertex_key_ids[name] = key_id;
+      out << "\t" << "<key id=\"" << key_id << "\" for=\"node\""
+          << " attr.name=\"" << name << "\""
+          << " attr.type=\"string\"/>" 
+          << std::endl;
+    }
+  }
+
+  // declaring GraphML-Attributes for edges
+  for (auto edge : graph.edges()) {
+    GraphMLProperties edge_properties = get_edge_properties(edge);
+    for (const auto &[name, value] : edge_properties) {
+      if (edge_key_ids.contains(name)) 
+        continue;
+        
+      std::string key_id = "k" + std::to_string(key_count++);
+      edge_key_ids[name] = key_id;
+      out << "\t" << "<key id=\"k" << key_id << "\" for=\"edge\""
+          << " attr.name=\"" << name << "\""
+          << " attr.type=\"string\"/>" 
+          << std::endl;
+    }
+  }
+
+  // graph default directedness
   std::string edgedefault = (G::directedness == Directedness::UNDIRECTED) ? "undirected" : "directed";
   out << "\t" << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\"" << std::endl;
 
+  // declaring nodes
   for (auto vertex : graph.vertices()) {
     out << "\t\t" << "<node id=\"n" << vertex.id << "\">" << std::endl;
 
+    // defining GraphML-Attribute values for nodes
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
     if (!vertex_properties.empty()) {
       for (const auto &[key, value] : vertex_properties) {
         out << "\t\t\t"
-            << "<data key=\"" << key << "\">" << value 
+            << "<data key=\"" << vertex_key_ids[key] << "\">" << value 
             << "</data>" << std::endl;
       }
     }
@@ -36,6 +75,7 @@ void serialize(std::ostream &out, const G &graph,
     out << "\t\t" << "</node>" << std::endl;
   }
 
+  // declaring edges
   std::set<Id> inserted_edges;
   for (auto edge : graph.edges()) {
     if (!inserted_edges.contains(edge)) {
@@ -46,11 +86,12 @@ void serialize(std::ostream &out, const G &graph,
       << "\" target=\"n" << edge.v.id 
       << "\">" << std::endl ;
 
+      // defining GraphML-Attribute values for edges
       GraphMLProperties edge_properties = get_edge_properties(edge);
       if (!edge_properties.empty()) {
         for (const auto &[key, value] : edge_properties) {
           out << "\t\t\t"
-              << "<data key=\"" << key << "\">" << value 
+              << "<data key=\"" << edge_key_ids[key] << "\">" << value 
               << "</data>" << std::endl;
         }
       }
