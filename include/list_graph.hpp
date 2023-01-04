@@ -22,6 +22,9 @@ public:
 
   AdjacencyListGraph();
 
+  template <Directedness DN>
+  AdjacencyListGraph(const AdjacencyListGraph<DN> &graph);
+
   Vertex add_vertex();
   void remove_vertex(const Vertex &v);
 

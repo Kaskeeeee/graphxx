@@ -24,11 +24,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Boost flags
+# set(Boost_USE_STATIC_LIBS OFF)
+# set(Boost_USE_MULTITHREADED ON)
+# set(Boost_USE_STATIC_RUNTIME OFF)
+#
+# # Find Boost and Lemon
+# find_package(Boost 1.81.0 COMPONENTS *boost libraries here*)
+# find_package(Lemon 1.3.1 COMPONENTS *lemon libraries here*)
+#
+
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
 
 # Compile with coverage support
 option(COVERAGE "Enable coverage output" OFF)
+
+# Compile with benchmark
+option(BENCHMARK "Enable benchmarking" OFF)
 
 # -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
@@ -41,6 +54,18 @@ set(LINKER_FLAGS
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
         $<$<BOOL:${COVERAGE}>:--coverage>
 )
+
+include(FetchContent)
+
+# Fetch nanobench for benchmarking
+FetchContent_Declare(
+        nanobench
+        GIT_REPOSITORY https://github.com/martinus/nanobench.git
+        GIT_TAG v4.1.0
+        GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(nanobench)
 
 # ###############################################################################
 # VARIABLES
@@ -68,6 +93,7 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
         ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
+        ${PROJECT_SOURCE_DIR}/include/algorithms/ford_fulkerson.hpp
 )
 
 # include/utils
@@ -98,6 +124,7 @@ set(SRC_ALG
         ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/a_star.i.hpp
         ${PROJECT_SOURCE_DIR}/src/algorithms/johnson.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/algorithms/ford_fulkerson.i.hpp
 )
 
 # src/io
@@ -207,6 +234,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
@@ -275,6 +303,74 @@ install(
         TARGETS graphviz_example
         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
 )
+
+add_executable(gdb_example)
+target_sources(gdb_example
+        PRIVATE ${PROJECT_SOURCE_DIR}/examples/ford_fulkerson_gdb.cpp
+)
+
+target_include_directories(gdb_example
+        PRIVATE ${PROJECT_SOURCE_DIR}/src
+)
+
+target_link_libraries(gdb_example
+        PUBLIC graph
+)
+
+install(
+        TARGETS gdb_example
+        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+)
+
+add_executable(benchmark_example)
+target_sources(benchmark_example
+        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
+)
+target_link_libraries(benchmark_example PRIVATE nanobench)
+
+install(
+        TARGETS benchmark_example
+        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+)
+
+# if(BENCHMARK)
+# add_executable(benchmark_example)
+# add_subdirectory(benchmark)
+#
+# target_sources(benchmark_example
+# PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
+# )
+#
+# target_include_directories(benchmark_example
+# PRIVATE ${PROJECT_SOURCE_DIR}/src
+# )
+#
+# target_link_libraries(benchmark_example
+# PUBLIC graph
+# PUBLIC benchmark::benchmark
+# )
+#
+# install(
+# TARGETS benchmark_example
+# RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+# )
+# endif()
+
+# Boost example
+# if(Boost_FOUND)
+# message("BOOST FOUNDED")
+# include_directories(${Boost_INCLUDE_DIRS})
+# add_executable(boost_example ...)
+# target_link_libraries(boost_example ${Boost_LIBRARIES})
+# endif()
+#
+# # Lemon example
+# if(Lemon_FOUND)
+# message("LEMON FOUNDED")
+# include_directories(...)
+# add_executable(lemon_example ...)
+# target_link_libraries(lemon_example ...)
+# endif()
 
 # ###############################################################################
 # CLEAN

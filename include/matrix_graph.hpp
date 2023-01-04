@@ -17,6 +17,7 @@ public:
   static constexpr Directedness directedness = D;
 
   AdjacencyMatrixGraph();
+  AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
 
   Vertex add_vertex();
   void remove_vertex(const Vertex &);
