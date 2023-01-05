@@ -12,12 +12,18 @@ struct BFSVertex {
   VertexStatus status;
   int parent = -1;
   int edge = -1;
+  int residual_capacity = -1;
 };
 
 using BFSTree = std::unordered_map<Id, BFSVertex>;
 
 template <concepts::Numeric WeightType>
 using FlowMap = std::unordered_map<Id, WeightType>;
+
+template <concepts::Numeric WeightType> struct FFpair {
+  FlowMap<WeightType> flow;
+  WeightType max_flow;
+};
 
 /// @brief Implementation of ford_fulkerson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -31,7 +37,8 @@ using FlowMap = std::unordered_map<Id, WeightType>;
 /// @return maximum flow from source to sink in the given graph
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-WeightType visit(const G &graph, const Vertex &source, const Vertex &sink, C &&edges_capacity);
+FFpair<WeightType> visit(const G &graph, const Vertex &source,
+                         const Vertex &sink, C &&edges_capacity);
 
 } // namespace graph::algorithms::ford_fulkerson
 
