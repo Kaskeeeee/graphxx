@@ -31,8 +31,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 # Find Boost and Lemon
 find_package(Boost 1.80.0 COMPONENTS graph)
-
-# find_package(Lemon 1.3.1)
+find_package(LEMON)
 
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
@@ -306,6 +305,7 @@ add_test(NAME digraphTest
 # )
 if(BENCHMARK AND Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
+        include_directories(${LEMON_INCLUDE_DIRS})
 
         # dijkstra
         add_executable(benchmark_dijkstra)
@@ -321,6 +321,7 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_dijkstra
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
+                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -338,6 +339,7 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_krsukal
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
+                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -355,6 +357,7 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_bfs
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
+                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -372,6 +375,7 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_dfs
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
+                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -389,6 +393,7 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_bellman_ford
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
+                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
