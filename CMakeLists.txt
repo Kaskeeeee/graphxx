@@ -1,20 +1,20 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Graph++
+project(Graphxx
         DESCRIPTION "C++ graph library"
         HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
         LANGUAGES CXX
 )
 
 message("")
-message("  _____                 _                ")
-message(" / ____|               | |     _     _   ")
-message("| |  __ _ __ __ _ _ __ | |__ _| |_ _| |_ ")
-message("| | |_ | '__/ _` | '_ \\| '_ \\_   _|_   _|")
-message("| |__| | | | (_| | |_) | | | ||_|   |_|  ")
-message(" \\_____|_|  \\__,_| .__/|_| |_|           ")
-message("                 | |                     ")
-message("                 |_|                     ")
+message("_____                 _                ")
+message("/ ____|               | |               ")
+message("| |  __ _ __ __ _ _ __ | |__ __  ____  __")
+message("| | |_ | '__/ _` | '_ \\| '_ \\\\ \\/ /\\ \\/ /")
+message("| |__| | | | (_| | |_) | | | |>  <  >  < ")
+message("\\_____|_|  \\__,_| .__/|_| |_/_/\\_\\/_/\\_\\")
+message("                | |                     ")
+message("                |_|                     ")
 message("")
 
 set(CMAKE_CXX_STANDARD 20)

@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * @copyright Copyright © 2022 Graph++. All rights reserved.
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,8 @@
  * SOFTWARE.
  * </blockquote>}
  *
- * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
  * @date December, 2022
  * @version v1.0
  */
@@ -66,7 +67,8 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  * @tparam G type of input graph
  * @param[out] out output stream
  * @param[in] graph input graph object
- * @param[in] get_vertex_properties function that returns a propery map for each vertex
+ * @param[in] get_vertex_properties function that returns a propery map for each
+ * vertex
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -82,8 +84,10 @@ void serialize(std::ostream &out, const G &graph,
  * @tparam G type of input graph
  * @param[out] out output stream
  * @param[in] graph input graph object
- * @param[in] get_vertex_properties function that returns a propery map for each vertex
- * @param[in] get_edge_properties function that returns a propery map for each edge
+ * @param[in] get_vertex_properties function that returns a propery map for each
+ * vertex
+ * @param[in] get_edge_properties function that returns a propery map for each
+ * edge
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -98,8 +102,10 @@ void serialize(std::ostream &out, const G &graph,
  * @tparam G type of output graph
  * @param[in]  in input stream
  * @param[out] graph refrence to output graph
- * @param[out] vertex_properties reference to map in which store the attributes of the vertices
- * @param[out] edge_properties reference to map in which store the attributes of the edges
+ * @param[out] vertex_properties reference to map in which store the attributes
+ * of the vertices
+ * @param[out] edge_properties reference to map in which store the attributes of
+ * the edges
  */
 template <concepts::Graph G>
 void deserialize(

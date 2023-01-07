@@ -17,14 +17,14 @@ using namespace graph;
 using namespace graph::algorithms;
 
 int main() {
-  // Graph++
+  // Graphxx
   AdjacencyListGraph<Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   std::fstream input_file("../examples/cage4.mtx");
   io::matrix_market::deserialize(input_file, g, weights);
 
-  ankerl::nanobench::Bench().run("kruskal graph++",
+  ankerl::nanobench::Bench().run("kruskal graphxx",
                                  [&]() { kruskal::visit(g, weights); });
 
   // Boost

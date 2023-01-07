@@ -20,7 +20,7 @@ using namespace graph;
 using namespace graph::algorithms;
 
 int main() {
-  // Graph++
+  // Graphxx
   AdjacencyListGraph<Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
@@ -51,7 +51,7 @@ int main() {
   io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run(
-      "dijkstra graph++", [&]() { dijkstra::visit(g, Vertex{0}, weights); });
+      "dijkstra graphxx", [&]() { dijkstra::visit(g, Vertex{0}, weights); });
 
   // Boost
   typedef boost::adjacency_list<
