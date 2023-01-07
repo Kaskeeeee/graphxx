@@ -62,10 +62,20 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     REQUIRE(num_edges == 0);
   }
 
+  SECTION("chooses another target id with no self edges mode") {
+    generator.generate_random_graph(undirected_list_graph, 2, 100, -1, false);
+
+    for (auto edge : undirected_list_graph.edges()) {
+      REQUIRE(edge.u != edge.v);
+    }
+  }
+
   const int MAX_WEIGHT = 10;
   const int MIN_WEIGHT = 0;
 
   SECTION("generates weights within bounds") {
+    generator.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
+                                    TOTAL_EDGES);
     auto weights = generator.generate_random_weights(undirected_list_graph,
                                                      MIN_WEIGHT, MAX_WEIGHT);
 
@@ -75,8 +85,24 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
   }
 
   SECTION("swaps min and max weight if in bad order") {
+    generator.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
+                                    TOTAL_EDGES);
     auto weights = generator.generate_random_weights(undirected_list_graph,
                                                      MAX_WEIGHT, MIN_WEIGHT);
+
+    for (auto [id, weight] : weights) {
+      REQUIRE((weight >= MIN_WEIGHT && weight <= MAX_WEIGHT));
+    }
+  }
+
+  SECTION(
+      "swaps min and max weight if in bad order with fixed seed generator") {
+    GraphGenerator fixed_seed_gen{0xdeadbeef};
+
+    fixed_seed_gen.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
+                                         TOTAL_EDGES);
+    auto weights = fixed_seed_gen.generate_random_weights(
+        undirected_list_graph, MAX_WEIGHT, MIN_WEIGHT);
 
     for (auto [id, weight] : weights) {
       REQUIRE((weight >= MIN_WEIGHT && weight <= MAX_WEIGHT));

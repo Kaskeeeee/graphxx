@@ -67,7 +67,7 @@ GraphGenerator::generate_random_weights(const G &graph, W min_weight,
                                         W max_weight) {
   std::unordered_map<Id, W> weights;
 
-  if (min_weight < max_weight) {
+  if (min_weight > max_weight) {
     W tmp = min_weight;
     min_weight = max_weight;
     max_weight = tmp;
