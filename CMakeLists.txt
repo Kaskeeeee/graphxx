@@ -29,9 +29,8 @@ set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-# Find Boost and Lemon
-find_package(Boost 1.80.0 COMPONENTS graph)
-find_package(LEMON)
+# Find Boost
+find_package(Boost 1.71.0 COMPONENTS graph)
 
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
@@ -305,7 +304,6 @@ add_test(NAME digraphTest
 # )
 if(BENCHMARK AND Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
-        include_directories(${LEMON_INCLUDE_DIRS})
 
         # dijkstra
         add_executable(benchmark_dijkstra)
@@ -321,7 +319,6 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_dijkstra
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
-                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -339,7 +336,6 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_krsukal
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
-                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -357,7 +353,6 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_bfs
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
-                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -375,7 +370,6 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_dfs
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
-                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -393,7 +387,6 @@ if(BENCHMARK AND Boost_FOUND)
         target_link_libraries(benchmark_bellman_ford
                 PUBLIC graph
                 PUBLIC ${Boost_LIBRARIES}
-                PUBLIC ${LEMON_LIBRARIES}
                 PRIVATE nanobench
         )
 
@@ -402,22 +395,6 @@ if(BENCHMARK AND Boost_FOUND)
                 RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
         )
 endif()
-
-# Boost example
-# if(Boost_FOUND)
-# message("BOOST FOUNDED")
-# include_directories(${Boost_INCLUDE_DIRS})
-# add_executable(boost_example ...)
-# target_link_libraries(boost_example ${Boost_LIBRARIES})
-# endif()
-#
-# # Lemon example
-# if(Lemon_FOUND)
-# message("LEMON FOUNDED")
-# include_directories(...)
-# add_executable(lemon_example ...)
-# target_link_libraries(lemon_example ...)
-# endif()
 
 # ###############################################################################
 # CLEAN

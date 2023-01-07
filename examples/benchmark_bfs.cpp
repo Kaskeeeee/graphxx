@@ -11,8 +11,6 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 
-// #include <lemon/list_graph.h>
-
 #include <iostream> // for std::cout
 #include <nanobench.h>
 
@@ -52,16 +50,4 @@ int main() {
         boost_graph, start,
         boost::distance_map(get(boost::vertex_distance, boost_graph)));
   });
-
-  // Lemon
-  // ListDigraph lemon_graph;
-  // ListDigraph::NodeMap<double> dist(lemon_graph);
-  //
-  // for (auto e : g.edges()) {
-  //  ListDigraph::addArc(e.u, e.v);
-  //}
-  //
-  // ankerl::nanobench::Bench().run("bfs lemon", [&]() {
-  //  ListDigraph::bfs(lemon_graph).distMap(dist).run(s);
-  //});
 }

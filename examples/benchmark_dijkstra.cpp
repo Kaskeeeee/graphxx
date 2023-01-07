@@ -13,8 +13,6 @@
 // #include <boost/graph/graph_traits.hpp>
 // #include <boost/graph/graphviz.hpp>
 
-// #include <lemon/list_graph.h>
-
 #include <iostream> // for std::cout
 #include <nanobench.h>
 
@@ -78,20 +76,6 @@ int main() {
         boost_graph, start,
         boost::distance_map(get(boost::vertex_distance, boost_graph)));
   });
-
-  // Lemon
-  // ListDigraph lemon_graph;
-  // ListDigraph::ArcMap<double> length(lemon_graph);
-  // ListDigraph::NodeMap<double> dist(lemon_graph);
-  //
-  // for (auto e : g.edges()) {
-  //  ListDigraph::Arc new_arc = ListDigraph::addArc(e.u, e.v);
-  //  map[new_arc] = weights[e];
-  //}
-  //
-  // ankerl::nanobench::Bench().run("dijkstra lemon", [&]() {
-  //  ListDigraph::dijkstra(lemon_graph, length).distMap(dist).run(s);
-  //});
 
   return 0;
 }

@@ -10,8 +10,6 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 
-// #include <lemon/list_graph.h>
-
 #include <iostream> // for std::cout
 #include <nanobench.h>
 
@@ -49,19 +47,4 @@ int main() {
     boost::kruskal_minimum_spanning_tree(boost_graph,
                                          std::back_inserter(spanning_tree));
   });
-
-  // Lemon
-  // ListDigraph lemon_graph;
-  // ListDigraph::ArcMap<double> length(lemon_graph);
-  // ListDigraph::NodeMap<double> dist(lemon_graph);
-  // std::vector<Arc> tree;
-  //
-  // for (auto e : g.edges()) {
-  //  ListDigraph::Arc new_arc = ListDigraph::addArc(e.u, e.v);
-  //  map[new_arc] = weights[e];
-  //}
-  //
-  // ankerl::nanobench::Bench().run("kruskal lemon", [&]() {
-  //  kruskal(lemon_graph, map, std::back_inserter(tree));
-  //});
 }

@@ -11,8 +11,6 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/bellman_ford_shortest_paths.hpp>
 
-// #include <lemon/list_graph.h>
-
 #include <iostream> // for std::cout
 #include <nanobench.h>
 
@@ -52,6 +50,4 @@ int main() {
   ankerl::nanobench::Bench().run("bellman_ford boost", [&]() {
     boost::bellman_ford_shortest_paths(boost_graph, boost::root_vertex(start));
   });
-
-  // Lemon
 }

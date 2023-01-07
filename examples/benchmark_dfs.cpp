@@ -11,8 +11,6 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 
-// #include <lemon/list_graph.h>
-
 #include <iostream> // for std::cout
 #include <nanobench.h>
 
@@ -50,16 +48,4 @@ int main() {
   ankerl::nanobench::Bench().run("dfs boost", [&]() {
     boost::depth_first_search(boost_graph, boost::root_vertex(start));
   });
-
-  // Lemon
-  // ListDigraph lemon_graph;
-  // ListDigraph::NodeMap<double> dist(lemon_graph);
-  //
-  // for (auto e : g.edges()) {
-  //  ListDigraph::addArc(e.u, e.v);
-  //}
-  //
-  // ankerl::nanobench::Bench().run("dfs lemon", [&]() {
-  //  ListDigraph::dfs(lemon_graph).distMap(dist).run(s);
-  //});
 }
