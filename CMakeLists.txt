@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Graph++
+project(Graphxx
         DESCRIPTION "C++ graph library"
         HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
         LANGUAGES CXX
@@ -8,11 +8,11 @@ project(Graph++
 
 message("")
 message("  _____                 _                ")
-message(" / ____|               | |     _     _   ")
-message("| |  __ _ __ __ _ _ __ | |__ _| |_ _| |_ ")
-message("| | |_ | '__/ _` | '_ \\| '_ \\_   _|_   _|")
-message("| |__| | | | (_| | |_) | | | ||_|   |_|  ")
-message(" \\_____|_|  \\__,_| .__/|_| |_|           ")
+message(" / ____|               | |               ")
+message("| |  __ _ __ __ _ _ __ | |__ __  ____  __")
+message("| | |_ | '__/ _` | '_ \\| '_ \\\\ \\/ /\\ \\/ /")
+message("| |__| | | | (_| | |_) | | | |>  <  >  < ")
+message(" \\_____|_|  \\__,_| .__/|_| |_/_/\\_\\/_/\\_\\")
 message("                 | |                     ")
 message("                 |_|                     ")
 message("")
@@ -24,15 +24,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Boost flags
-# set(Boost_USE_STATIC_LIBS OFF)
-# set(Boost_USE_MULTITHREADED ON)
-# set(Boost_USE_STATIC_RUNTIME OFF)
-#
-# # Find Boost and Lemon
-# find_package(Boost 1.81.0 COMPONENTS *boost libraries here*)
-# find_package(Lemon 1.3.1 COMPONENTS *lemon libraries here*)
-#
 
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
@@ -54,18 +45,6 @@ set(LINKER_FLAGS
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
         $<$<BOOL:${COVERAGE}>:--coverage>
 )
-
-include(FetchContent)
-
-# Fetch nanobench for benchmarking
-FetchContent_Declare(
-        nanobench
-        GIT_REPOSITORY https://github.com/martinus/nanobench.git
-        GIT_TAG v4.1.0
-        GIT_SHALLOW TRUE
-)
-
-FetchContent_MakeAvailable(nanobench)
 
 # ###############################################################################
 # VARIABLES
@@ -186,6 +165,7 @@ if(COVERAGE)
                 --gcov-executable gcov-${GCC_MAJOR}
                 --root ${PROJECT_SOURCE_DIR}
                 -e ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
+                -e ${PROJECT_SOURCE_DIR}/test/.*
                 --html --html-details coverage.html
                 COMMENT "Generating Code Coverage"
         )
@@ -235,7 +215,7 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
-        # PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
@@ -287,91 +267,138 @@ add_test(NAME digraphTest
 # ###############################################################################
 # EXAMPLES
 # ###############################################################################
-add_executable(graphviz_example)
-target_sources(graphviz_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
-)
 
-target_include_directories(graphviz_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
-)
-
-target_link_libraries(graphviz_example
-        PUBLIC graph
-)
-
-install(
-        TARGETS graphviz_example
-        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-)
-
-add_executable(gdb_example)
-target_sources(gdb_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/examples/ford_fulkerson_gdb.cpp
-)
-
-target_include_directories(gdb_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
-)
-
-target_link_libraries(gdb_example
-        PUBLIC graph
-)
-
-install(
-        TARGETS gdb_example
-        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-)
-
-# add_executable(benchmark_example)
-# target_sources(benchmark_example
-#         PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
-# )
-# target_link_libraries(benchmark_example PRIVATE nanobench)
-
-# install(
-#         TARGETS benchmark_example
-#         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-# )
-
-# if(BENCHMARK)
-# add_executable(benchmark_example)
-# add_subdirectory(benchmark)
-#
-# target_sources(benchmark_example
-# PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_example.cpp
+# graphviz example
+# add_executable(graphviz_example)
+# target_sources(graphviz_example
+# PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
 # )
 #
-# target_include_directories(benchmark_example
+# target_include_directories(graphviz_example
 # PRIVATE ${PROJECT_SOURCE_DIR}/src
 # )
 #
-# target_link_libraries(benchmark_example
+# target_link_libraries(graphviz_example
 # PUBLIC graph
-# PUBLIC benchmark::benchmark
 # )
 #
 # install(
-# TARGETS benchmark_example
+# TARGETS graphviz_example
 # RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
 # )
-# endif()
+if(BENCHMARK)
+        # Fetch nanobench for benchmarking
+        include(FetchContent)
+        FetchContent_Declare(
+                nanobench
+                GIT_REPOSITORY https://github.com/martinus/nanobench.git
+                GIT_TAG v4.1.0
+                GIT_SHALLOW TRUE
+        )
+        FetchContent_MakeAvailable(nanobench)
 
-# Boost example
-# if(Boost_FOUND)
-# message("BOOST FOUNDED")
-# include_directories(${Boost_INCLUDE_DIRS})
-# add_executable(boost_example ...)
-# target_link_libraries(boost_example ${Boost_LIBRARIES})
-# endif()
-#
-# # Lemon example
-# if(Lemon_FOUND)
-# message("LEMON FOUNDED")
-# include_directories(...)
-# add_executable(lemon_example ...)
-# target_link_libraries(lemon_example ...)
-# endif()
+        # Boost flags
+        set(Boost_USE_STATIC_LIBS OFF)
+        set(Boost_USE_MULTITHREADED ON)
+        set(Boost_USE_STATIC_RUNTIME OFF)
+
+        # Find Boost
+        find_package(Boost 1.71.0 COMPONENTS graph)
+
+        if (Boost_FOUND)
+                include_directories(${Boost_INCLUDE_DIRS})
+
+                # dijkstra
+                add_executable(benchmark_dijkstra)
+
+                target_sources(benchmark_dijkstra
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dijkstra.cpp
+                )
+
+                target_include_directories(benchmark_dijkstra
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_dijkstra
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # kruskal
+                add_executable(benchmark_krsukal)
+
+                target_sources(benchmark_krsukal
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
+                )
+
+                target_include_directories(benchmark_krsukal
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_krsukal
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # bfs
+                add_executable(benchmark_bfs)
+
+                target_sources(benchmark_bfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
+                )
+
+                target_include_directories(benchmark_bfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_bfs
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # dfs
+                add_executable(benchmark_dfs)
+
+                target_sources(benchmark_dfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
+                )
+
+                target_include_directories(benchmark_dfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_dfs
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # bellman_ford
+                add_executable(benchmark_bellman_ford)
+
+                target_sources(benchmark_bellman_ford
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
+                )
+
+                target_include_directories(benchmark_bellman_ford
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_bellman_ford
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                install(
+                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
+                        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+                )
+        endif()
+endif()
 
 # ###############################################################################
 # CLEAN

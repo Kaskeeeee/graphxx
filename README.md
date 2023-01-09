@@ -1,1 +1,1 @@
-# Graph++ Library
+# Graphxx Library

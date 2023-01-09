@@ -46,6 +46,7 @@ BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
         tree[adjacent].status = VertexStatus::WAITING;
         tree[adjacent].parent = vertex_id;
         tree[adjacent].edge = out_edge;
+        tree[adjacent].residual_capacity = cf;
         queue.push(adjacent);
       }
     }
@@ -58,8 +59,8 @@ BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType>
-WeightType visit(const G &graph, const Vertex &source, const Vertex &sink,
-                 C &&edges_capacity) {
+FFpair<WeightType> visit(const G &graph, const Vertex &source,
+                         const Vertex &sink, C &&edges_capacity) {
 
   FlowMap<WeightType> flow;
 
@@ -77,13 +78,7 @@ WeightType visit(const G &graph, const Vertex &source, const Vertex &sink,
   while (tree[sink].status == VertexStatus::PROCESSED) {
     WeightType path_flow = std::numeric_limits<WeightType>::max();
     for (int v = sink; v != source; v = tree[v].parent) {
-      WeightType cf;
-      if (graph.get_edge(tree[v].edge) != INVALID_EDGE) {
-        cf = edges_capacity[tree[v].edge] - flow.at(tree[v].edge);
-      } else {
-        cf = edges_capacity[tree[v].edge] + flow.at(tree[v].edge);
-      }
-      path_flow = std::min(path_flow, cf);
+      path_flow = std::min(path_flow, tree[v].residual_capacity);
     }
 
     for (int v = sink; v != source; v = tree[v].parent) {
@@ -92,10 +87,6 @@ WeightType visit(const G &graph, const Vertex &source, const Vertex &sink,
       } else {
         flow[tree[v].edge] -= path_flow;
       }
-
-      // if (flow[tree[v].edge] < 0) {
-      //   flow[tree[v].edge] = 0
-      // }
     }
 
     // Adding the path flows
@@ -104,7 +95,7 @@ WeightType visit(const G &graph, const Vertex &source, const Vertex &sink,
     tree = bfs(g, graph, source, edges_capacity, flow);
   }
 
-  return max_flow;
+  return FFpair{flow, max_flow};
 }
 
 } // namespace graph::algorithms::ford_fulkerson

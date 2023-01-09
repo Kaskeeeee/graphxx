@@ -24,8 +24,36 @@ AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph<DN> &graph)
     _adj[v] = {};
   }
 
+  bool flag;
   for (Edge e : graph.edges()) {
-    add_edge(e.u, e.v);
+    flag = false;
+    for (Edge ed : graph.edges()) {
+      if (e.v == ed.u && e.u == ed.v) {
+        _adj[e.u].push_back(e);
+        EdgeWrapper links = {e, ed};
+        _edge_map.insert({e, links});
+        flag = true;
+        break;
+      }
+    }
+
+    if (flag) {
+      continue;
+    }
+
+    if constexpr (D == Directedness::UNDIRECTED) {
+      Edge e1{e, e.u, e.v};
+      Edge e2{e, e.v, e.u};
+      _adj[e.u].push_back(e1);
+      _adj[e.v].push_back(e2);
+
+      EdgeWrapper links = {e1, e2};
+      _edge_map.insert({e, links});
+    } else {
+      _adj[e.u].push_back(e);
+      EdgeWrapper links = {e};
+      _edge_map.insert({e, links});
+    }
   }
 };
 

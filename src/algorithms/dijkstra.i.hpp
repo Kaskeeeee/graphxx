@@ -33,36 +33,12 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
     if (vertex != source) {
       tree[vertex] =
           Node{.distance = distance_upperbound, .parent = INVALID_VERTEX};
-      queue.push(std::make_pair(vertex, distance_upperbound));
     }
   }
 
-  // in this implementation, queue keeps also useless elements
-  // this is due to the fact that you can't update order in the queue
-  // without pushing a new element
   while (!queue.empty()) {
-    // extract node and distance of min distance node
-    auto next_pair = queue.top();
-
-    // if the distance is not the one up to date, keep on popping elements
-    // WARNING: to avoid undefined behavior we pop from the queue only if
-    // it still has elements inside, otherwise there may be an infinite loop
-    for (size_t i = 0; i < queue.size() - 1; ++i) {
-      if (tree[next_pair.first].distance == next_pair.second) {
-        break;
-      }
-
-      queue.pop();
-      next_pair = queue.top();
-    }
-
+    auto u = queue.top().first;
     queue.pop();
-
-    [[unlikely]] if (tree[next_pair.first].distance != next_pair.second) {
-      return tree;
-    }
-
-    auto [u, u_distance] = next_pair;
 
     for (auto edge : graph.out_edges(u)) {
       if (weights[edge] < 0) {
@@ -70,8 +46,8 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
             "negative edge weight found");
       }
 
-      auto alternative_distance = u_distance + weights[edge];
-      if (!sum_will_overflow(u_distance, weights[edge]) &&
+      auto alternative_distance = tree[u].distance + weights[edge];
+      if (!sum_will_overflow(tree[u].distance, weights[edge]) &&
           alternative_distance < tree[edge.v].distance) {
         tree[edge.v].distance = alternative_distance;
         tree[edge.v].parent = u;
