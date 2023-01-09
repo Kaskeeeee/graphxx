@@ -1,6 +1,7 @@
 #include "base.hpp"
 #include "utils.hpp"
 #include "graph_concepts.hpp"
+#include "exceptions.hpp"
 
 #include <vector>
 #include <string>
@@ -19,7 +20,7 @@ void serialize(std::ostream &out, const G &graph, C &weights) {
     else if (std::is_floating_point_v<WeightType>)
         number_format = "real";
     else
-        ; // TODO: error
+        throw exceptions::InvariantViolationException("Weight type must be numerical type");
 
     const std::string header = "%%MatrixMarket matrix coordinate " + number_format + " general";
 
@@ -65,7 +66,7 @@ void deserialize(std::istream &in, G &graph, C &weights) {
         header_string >> s;
     
     if (header[0] != "%%MatrixMarket");
-        // TODO: unsupported format
+        throw exceptions::BadMatrixMarketParseException();
 
     // check if graph is weighted
     if (header[3] == "pattern")
@@ -79,7 +80,7 @@ void deserialize(std::istream &in, G &graph, C &weights) {
     else if (header[4] == "symmetric")
         symmetric = true;
     else
-        ;  // TODO: unsupported format
+        throw exceptions::BadMatrixMarketParseException();
 
     // skip comment lines
     while (std::getline(in, input_string)) {

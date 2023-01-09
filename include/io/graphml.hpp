@@ -65,7 +65,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  * @param[out] out output stream
  * @param[in] graph input graph object
  * @param[in] get_vertex_properties function that returns a propery map for each
- * vertex
+ *                                  vertex
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -81,16 +81,32 @@ void serialize(std::ostream &out, const G &graph,
  * @param[out] out output stream
  * @param[in] graph input graph object
  * @param[in] get_vertex_properties function that returns a propery map for each
- * vertex
+ *                                  vertex
  * @param[in] get_edge_properties function that returns a propery map for each
- * edge
+ *                                edge
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
                std::function<GraphMLProperties(Vertex)> get_vertex_properties,
                std::function<GraphMLProperties(Edge)> get_edge_properties);
 
-template <concepts::Graph G> void deserialize(std::istream &in, G &graph);
+/**
+ * @brief Interprets a graph described using the GraphML language and
+ *        builds a graph object that captures that description.
+ *        You must pass an undirected graph when reading an undirected graph,
+ *        the same is true for directed graphs.
+ * @tparam G type of output graph
+ * @param[in]  in input stream
+ * @param[out] graph refrence to output graph
+ * @param[out] vertex_properties reference to map in which store the attributes
+ *                               of the vertices
+ * @param[out] edge_properties reference to map in which store the attributes of
+ *                             the edges
+ */
+template <concepts::Graph G>
+void deserialize(std::istream &in, G &graph,
+                 std::unordered_map<Id, GraphMLProperties> &vertex_properties,
+                 std::unordered_map<Id, GraphMLProperties> &edge_properties);
 
 } // namespace graph::io::graphml
 

@@ -68,7 +68,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  * @param[out] out output stream
  * @param[in] graph input graph object
  * @param[in] get_vertex_properties function that returns a propery map for each
- * vertex
+ *                                  vertex
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -85,9 +85,9 @@ void serialize(std::ostream &out, const G &graph,
  * @param[out] out output stream
  * @param[in] graph input graph object
  * @param[in] get_vertex_properties function that returns a propery map for each
- * vertex
+ *                                  vertex
  * @param[in] get_edge_properties function that returns a propery map for each
- * edge
+ *                                edge
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -103,9 +103,9 @@ void serialize(std::ostream &out, const G &graph,
  * @param[in]  in input stream
  * @param[out] graph refrence to output graph
  * @param[out] vertex_properties reference to map in which store the attributes
- * of the vertices
+ *                               of the vertices
  * @param[out] edge_properties reference to map in which store the attributes of
- * the edges
+ *                             the edges
  */
 template <concepts::Graph G>
 void deserialize(std::istream &in, G &graph,
