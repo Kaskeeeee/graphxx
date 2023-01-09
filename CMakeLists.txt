@@ -269,23 +269,24 @@ add_test(NAME digraphTest
 # ###############################################################################
 
 # graphviz example
-# add_executable(graphviz_example)
-# target_sources(graphviz_example
-# PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
-# )
-#
-# target_include_directories(graphviz_example
-# PRIVATE ${PROJECT_SOURCE_DIR}/src
-# )
-#
-# target_link_libraries(graphviz_example
-# PUBLIC graph
-# )
-#
-# install(
-# TARGETS graphviz_example
-# RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-# )
+add_executable(graphviz_example)
+target_sources(graphviz_example
+PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
+)
+
+target_include_directories(graphviz_example
+PRIVATE ${PROJECT_SOURCE_DIR}/src
+)
+
+target_link_libraries(graphviz_example
+PUBLIC graph
+)
+
+install(
+TARGETS graphviz_example
+RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+)
+
 if(BENCHMARK)
         # Fetch nanobench for benchmarking
         include(FetchContent)

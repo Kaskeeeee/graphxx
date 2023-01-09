@@ -45,8 +45,8 @@ using GraphvizProperties = std::unordered_map<std::string, std::string>;
  * @tparam D directedness of graph object (directed/undirected)
  */
 template <Directedness D> struct GraphvizTraits {
-  static std::string name();
-  static std::string delimiter();
+    static std::string name();
+    static std::string delimiter();
 };
 
 /**
@@ -108,10 +108,9 @@ void serialize(std::ostream &out, const G &graph,
  * the edges
  */
 template <concepts::Graph G>
-void deserialize(
-    std::istream &in, G &graph,
-    std::unordered_map<Vertex, GraphvizProperties> &vertex_properties,
-    std::unordered_map<Edge, GraphvizProperties> &edge_properties);
+void deserialize(std::istream &in, G &graph,
+                 std::unordered_map<Id, GraphvizProperties> &vertex_properties,
+                 std::unordered_map<Id, GraphvizProperties> &edge_properties);
 
 } // namespace graph::io::graphviz
 

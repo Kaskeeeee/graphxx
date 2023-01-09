@@ -44,17 +44,16 @@ int main() {
   // gen.generate_random_graph(g, 1000, 3000);
 
 
-  // std::unordered_map<Id, std::unordered_map<std::string, std::string>> vertex_properties; 
-  // std::unordered_map<Id, std::unordered_map<std::string, std::string>> edge_properties;
+  std::unordered_map<Id, io::graphviz::GraphvizProperties> vertex_properties; 
+  std::unordered_map<Id, io::graphviz::GraphvizProperties> edge_properties;
 
-  // fstream input_file("../build/test.txt");
-  // io::graphviz::deserialize(input_file, g, vertex_properties, edge_properties);
+  fstream input_file("../build/test.txt");
+  io::graphviz::deserialize(input_file, g, vertex_properties, edge_properties);
 
-  /*
 
-  io::graphml::serialize(cout, g, [&](Vertex v) {
-    return io::graphviz::GraphvizProperties{{"label", vertex_map[v.id]}};
-  }); */
+  io::graphviz::serialize(cout, g, [&](Vertex v) {
+    return vertex_properties[v.id];
+  }); 
 
   return 0;
 }
