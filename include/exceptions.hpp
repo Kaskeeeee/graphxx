@@ -38,4 +38,24 @@ struct InvariantViolationException : GraphException {
   InvariantViolationException(std::string message);
 };
 
+struct DirectedGraphParseException: GraphException {
+  DirectedGraphParseException();
+};
+
+struct UndirectedGraphParseException: GraphException {
+  UndirectedGraphParseException();
+};
+
+struct BadGraphvizParseException: GraphException {
+  BadGraphvizParseException();
+};
+
+struct BadGraphmlParseException: GraphException {
+  BadGraphmlParseException();
+};
+
+struct BadMatrixMarketParseException: GraphException {
+  BadMatrixMarketParseException();
+};
+
 } // namespace graph::exceptions

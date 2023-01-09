@@ -18,4 +18,19 @@ NoSuchEdgeException::NoSuchEdgeException()
 InvariantViolationException::InvariantViolationException(std::string message)
     : GraphException("Invariant violation exception: " + message){};
 
+DirectedGraphParseException::DirectedGraphParseException() 
+    : GraphException("Tried to read a directed graph into an undirected graph"){};
+
+UndirectedGraphParseException::UndirectedGraphParseException()
+    : GraphException("Tried to read an undirected graph into a directed graph"){};
+
+BadGraphvizParseException::BadGraphvizParseException()
+    : GraphException("Bad graphviz file syntax"){};
+
+BadGraphmlParseException::BadGraphmlParseException()
+    : GraphException("Bad graphml file syntax"){};
+
+BadMatrixMarketParseException::BadMatrixMarketParseException()
+    : GraphException("Bad matrix market file syntax"){};
+
 } // namespace graph::exceptions
