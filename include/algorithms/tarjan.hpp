@@ -2,6 +2,7 @@
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include <vector>
+#include <unordered_map>
 
 namespace graph::algorithms::tarjan {
 

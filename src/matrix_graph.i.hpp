@@ -89,7 +89,7 @@ void AdjacencyMatrixGraph<D>::remove_edge(const Edge &e) {
 
 template <Directedness D> auto AdjacencyMatrixGraph<D>::vertices() const {
   return _adj | std::views::transform(
-                    [](std::pair<Id, std::unordered_map<Id, Id>> pair) {
+                    [](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
                       return Vertex{pair.first};
                     });
 }
@@ -102,7 +102,7 @@ template <Directedness D> auto AdjacencyMatrixGraph<D>::edges() const {
 template <Directedness D>
 auto AdjacencyMatrixGraph<D>::out_edges(const Vertex &v) const {
   return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
-           return _edge_map[pair.second];
+           return _edge_map.at(pair.second);
          });
 }
 
@@ -110,12 +110,12 @@ template <Directedness D>
 auto AdjacencyMatrixGraph<D>::in_edges(const Vertex &v) const {
   return _adj |
          std::views::filter(
-             [&](std::pair<Id, std::unordered_map<Id, Id>> pair) {
+             [&](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
                return pair.second.contains(v);
              }) |
          std::views::transform(
-             [&](std::pair<Id, std::unordered_map<Id, Id>> pair) {
-               return _edge_map[pair.second[v]];
+             [&](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
+               return _edge_map.at(pair.second.at(v));
              });
 }
 

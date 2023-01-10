@@ -17,14 +17,14 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 
   using VertexDistancePair = std::pair<Vertex, WeightType>;
-  constexpr auto comparator = [&](const VertexDistancePair &p,
+  constexpr auto COMPARATOR = [&](const VertexDistancePair &p,
                                   const VertexDistancePair &q) {
     return p.second > q.second;
   };
 
   std::priority_queue<VertexDistancePair, std::vector<VertexDistancePair>,
-                      decltype(comparator)>
-      queue{comparator};
+                      decltype(COMPARATOR)>
+      queue{COMPARATOR};
 
   tree[source] = {.distance = 0, .parent = INVALID_VERTEX};
   queue.push(std::make_pair(source, 0));

@@ -8,9 +8,8 @@ namespace graph::algorithms::kruskal {
 Id find_representative(ClusterMap &map, Id id) {
   if (id == map[id]) {
     return id;
-  } else {
-    return find_representative(map, map[id]);
   }
+  return find_representative(map, map[id]);
 };
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
@@ -21,14 +20,14 @@ Tree visit(const G &graph, C &&weights) {
   ClusterMap map;
 
   using EdgeWeightPair = std::pair<Edge, WeightType>;
-  constexpr auto comparator = [&](const EdgeWeightPair &p,
+  constexpr auto COMPARATOR = [&](const EdgeWeightPair &p,
                                   const EdgeWeightPair &q) {
     return p.second > q.second;
   };
 
   std::priority_queue<EdgeWeightPair, std::vector<EdgeWeightPair>,
-                      decltype(comparator)>
-      queue{comparator};
+                      decltype(COMPARATOR)>
+      queue{COMPARATOR};
 
   // Queue ordered by ascending edge weight
   for (auto edge : graph.edges()) {

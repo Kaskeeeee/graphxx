@@ -60,7 +60,7 @@ void serialize(std::ostream &out, const G &graph,
   }
 
   // graph default directedness
-  std::string edgedefault = (G::directedness == Directedness::UNDIRECTED) ? "undirected" : "directed";
+  std::string edgedefault = (G::DIRECTEDNESS == Directedness::UNDIRECTED) ? "undirected" : "directed";
   out << "\t" << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\"" << std::endl;
 
   // declaring nodes
@@ -144,10 +144,10 @@ void deserialize(std::istream &in, G &graph,
     pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
 
     // check graph directedness
-    if (G::directedness == Directedness::UNDIRECTED && directedness.name() != "undirected")
+    if (G::DIRECTEDNESS == Directedness::UNDIRECTED && directedness.name() != "undirected")
       throw exceptions::UndirectedGraphParseException();
 
-    if (G::directedness == Directedness::DIRECTED && directedness.name() != "directed")
+    if (G::DIRECTEDNESS == Directedness::DIRECTED && directedness.name() != "directed")
       throw exceptions::DirectedGraphParseException();
 
     // get GraphML-Attributes

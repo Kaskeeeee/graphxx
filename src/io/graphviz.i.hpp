@@ -30,7 +30,7 @@ void serialize(std::ostream &out, const G &graph,
                std::function<GraphvizProperties(Vertex)> get_vertex_properties,
                std::function<GraphvizProperties(Edge)> get_edge_properties) {
 
-    using Traits = GraphvizTraits<G::directedness>;
+    using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
     out << Traits::name() << " "
         << "{" << std::endl;
@@ -128,7 +128,7 @@ void deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Id, GraphvizProperties> &vertex_properties,
     std::unordered_map<Id, GraphvizProperties> &edge_properties) {
-    using Traits = GraphvizTraits<G::directedness>;
+    using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
     const std::vector<std::string> STATEMENT_SEPARATORS = {";", "\r\n", "\n"};
     const std::vector<std::string> graph_types = { GraphvizTraits<Directedness::DIRECTED>::name(), GraphvizTraits<Directedness::UNDIRECTED>::name() };
@@ -148,7 +148,7 @@ void deserialize(
     size_t graph_type_index = 0;
     if (utils::find_first_of(string_graph, graph_types, graph_type_index) != std::string::npos) {
         Directedness directedness = static_cast<Directedness>(graph_type_index);
-        if (G::directedness != directedness){
+        if (G::DIRECTEDNESS != directedness){
             if (directedness == Directedness::DIRECTED)
                 throw exceptions::DirectedGraphParseException();
             else 

@@ -31,13 +31,13 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 /// edge
 /// @tparam WeightType numeric weight type
 /// @param graph input graph
-/// @param v source vertex
+/// @param source source vertex
 /// @param edges_weights edges weights
 /// @param heuristic_weights heuristic distances for each vertex
 /// @return flatten tree as described for type Tree<WeightType>
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Tree<WeightType> visit(const G &graph, const Vertex &v, C &&edges_weights,
+Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights,
                        C &&heuristic_weights);
 
 } // namespace graph::algorithms::a_star

@@ -11,22 +11,22 @@ template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source) {
 }
 
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f) {
+DFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback) {
   DFSTree tree;
   int time = 0;
   for (Vertex vertex : graph.vertices()) {
     tree[vertex] = DFSVertex{VertexStatus::READY};
   }
 
-  visit_rec(graph, source, f, time, tree);
+  visit_rec(graph, source, callback, time, tree);
 
   return tree;
 }
 
 template <concepts::Graph G>
-void visit_rec(const G &graph, Vertex vertex, std::function<void(Vertex)> f,
+void visit_rec(const G &graph, Vertex vertex, const std::function<void(Vertex)> &callback,
                int &time, DFSTree &tree) {
-  f(vertex);
+  callback(vertex);
 
   tree[vertex].status = VertexStatus::WAITING;
   tree[vertex].discovery_time = ++time;
@@ -36,7 +36,7 @@ void visit_rec(const G &graph, Vertex vertex, std::function<void(Vertex)> f,
 
     if (tree[adjacent].status == VertexStatus::READY) {
       tree[adjacent].parent = vertex;
-      visit_rec(graph, Vertex{adjacent}, f, time, tree);
+      visit_rec(graph, Vertex{adjacent}, callback, time, tree);
     }
   }
 

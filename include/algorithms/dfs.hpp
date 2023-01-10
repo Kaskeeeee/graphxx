@@ -18,7 +18,7 @@ using DFSTree = std::unordered_map<Id, DFSVertex>;
 template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source);
 
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f);
+DFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback);
 } // namespace graph::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"

@@ -11,7 +11,7 @@ template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source) {
 }
 
 template <concepts::Graph G>
-BFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f) {
+BFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback) {
   BFSTree tree;
   for (auto vertex : graph.vertices()) {
     tree[vertex] = BFSVertex{VertexStatus::READY};
@@ -28,7 +28,7 @@ BFSTree visit(const G &graph, Vertex source, std::function<void(Vertex)> f) {
     Id vertex_id = queue.front();
     queue.pop();
 
-    f(Vertex{vertex_id});
+    callback(Vertex{vertex_id});
 
     for (Edge out_edge : graph.out_edges(Vertex{vertex_id})) {
       Id adjacent = out_edge.v;

@@ -9,7 +9,7 @@
 namespace graph::algorithms::ford_fulkerson {
 
 template <concepts::Graph G, concepts::Graph DG, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+          concepts::Numeric WeightType>
 BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
             C &&edge_capacity, const FlowMap<WeightType> &edges_flow) {
   BFSTree tree;

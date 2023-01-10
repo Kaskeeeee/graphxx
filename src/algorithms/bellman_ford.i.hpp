@@ -12,21 +12,21 @@ Node<WeightType>::Node()
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType>
-Tree<WeightType> visit(const G &graph, const Vertex &v, C &&edges_weights) {
+Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights) {
   Tree<WeightType> tree;
-  tree[v].distance = 0;
-  tree[v].parent = INVALID_VERTEX;
+  tree[source].distance = 0;
+  tree[source].parent = INVALID_VERTEX;
 
   // Relax edges |nodes| - 1 times
   for (size_t i = 0; i < graph.vertices().size() - 1; ++i) {
     for (auto edge : graph.edges()) {
-      auto &source = tree[edge.u];
-      auto &target = tree[edge.v];
+      auto &edge_source = tree[edge.u];
+      auto &edge_target = tree[edge.v];
 
-      if (!sum_will_overflow(source.distance, edges_weights[edge]) &&
-          source.distance + edges_weights[edge] < target.distance) {
-        target.distance = source.distance + edges_weights[edge];
-        target.parent = edge.u;
+      if (!sum_will_overflow(edge_source.distance, edges_weights[edge]) &&
+          edge_source.distance + edges_weights[edge] < edge_target.distance) {
+        edge_target.distance = edge_source.distance + edges_weights[edge];
+        edge_target.parent = edge.u;
       }
     }
   }
@@ -35,11 +35,11 @@ Tree<WeightType> visit(const G &graph, const Vertex &v, C &&edges_weights) {
   // if value changes then we have a negative cycle in the graph and we cannot
   // find the shortest distances
   for (auto edge : graph.edges()) {
-    auto &source = tree[edge.u];
-    auto &target = tree[edge.v];
+    auto &edge_source = tree[edge.u];
+    auto &edge_target = tree[edge.v];
 
-    if (!sum_will_overflow(source.distance, edges_weights[edge]) &&
-        source.distance + edges_weights[edge] < target.distance) {
+    if (!sum_will_overflow(edge_source.distance, edges_weights[edge]) &&
+        edge_source.distance + edges_weights[edge] < edge_target.distance) {
       throw exceptions::InvariantViolationException("negative cycle found");
     }
   }

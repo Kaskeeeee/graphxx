@@ -57,8 +57,8 @@ concept Subscriptable = requires(Container c, Key k) { c[k]; };
 template <typename T>
 concept DirectednessTaggable =
     requires(T t) {
-      T::directedness;
-      requires T::directedness == Directedness::DIRECTED || T::directedness == Directedness::UNDIRECTED;
+      T::DIRECTEDNESS;
+      requires T::DIRECTEDNESS == Directedness::DIRECTED || T::DIRECTEDNESS == Directedness::UNDIRECTED;
     };
 
 template <typename T>

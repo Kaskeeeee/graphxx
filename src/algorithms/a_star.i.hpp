@@ -11,22 +11,22 @@
 namespace graph::algorithms::a_star {
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+          concepts::Numeric WeightType>
 Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
                        C &&heuristic_weights) {
   Tree<WeightType> tree;
   auto distance_upperbound = std::numeric_limits<WeightType>::max();
 
   using VertexHeuristicDistancePair = std::pair<Vertex, WeightType>;
-  constexpr auto comparator = [&](const VertexHeuristicDistancePair &p,
+  constexpr auto COMPARATOR = [&](const VertexHeuristicDistancePair &p,
                                   const VertexHeuristicDistancePair &q) {
     return p.second > q.second;
   };
 
   std::priority_queue<VertexHeuristicDistancePair,
                       std::vector<VertexHeuristicDistancePair>,
-                      decltype(comparator)>
-      queue{comparator};
+                      decltype(COMPARATOR)>
+      queue{COMPARATOR};
 
   tree[source] = {.distance = 0,
                   .heuristic_distance = heuristic_weights[source],

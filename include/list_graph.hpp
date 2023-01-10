@@ -18,12 +18,12 @@ protected:
   using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
 
 public:
-  static constexpr Directedness directedness = D;
+  static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyListGraph();
 
   template <Directedness DN>
-  AdjacencyListGraph(const AdjacencyListGraph<DN> &graph);
+  explicit AdjacencyListGraph(const AdjacencyListGraph<DN> &graph);
 
   Vertex add_vertex();
   void remove_vertex(const Vertex &v);

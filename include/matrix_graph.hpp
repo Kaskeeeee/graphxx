@@ -14,7 +14,7 @@ protected:
   using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
-  static constexpr Directedness directedness = D;
+  static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyMatrixGraph();
   AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);

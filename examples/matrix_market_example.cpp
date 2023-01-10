@@ -8,12 +8,11 @@
 using namespace graph;
 using namespace std;
 
-int main()
-{
-    AdjacencyListGraph<Directedness::DIRECTED> g{};
-    unordered_map<int, double> weights;
-    fstream input_file("../examples/mm.txt");
-    io::matrix_market::deserialize(input_file, g, weights);
-    io::matrix_market::serialize(cout, g, weights);
-    return 0;
+int main() {
+  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  unordered_map<int, double> weights;
+  fstream input_file("../examples/mm.txt");
+  io::matrix_market::deserialize(input_file, g, weights);
+  io::matrix_market::serialize(cout, g, weights);
+  return 0;
 }

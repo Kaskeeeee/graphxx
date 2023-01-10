@@ -24,7 +24,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
 
@@ -33,6 +32,9 @@ option(COVERAGE "Enable coverage output" OFF)
 
 # Compile with benchmark
 option(BENCHMARK "Enable benchmarking" OFF)
+
+# find clang-tidy
+#find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
 
 # -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
@@ -174,9 +176,9 @@ endif()
 # ###############################################################################
 # TIDY
 # ###############################################################################
-add_custom_target(tidy
-        COMMAND clang-tidy ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} -checks=*
-)
+#add_custom_target(tidy
+#        COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
+#)
 
 # ###############################################################################
 # DOCUMENTATION
@@ -271,20 +273,20 @@ add_test(NAME digraphTest
 # graphviz example
 add_executable(graphviz_example)
 target_sources(graphviz_example
-PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
 )
 
 target_include_directories(graphviz_example
-PRIVATE ${PROJECT_SOURCE_DIR}/src
+        PRIVATE ${PROJECT_SOURCE_DIR}/src
 )
 
 target_link_libraries(graphviz_example
-PUBLIC graph
+        PUBLIC graph
 )
 
 install(
-TARGETS graphviz_example
-RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+        TARGETS graphviz_example
+        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
 )
 
 if(BENCHMARK)
@@ -306,7 +308,7 @@ if(BENCHMARK)
         # Find Boost
         find_package(Boost 1.71.0 COMPONENTS graph)
 
-        if (Boost_FOUND)
+        if(Boost_FOUND)
                 include_directories(${Boost_INCLUDE_DIRS})
 
                 # dijkstra

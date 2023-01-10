@@ -140,7 +140,7 @@ void AdjacencyListGraph<D>::remove_edge(const Edge &e) {
 };
 
 template <Directedness D> auto AdjacencyListGraph<D>::vertices() const {
-  return _adj | std::views::transform([](std::pair<Id, EdgeList> pair) {
+  return _adj | std::views::transform([](const std::pair<Id, EdgeList> &pair) {
            return Vertex(pair.first);
          });
 }

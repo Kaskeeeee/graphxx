@@ -1,8 +1,9 @@
 #include "exceptions.hpp"
 #include "base.hpp"
+#include <string>
 
 namespace graph::exceptions {
-GraphException::GraphException(std::string message) : _message{message} {};
+GraphException::GraphException(std::string message) : _message{std::move(message)} {};
 
 const char *GraphException::what() const noexcept { return _message.c_str(); };
 
@@ -15,7 +16,7 @@ NoSuchVertexException::NoSuchVertexException()
 NoSuchEdgeException::NoSuchEdgeException()
     : GraphException("Edge is missing from graph exeception"){};
 
-InvariantViolationException::InvariantViolationException(std::string message)
+InvariantViolationException::InvariantViolationException(const std::string &message)
     : GraphException("Invariant violation exception: " + message){};
 
 DirectedGraphParseException::DirectedGraphParseException() 
