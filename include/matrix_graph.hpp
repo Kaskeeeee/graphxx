@@ -1,4 +1,5 @@
 #pragma once
+
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "id_manager.hpp"

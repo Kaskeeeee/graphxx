@@ -1,5 +1,6 @@
-#include "algorithms_base.hpp"
 #include "algorithms/bfs.hpp"
+#include "algorithms_base.hpp"
+#include "base.hpp"
 #include "graph_concepts.hpp"
 
 #include <functional>
@@ -12,7 +13,8 @@ template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source) {
 }
 
 template <concepts::Graph G>
-BFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback) {
+BFSTree visit(const G &graph, Vertex source,
+              const std::function<void(Vertex)> &callback) {
   BFSTree tree;
   for (auto vertex : graph.vertices()) {
     tree[vertex] = BFSVertex{VertexStatus::READY};

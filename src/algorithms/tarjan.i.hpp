@@ -1,4 +1,5 @@
 #include "algorithms/tarjan.hpp"
+#include "base.hpp"
 #include "graph_concepts.hpp"
 
 #include <algorithm>

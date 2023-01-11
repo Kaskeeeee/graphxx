@@ -1,4 +1,5 @@
 #include "algorithms/kruskal.hpp"
+#include "base.hpp"
 
 #include <queue>
 

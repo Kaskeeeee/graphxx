@@ -1,5 +1,7 @@
 #pragma once
+
 #include "base.hpp"
+
 #include <concepts>
 #include <ranges>
 
@@ -57,7 +59,8 @@ template <typename T>
 concept DirectednessTaggable =
     requires(T t) {
       T::DIRECTEDNESS;
-      requires T::DIRECTEDNESS == Directedness::DIRECTED || T::DIRECTEDNESS == Directedness::UNDIRECTED;
+      requires T::DIRECTEDNESS == Directedness::DIRECTED ||
+                       T::DIRECTEDNESS == Directedness::UNDIRECTED;
     };
 
 template <typename T>

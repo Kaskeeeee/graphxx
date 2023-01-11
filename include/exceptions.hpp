@@ -1,5 +1,5 @@
 #pragma once
-#include "base.hpp"
+
 #include <exception>
 #include <string>
 
@@ -38,23 +38,23 @@ struct InvariantViolationException : GraphException {
   explicit InvariantViolationException(const std::string &message);
 };
 
-struct DirectedGraphParseException: GraphException {
+struct DirectedGraphParseException : GraphException {
   DirectedGraphParseException();
 };
 
-struct UndirectedGraphParseException: GraphException {
+struct UndirectedGraphParseException : GraphException {
   UndirectedGraphParseException();
 };
 
-struct BadGraphvizParseException: GraphException {
+struct BadGraphvizParseException : GraphException {
   BadGraphvizParseException();
 };
 
-struct BadGraphmlParseException: GraphException {
+struct BadGraphmlParseException : GraphException {
   BadGraphmlParseException();
 };
 
-struct BadMatrixMarketParseException: GraphException {
+struct BadMatrixMarketParseException : GraphException {
   BadMatrixMarketParseException();
 };
 

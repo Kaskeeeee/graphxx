@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graph_concepts.hpp"
+
 #include <limits>
 #include <type_traits>
 

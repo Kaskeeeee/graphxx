@@ -1,4 +1,5 @@
 #pragma once
+
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "id_manager.hpp"
@@ -14,7 +15,9 @@ template <Directedness D> class AdjacencyListGraph {
 protected:
   using EdgeList = std::list<Id>;
   using AdjacencyList = std::unordered_map<Id, EdgeList>;
-  using EdgeWrapper = std::conditional_t<D == Directedness::DIRECTED, std::array<Edge, 1>, std::array<Edge, 2>>;
+  using EdgeWrapper =
+      std::conditional_t<D == Directedness::DIRECTED, std::array<Edge, 1>,
+                         std::array<Edge, 2>>;
   using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
 
 public:

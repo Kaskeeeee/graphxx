@@ -1,5 +1,7 @@
 #pragma once
 
+#include "algorithms_base.hpp"
+#include "base.hpp"
 #include "graph_concepts.hpp"
 
 #include <functional>
@@ -18,7 +20,8 @@ using DFSTree = std::unordered_map<Id, DFSVertex>;
 template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source);
 
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback);
+DFSTree visit(const G &graph, Vertex source,
+              const std::function<void(Vertex)> &callback);
 } // namespace graph::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"

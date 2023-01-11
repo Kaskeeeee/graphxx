@@ -1,8 +1,6 @@
 #include "exceptions.hpp"
 #include "id_manager.hpp"
 #include "matrix_graph.hpp"
-#include <cassert>
-#include <ranges>
 
 namespace graph {
 template <Directedness D>

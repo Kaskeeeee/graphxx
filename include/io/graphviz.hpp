@@ -33,8 +33,11 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
+
 #include <fstream>
 #include <functional>
+#include <string>
+#include <unordered_map>
 
 namespace graph::io::graphviz {
 
@@ -45,8 +48,8 @@ using GraphvizProperties = std::unordered_map<std::string, std::string>;
  * @tparam D directedness of graph object (directed/undirected)
  */
 template <Directedness D> struct GraphvizTraits {
-    static std::string name();
-    static std::string delimiter();
+  static std::string name();
+  static std::string delimiter();
 };
 
 /**

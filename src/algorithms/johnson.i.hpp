@@ -1,6 +1,7 @@
 #include "algorithms/bellman_ford.hpp"
 #include "algorithms/dijkstra.hpp"
 #include "algorithms/johnson.hpp"
+#include "base.hpp"
 
 namespace graph::algorithms::johnson {
 
@@ -36,9 +37,9 @@ Map<WeightType> visit(G &graph, C &&edges_weights) {
     auto d_tree = dijkstra::visit(graph, vertex_source, edges_weights);
     for (auto vertex_target : graph.vertices()) {
       map[vertex_source][vertex_target].parent = d_tree[vertex_target].parent;
-      map[vertex_source][vertex_target].distance = d_tree[vertex_target].distance +
-                                          bf_tree[vertex_target].distance -
-                                          bf_tree[vertex_source].distance;
+      map[vertex_source][vertex_target].distance =
+          d_tree[vertex_target].distance + bf_tree[vertex_target].distance -
+          bf_tree[vertex_source].distance;
     }
   }
 

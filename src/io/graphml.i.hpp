@@ -1,16 +1,17 @@
 #include "base.hpp"
+#include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "io/graphml.hpp"
 #include "pugixml.hpp"
-#include "exceptions.hpp"
+#include "string_utils.hpp"
 
 #include <fstream>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <set>
-#include <string>
-#include <iostream>
 #include <string.h>
+#include <string>
 #include <unordered_map>
 
 namespace graph::io::graphml {
@@ -31,15 +32,15 @@ void serialize(std::ostream &out, const G &graph,
   for (auto vertex : graph.vertices()) {
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
     for (const auto &[name, value] : vertex_properties) {
-      if (vertex_key_ids.contains(name)) 
+      if (vertex_key_ids.contains(name))
         continue;
-      
+
       std::string key_id = "k" + std::to_string(key_count++);
       vertex_key_ids[name] = key_id;
-      out << "\t" << "<key id=\"" << key_id << "\" for=\"node\""
+      out << "\t"
+          << "<key id=\"" << key_id << "\" for=\"node\""
           << " attr.name=\"" << name << "\""
-          << " attr.type=\"string\"/>" 
-          << std::endl;
+          << " attr.type=\"string\"/>" << std::endl;
     }
   }
 
@@ -47,37 +48,41 @@ void serialize(std::ostream &out, const G &graph,
   for (auto edge : graph.edges()) {
     GraphMLProperties edge_properties = get_edge_properties(edge);
     for (const auto &[name, value] : edge_properties) {
-      if (edge_key_ids.contains(name)) 
+      if (edge_key_ids.contains(name))
         continue;
-        
+
       std::string key_id = "k" + std::to_string(key_count++);
       edge_key_ids[name] = key_id;
-      out << "\t" << "<key id=\"k" << key_id << "\" for=\"edge\""
+      out << "\t"
+          << "<key id=\"k" << key_id << "\" for=\"edge\""
           << " attr.name=\"" << name << "\""
-          << " attr.type=\"string\"/>" 
-          << std::endl;
+          << " attr.type=\"string\"/>" << std::endl;
     }
   }
 
   // graph default directedness
-  std::string edgedefault = (G::DIRECTEDNESS == Directedness::UNDIRECTED) ? "undirected" : "directed";
-  out << "\t" << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\"" << std::endl;
+  std::string edgedefault =
+      (G::DIRECTEDNESS == Directedness::UNDIRECTED) ? "undirected" : "directed";
+  out << "\t"
+      << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\"" << std::endl;
 
   // declaring nodes
   for (auto vertex : graph.vertices()) {
-    out << "\t\t" << "<node id=\"n" << vertex.id << "\">" << std::endl;
+    out << "\t\t"
+        << "<node id=\"n" << vertex.id << "\">" << std::endl;
 
     // defining GraphML-Attribute values for nodes
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
     if (!vertex_properties.empty()) {
       for (const auto &[key, value] : vertex_properties) {
         out << "\t\t\t"
-            << "<data key=\"" << vertex_key_ids[key] << "\">" << value 
+            << "<data key=\"" << vertex_key_ids[key] << "\">" << value
             << "</data>" << std::endl;
       }
     }
 
-    out << "\t\t" << "</node>" << std::endl;
+    out << "\t\t"
+        << "</node>" << std::endl;
   }
 
   // declaring edges
@@ -86,22 +91,22 @@ void serialize(std::ostream &out, const G &graph,
     if (!inserted_edges.contains(edge)) {
       inserted_edges.insert(edge);
 
-      out << "\t\t" << "<edge id=\"e" << edge.id 
-      << "\" source=\"n" << edge.u.id 
-      << "\" target=\"n" << edge.v.id 
-      << "\">" << std::endl ;
+      out << "\t\t"
+          << "<edge id=\"e" << edge.id << "\" source=\"n" << edge.u.id
+          << "\" target=\"n" << edge.v.id << "\">" << std::endl;
 
       // defining GraphML-Attribute values for edges
       GraphMLProperties edge_properties = get_edge_properties(edge);
       if (!edge_properties.empty()) {
         for (const auto &[key, value] : edge_properties) {
           out << "\t\t\t"
-              << "<data key=\"" << edge_key_ids[key] << "\">" << value 
+              << "<data key=\"" << edge_key_ids[key] << "\">" << value
               << "</data>" << std::endl;
         }
       }
 
-      out << "\t\t" << "</edge>" << std::endl;
+      out << "\t\t"
+          << "</edge>" << std::endl;
     }
   }
 
@@ -126,69 +131,70 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
 }
 
 template <concepts::Graph G>
-void deserialize(std::istream &in, G &graph, 
+void deserialize(std::istream &in, G &graph,
                  std::unordered_map<Id, GraphMLProperties> &vertex_properties,
                  std::unordered_map<Id, GraphMLProperties> &edge_properties) {
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load(in);
+  pugi::xml_document doc;
+  pugi::xml_parse_result result = doc.load(in);
 
-    std::unordered_map<std::string, Vertex> vertices_ids = {};
-    std::unordered_map<std::string, std::string> attributes_names = {};
+  std::unordered_map<std::string, Vertex> vertices_ids = {};
+  std::unordered_map<std::string, std::string> attributes_names = {};
 
-    pugi::xml_node graphml_node = doc.child("graphml");
+  pugi::xml_node graphml_node = doc.child("graphml");
 
-    if (!graphml_node)
-      throw exceptions::BadGraphmlParseException();
+  if (!graphml_node)
+    throw exceptions::BadGraphmlParseException();
 
-    pugi::xml_node graph_node = graphml_node.child("graph");
-    pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
+  pugi::xml_node graph_node = graphml_node.child("graph");
+  pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
 
-    // check graph directedness
-    if (G::DIRECTEDNESS == Directedness::UNDIRECTED && directedness.name() != "undirected")
-      throw exceptions::UndirectedGraphParseException();
+  // check graph directedness
+  if (G::DIRECTEDNESS == Directedness::UNDIRECTED &&
+      directedness.name() != "undirected")
+    throw exceptions::UndirectedGraphParseException();
 
-    if (G::DIRECTEDNESS == Directedness::DIRECTED && directedness.name() != "directed")
-      throw exceptions::DirectedGraphParseException();
+  if (G::DIRECTEDNESS == Directedness::DIRECTED &&
+      directedness.name() != "directed")
+    throw exceptions::DirectedGraphParseException();
 
-    // get GraphML-Attributes
-    for (pugi::xml_node key_node: graphml_node.children("key"))
-    {
-      pugi::xml_attribute attribute_id = key_node.attribute("id");
-      pugi::xml_attribute attribute_name = key_node.attribute("attr.name");
-      attributes_names[attribute_id] = attribute_name;
+  // get GraphML-Attributes
+  for (pugi::xml_node key_node : graphml_node.children("key")) {
+    pugi::xml_attribute attribute_id = key_node.attribute("id");
+    pugi::xml_attribute attribute_name = key_node.attribute("attr.name");
+    attributes_names[std::string(attribute_id.value())] = attribute_name;
+  }
+
+  // get vertices
+  for (pugi::xml_node vertex_node : graph_node.children("node")) {
+    pugi::xml_attribute vertex_id = vertex_node.attribute("id");
+    Vertex v = graph.add_vertex();
+    vertices_ids[vertex_id.value()] = v;
+
+    // vertices attributes
+    for (pugi::xml_node attribute_node : vertex_node.children("data")) {
+      pugi::xml_attribute attribute_key = attribute_node.attribute("key");
+      std::string value = utils::trim(attribute_node.value());
+      vertex_properties[v]
+                       [attributes_names[std::string(attribute_key.value())]] =
+                           value;
     }
+  }
 
-    // get vertices
-    for (pugi::xml_node vertex_node: graph_node.children("node"))
-    {
-        pugi::xml_attribute vertex_id = vertex_node.attribute("id");
-        Vertex v = graph.add_vertex();
-        vertices_ids[vertex_id.value()] = v;
+  // get edges
+  for (pugi::xml_node edge_node : graph_node.children("edge")) {
+    pugi::xml_attribute source_id = edge_node.attribute("source");
+    pugi::xml_attribute target_id = edge_node.attribute("target");
+    Edge e = graph.add_edge(vertices_ids[source_id.value()],
+                            vertices_ids[target_id.value()]);
 
-        // vertices attributes
-        for (pugi::xml_node attribute_node: vertex_node.children("data"))
-        {
-          pugi::xml_attribute attribute_key = attribute_node.attribute("key");
-          std::string value = utils::trim(attribute_node.value());
-          vertex_properties[v][attributes_names[attribute_key]] = value;
-        }
+    // edges attributes
+    for (pugi::xml_node attribute_node : edge_node.children("data")) {
+      pugi::xml_attribute attribute_key = attribute_node.attribute("key");
+      std::string value = attribute_node.value();
+      edge_properties[e][attributes_names[std::string(attribute_key.value())]] =
+          value;
     }
-
-    // get edges
-    for (pugi::xml_node edge_node: graph_node.children("edge"))
-    {
-        pugi::xml_attribute source_id = edge_node.attribute("source");
-        pugi::xml_attribute target_id = edge_node.attribute("target");
-        Edge e = graph.add_edge(vertices_ids[source_id.value()], vertices_ids[target_id.value()]);
-
-        // edges attributes
-        for (pugi::xml_node attribute_node: edge_node.children("data"))
-        {
-          pugi::xml_attribute attribute_key = attribute_node.attribute("key");
-          std::string value = attribute_node.value();
-          edge_properties[e][attributes_names[attribute_key]] = value;
-        }
-    }
+  }
 }
 
 } // namespace graph::io::graphml

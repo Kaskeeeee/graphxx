@@ -1,5 +1,6 @@
-#include "algorithms_base.hpp"
 #include "algorithms/dfs.hpp"
+#include "algorithms_base.hpp"
+#include "base.hpp"
 #include "graph_concepts.hpp"
 
 #include <functional>
@@ -11,7 +12,8 @@ template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source) {
 }
 
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &callback) {
+DFSTree visit(const G &graph, Vertex source,
+              const std::function<void(Vertex)> &callback) {
   DFSTree tree;
   int time = 0;
   for (Vertex vertex : graph.vertices()) {
@@ -24,8 +26,9 @@ DFSTree visit(const G &graph, Vertex source, const std::function<void(Vertex)> &
 }
 
 template <concepts::Graph G>
-void visit_rec(const G &graph, Vertex vertex, const std::function<void(Vertex)> &callback,
-               int &time, DFSTree &tree) {
+void visit_rec(const G &graph, Vertex vertex,
+               const std::function<void(Vertex)> &callback, int &time,
+               DFSTree &tree) {
   callback(vertex);
 
   tree[vertex].status = VertexStatus::WAITING;

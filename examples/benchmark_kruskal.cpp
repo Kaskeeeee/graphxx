@@ -1,17 +1,16 @@
+#include "algorithms/kruskal.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
 #include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
-#include "kruskal.hpp"
 #include "list_graph.hpp"
 #include "utils/graph_generator.hpp"
-#include <bits/stdc++.h>
 
+#include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
-
-#include <iostream> // for std::cout
 #include <nanobench.h>
+#include <unordered_map>
 
 using namespace graph;
 using namespace graph::algorithms;

@@ -1,6 +1,7 @@
 #include "io/graphviz.hpp"
 #include "list_graph.hpp"
 #include "utils/graph_generator.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
@@ -43,17 +44,14 @@ int main() {
 
   // gen.generate_random_graph(g, 1000, 3000);
 
-
-  std::unordered_map<Id, io::graphviz::GraphvizProperties> vertex_properties; 
+  std::unordered_map<Id, io::graphviz::GraphvizProperties> vertex_properties;
   std::unordered_map<Id, io::graphviz::GraphvizProperties> edge_properties;
 
   fstream input_file("../data/test.txt");
   io::graphviz::deserialize(input_file, g, vertex_properties, edge_properties);
 
-
-  io::graphviz::serialize(cout, g, [&](Vertex v) {
-    return vertex_properties[v.id];
-  }); 
+  io::graphviz::serialize(cout, g,
+                          [&](Vertex v) { return vertex_properties[v.id]; });
 
   return 0;
 }

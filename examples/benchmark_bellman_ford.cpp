@@ -1,17 +1,15 @@
 #define ANKERL_NANOBENCH_IMPLEMENT
+#include "algorithms/bellman_ford.hpp"
 #include "base.hpp"
-#include "bellman_ford.hpp"
 #include "io/graphml.hpp"
 #include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
 #include "utils/graph_generator.hpp"
-#include <bits/stdc++.h>
 
+#include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/bellman_ford_shortest_paths.hpp>
-
-#include <iostream> // for std::cout
 #include <nanobench.h>
 
 using namespace graph;

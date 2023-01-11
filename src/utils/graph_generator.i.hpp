@@ -1,5 +1,9 @@
 #include "utils/graph_generator.hpp"
 
+#include <chrono>
+#include <random>
+#include <unordered_map>
+
 namespace graph {
 GraphGenerator::GraphGenerator() : _seed{0}, _fixed_seed{false} {};
 GraphGenerator::GraphGenerator(unsigned int seed)

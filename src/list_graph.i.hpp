@@ -1,11 +1,10 @@
 #pragma once
+
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "id_manager.hpp"
 #include "list_graph.hpp"
 
-#include <cassert>
-#include <ranges>
 #include <type_traits>
 
 namespace graph {

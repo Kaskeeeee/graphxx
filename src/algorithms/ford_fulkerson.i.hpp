@@ -1,5 +1,6 @@
 #include "algorithms/ford_fulkerson.hpp"
 #include "algorithms_base.hpp"
+#include "base.hpp"
 #include "exceptions.hpp"
 #include "list_graph.hpp"
 

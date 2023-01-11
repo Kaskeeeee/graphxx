@@ -34,7 +34,7 @@ option(COVERAGE "Enable coverage output" OFF)
 option(BENCHMARK "Enable benchmarking" OFF)
 
 # find clang-tidy
-#find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
 
 # -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
@@ -176,9 +176,9 @@ endif()
 # ###############################################################################
 # TIDY
 # ###############################################################################
-#add_custom_target(tidy
-#        COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
-#)
+# add_custom_target(tidy
+# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
+# )
 
 # ###############################################################################
 # DOCUMENTATION
@@ -395,7 +395,6 @@ if(BENCHMARK)
                         PUBLIC ${Boost_LIBRARIES}
                         PRIVATE nanobench
                 )
-
                 install(
                         TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
                         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin

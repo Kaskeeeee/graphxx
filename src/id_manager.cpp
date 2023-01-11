@@ -1,7 +1,6 @@
 #include "id_manager.hpp"
+#include "base.hpp"
 #include "exceptions.hpp"
-#include <cassert>
-#include <limits>
 
 namespace graph::utils {
 IdManager::IdManager(Id lower_bound, Id upper_bound)
