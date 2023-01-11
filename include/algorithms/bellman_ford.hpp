@@ -29,7 +29,7 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 /// @brief Implementation of bellman_ford algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
-/// edge
+///         edge
 /// @tparam WeightType numeric weight type
 /// @param graph input graph
 /// @param source source vertex

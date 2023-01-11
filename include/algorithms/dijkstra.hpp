@@ -9,7 +9,7 @@
 namespace graph::algorithms::dijkstra {
 
 /// @brief Node containing informations about the parent (which is the previous
-/// node)
+///        node)
 ///        on the shortest path and its distance from the source
 /// @tparam WeightType numeric weight
 template <concepts::Numeric WeightType> struct Node {
@@ -28,7 +28,7 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 /// @brief Implementation of dijkstra algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
-/// edge
+///         edge
 /// @tparam WeightType numeric weight type
 /// @param graph input graph
 /// @param source source vertex

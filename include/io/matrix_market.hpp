@@ -41,7 +41,7 @@
 namespace graph::io::matrix_market {
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
-///        format.It's possible to assign a weight to the edges of the graph.
+///        format. It's possible to assign a weight to the edges of the graph.
 /// @tparam G type of input graph
 /// @tparam C type of weights map
 /// @tparam WeightType type of weight

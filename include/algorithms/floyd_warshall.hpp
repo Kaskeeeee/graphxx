@@ -24,7 +24,7 @@ template <concepts::Numeric WeightType>
 using Map = std::unordered_map<Id, std::unordered_map<Id, Node<WeightType>>>;
 
 /// @brief Implementantation of Floyd Warhsall algorithm for multi source
-/// shortest paths
+///        shortest paths
 /// @tparam G graph type
 /// @tparam C edge weights supplier (overloads operator[])
 /// @tparam WeightType numeric weight type
