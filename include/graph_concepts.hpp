@@ -1,6 +1,5 @@
 #pragma once
 #include "base.hpp"
-
 #include <concepts>
 #include <ranges>
 

@@ -1,7 +1,8 @@
 #pragma once
-#include "base.hpp"
+
 #include "graph_concepts.hpp"
 #include "utils.hpp"
+
 #include <unordered_map>
 #include <vector>
 

@@ -1,6 +1,6 @@
+#include "algorithms/bellman_ford.hpp"
+#include "algorithms/dijkstra.hpp"
 #include "algorithms/johnson.hpp"
-#include "bellman_ford.hpp"
-#include "dijkstra.hpp"
 
 namespace graph::algorithms::johnson {
 

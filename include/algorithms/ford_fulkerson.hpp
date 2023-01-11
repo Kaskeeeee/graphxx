@@ -3,7 +3,7 @@
 #include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
-#include <functional>
+
 #include <unordered_map>
 
 namespace graph::algorithms::ford_fulkerson {

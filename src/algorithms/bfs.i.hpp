@@ -1,6 +1,7 @@
-#include "algorithms/algorithms_base.hpp"
+#include "algorithms_base.hpp"
 #include "algorithms/bfs.hpp"
 #include "graph_concepts.hpp"
+
 #include <functional>
 #include <queue>
 

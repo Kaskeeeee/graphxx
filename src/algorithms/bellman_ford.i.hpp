@@ -1,6 +1,8 @@
 #include "algorithms/bellman_ford.hpp"
+#include "base.hpp"
 #include "exceptions.hpp"
-#include <cassert>
+#include "graph_concepts.hpp"
+
 #include <limits>
 
 namespace graph::algorithms::bellman_ford {

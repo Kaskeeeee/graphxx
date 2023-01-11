@@ -1,8 +1,8 @@
 #pragma once
 
-#include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
+
 #include <unordered_map>
 
 namespace graph::algorithms::bellman_ford {

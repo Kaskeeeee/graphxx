@@ -1,7 +1,7 @@
 #include "algorithms/tarjan.hpp"
 #include "graph_concepts.hpp"
+
 #include <algorithm>
-#include <unordered_map>
 
 namespace graph::algorithms::tarjan {
 

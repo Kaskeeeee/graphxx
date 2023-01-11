@@ -1,4 +1,5 @@
 #include "algorithms/kruskal.hpp"
+
 #include <queue>
 
 namespace graph::algorithms::kruskal {

@@ -1,8 +1,8 @@
-#include "algorithms/algorithms_base.hpp"
+#include "algorithms_base.hpp"
 #include "algorithms/dfs.hpp"
 #include "graph_concepts.hpp"
+
 #include <functional>
-#include <queue>
 
 namespace graph::algorithms::dfs {
 

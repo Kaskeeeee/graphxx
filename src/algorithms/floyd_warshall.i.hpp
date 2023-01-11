@@ -1,4 +1,5 @@
 #include "algorithms/floyd_warshall.hpp"
+#include "base.hpp"
 #include "utils.hpp"
 
 #include <limits>

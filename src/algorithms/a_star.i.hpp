@@ -1,11 +1,10 @@
-#include "a_star.hpp"
+#include "algorithms/a_star.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
 #include <queue>
-#include <unordered_map>
 #include <vector>
 
 namespace graph::algorithms::a_star {

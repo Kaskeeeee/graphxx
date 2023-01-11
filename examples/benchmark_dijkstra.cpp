@@ -47,7 +47,7 @@ int main() {
   // weights[d_to_b] = 7;
   // weights[d_to_c] = 4;
 
-  std::fstream input_file("../examples/cage4.mtx");
+  std::fstream input_file("../data/cage4.mtx");
   io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run(

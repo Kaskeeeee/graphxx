@@ -1,7 +1,7 @@
 #pragma once
 
-#include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
+
 #include <functional>
 #include <unordered_map>
 

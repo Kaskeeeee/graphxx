@@ -22,7 +22,7 @@ int main() {
   AdjacencyListGraph<Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
-  std::fstream input_file("../examples/cage4.mtx");
+  std::fstream input_file("../data/cage4.mtx");
   io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run("dfs graphxx",

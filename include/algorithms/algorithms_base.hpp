@@ -1,4 +1,5 @@
 #pragma once
+
 namespace graph::algorithms {
 
 enum class VertexStatus {

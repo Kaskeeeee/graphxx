@@ -1,6 +1,8 @@
 #pragma once
+
 #include "graph_concepts.hpp"
 #include "utils.hpp"
+
 #include <unordered_map>
 
 namespace graph::algorithms::johnson {

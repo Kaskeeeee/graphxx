@@ -1,5 +1,5 @@
+#include "algorithms/dijkstra.hpp"
 #include "base.hpp"
-#include "dijkstra.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"

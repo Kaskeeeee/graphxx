@@ -47,7 +47,7 @@ int main() {
   std::unordered_map<Id, io::graphviz::GraphvizProperties> vertex_properties; 
   std::unordered_map<Id, io::graphviz::GraphvizProperties> edge_properties;
 
-  fstream input_file("../build/test.txt");
+  fstream input_file("../data/test.txt");
   io::graphviz::deserialize(input_file, g, vertex_properties, edge_properties);
 
 
