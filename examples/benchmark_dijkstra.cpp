@@ -1,4 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
 #include "algorithms/dijkstra.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -15,12 +14,9 @@
 // #include <boost/graph/graph_traits.hpp>
 // #include <boost/graph/graphviz.hpp>
 
-using namespace graph;
-using namespace graph::algorithms;
-
 int main() {
   // Graphxx
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   // auto s = g.add_vertex(); // 0
@@ -47,18 +43,18 @@ int main() {
   // weights[d_to_c] = 4;
 
   std::fstream input_file("../data/cage4.mtx");
-  io::matrix_market::deserialize(input_file, g, weights);
+  graph::io::matrix_market::deserialize(input_file, g, weights);
 
-  ankerl::nanobench::Bench().run(
-      "dijkstra graphxx", [&]() { dijkstra::visit(g, Vertex{0}, weights); });
+  ankerl::nanobench::Bench().run("dijkstra graphxx", [&]() {
+    graph::algorithms::dijkstra::visit(g, graph::Vertex{0}, weights);
+  });
 
   // Boost
-  typedef boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::directedS,
-      boost::property<boost::vertex_distance_t, double>,
-      boost::property<boost::edge_weight_t, double>>
-      graph_t;
-  typedef boost::graph_traits<graph_t>::vertex_descriptor BoostVertex;
+  using graph_t =
+      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                            boost::property<boost::vertex_distance_t, double>,
+                            boost::property<boost::edge_weight_t, double>>;
+  using BoostVertex = boost::graph_traits<graph_t>::vertex_descriptor;
 
   graph_t boost_graph;
 

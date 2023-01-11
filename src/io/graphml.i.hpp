@@ -142,7 +142,7 @@ void deserialize(std::istream &in, G &graph,
 
   pugi::xml_node graphml_node = doc.child("graphml");
 
-  if (!graphml_node)
+  if (graphml_node == nullptr)
     throw exceptions::BadGraphmlParseException();
 
   pugi::xml_node graph_node = graphml_node.child("graph");

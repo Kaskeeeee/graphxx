@@ -21,10 +21,10 @@ public:
                                                     W min_weight, W max_weight);
 
 private:
-  unsigned int get_seed();
-
   unsigned int _seed;
   bool _fixed_seed;
+
+  unsigned int get_seed();
 };
 
 } // namespace graph

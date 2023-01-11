@@ -3,56 +3,54 @@
 
 #include <bits/stdc++.h>
 
-using namespace graph;
-using namespace std;
-
-void printGraph(AdjacencyListGraph<Directedness::DIRECTED> &graph) {
+void printGraph(
+    graph::AdjacencyListGraph<graph::Directedness::DIRECTED> &graph) {
   for (auto vertex : graph.vertices()) {
-    cout << "V[" << vertex.id << "]: ";
+    std::cout << "V[" << vertex.id << "]: ";
     for (auto edge : graph.out_edges(vertex)) {
-      cout << " -> V[" << edge.target << "]";
+      std::cout << " -> V[" << edge.target << "]";
     }
-    cout << "\n";
+    std::cout << "\n";
   }
 }
 
 int main() {
-  AdjacencyListGraph<Directedness::DIRECTED> a;
+  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> a;
 
   while (true) {
     int opt = -1;
-    cout << "Choose an option:\n";
-    cout << "1. add vertex\n";
-    cout << "2. add edge\n";
-    cout << "3. remove vertex\n";
-    cout << "4. remove edge\n";
-    cout << "5. print bfs\n";
-    cin >> opt;
+    std::cout << "Choose an option:\n";
+    std::cout << "1. add vertex\n";
+    std::cout << "2. add edge\n";
+    std::cout << "3. remove vertex\n";
+    std::cout << "4. remove edge\n";
+    std::cout << "5. print bfs\n";
+    std::cin >> opt;
     switch (opt) {
     case 1: {
       a.add_vertex();
     } break;
     case 2: {
       int u, v;
-      cout << "Insert u: ";
-      cin >> u;
-      cout << "Insert v: ";
-      cin >> v;
+      std::cout << "Insert u: ";
+      std::cin >> u;
+      std::cout << "Insert v: ";
+      std::cin >> v;
 
-      a.add_edge(Vertex{u}, Vertex{v});
+      a.add_edge(graph::Vertex{u}, graph::Vertex{v});
     } break;
     case 3: {
       int u;
-      cout << "Remove vertex: ";
-      cin >> u;
-      a.remove_vertex(Vertex{u});
+      std::cout << "Remove vertex: ";
+      std::cin >> u;
+      a.remove_vertex(graph::Vertex{u});
     } break;
     case 4: {
       int u, v;
-      cout << "Remove edge from u: ";
-      cin >> u;
-      cout << "To v: ";
-      cin >> v;
+      std::cout << "Remove edge from u: ";
+      std::cin >> u;
+      std::cout << "To v: ";
+      std::cin >> v;
 
       for (auto edge : a.edges()) {
         if (edge.source == u && edge.target == v) {
@@ -62,16 +60,16 @@ int main() {
     } break;
     case 5: {
       int u;
-      cout << "Source vertex: ";
-      cin >> u;
+      std::cout << "Source vertex: ";
+      std::cin >> u;
 
-      cout << "BFS TREE:\n";
-      cout << "+++++++++++++++++++++++++++++++++\n";
+      std::cout << "BFS TREE:\n";
+      std::cout << "+++++++++++++++++++++++++++++++++\n";
     }
     }
-    cout << "\nGRAPH STRUCTURE:\n";
+    std::cout << "\nGRAPH STRUCTURE:\n";
     printGraph(a);
-    cout << "-----------------------------------\n";
+    std::cout << "-----------------------------------\n";
   }
 
   return 0;

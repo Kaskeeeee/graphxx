@@ -5,15 +5,13 @@
 #include "utils/graph_generator.hpp"
 
 #include <bits/stdc++.h>
-
-using namespace graph;
-using namespace std;
+#include <unordered_map>
 
 int main() {
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
-  unordered_map<int, double> weights;
-  fstream input_file("../data/mm.txt");
-  io::matrix_market::deserialize(input_file, g, weights);
-  io::matrix_market::serialize(cout, g, weights);
+  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  std::unordered_map<int, double> weights;
+  std::fstream input_file("../data/mm.txt");
+  graph::io::matrix_market::deserialize(input_file, g, weights);
+  graph::io::matrix_market::serialize(std::cout, g, weights);
   return 0;
 }

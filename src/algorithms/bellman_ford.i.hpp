@@ -14,13 +14,15 @@ Node<WeightType>::Node()
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType>
-Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights) {
+Tree<WeightType> visit(const G &graph, const Vertex &source,
+                       C &&edges_weights) {
   Tree<WeightType> tree;
   tree[source].distance = 0;
   tree[source].parent = INVALID_VERTEX;
 
   // Relax edges |nodes| - 1 times
-  for (size_t i = 0; i < graph.vertices().size() - 1; ++i) {
+  for (int64_t i = 0; i < static_cast<int64_t>(graph.vertices().size() - 1);
+       ++i) {
     for (auto edge : graph.edges()) {
       auto &edge_source = tree[edge.u];
       auto &edge_target = tree[edge.v];

@@ -22,10 +22,10 @@ struct Vertex : Identifiable {
 
   /// @brief checks if the identifieable object is a valid one
   /// @return true if the id is non negative, false otherwise
-  [[nodiscard]] bool valid() const { return id >= 0; }
+  [[nodiscard]] bool isValid() const { return id >= 0; }
 
   bool operator==(const Vertex &other) const {
-    return (!other.valid() && !valid()) || (id == other.id);
+    return (!other.isValid() && !isValid()) || (id == other.id);
   }
 };
 
@@ -39,10 +39,12 @@ struct Edge : Identifiable {
 
   /// @brief checks if the identifieable object is a valid one
   /// @return true if the id is non negative, false otherwise
-  [[nodiscard]] bool valid() const { return id >= 0 && u.valid() && v.valid(); }
+  [[nodiscard]] bool isValid() const {
+    return id >= 0 && u.isValid() && v.isValid();
+  }
 
   bool operator==(const Edge &other) const {
-    return (!other.valid() && !valid()) ||
+    return (!other.isValid() && !isValid()) ||
            (id == other.id && u == other.u && v == other.v);
   }
 

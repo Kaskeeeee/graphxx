@@ -12,28 +12,25 @@
 #include <nanobench.h>
 #include <unordered_map>
 
-using namespace graph;
-using namespace graph::algorithms;
-
 int main() {
   // Graphxx
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   std::fstream input_file("../data/cage4.mtx");
-  io::matrix_market::deserialize(input_file, g, weights);
+  graph::io::matrix_market::deserialize(input_file, g, weights);
 
-  ankerl::nanobench::Bench().run("kruskal graphxx",
-                                 [&]() { kruskal::visit(g, weights); });
+  ankerl::nanobench::Bench().run("kruskal graphxx", [&]() {
+    graph::algorithms::kruskal::visit(g, weights);
+  });
 
   // Boost
 
-  typedef boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::directedS,
-      boost::property<boost::vertex_distance_t, double>,
-      boost::property<boost::edge_weight_t, double>>
-      graph_t;
-  typedef boost::graph_traits<graph_t>::edge_descriptor BoostEdge;
+  using graph_t =
+      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                            boost::property<boost::vertex_distance_t, double>,
+                            boost::property<boost::edge_weight_t, double>>;
+  using BoostEdge = boost::graph_traits<graph_t>::edge_descriptor;
 
   graph_t boost_graph;
   std::vector<BoostEdge> spanning_tree;

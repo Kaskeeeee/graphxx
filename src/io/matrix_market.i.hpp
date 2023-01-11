@@ -103,10 +103,10 @@ void deserialize(std::istream &in, G &graph, C &weights) {
   std::stringstream(input_string) >> rows >> columns >> entries;
 
   size_t num_vertices = rows * (symmetric ? 2 : 1);
-  for (size_t i = 0; i < num_vertices; i++)
+  for (int64_t i = 0; i < num_vertices; i++)
     graph.add_vertex();
 
-  for (size_t i = 0; i < entries; i++) {
+  for (int64_t i = 0; i < entries; i++) {
     Id source_id, target_id;
     WeightType weight{1.0};
 

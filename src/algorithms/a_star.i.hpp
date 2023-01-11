@@ -51,7 +51,7 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
     // if the distance is not the one up to date, keep on popping elements
     // WARNING: to avoid undefined behavior we pop from the queue only if
     // it still has elements inside, otherwise there may be an infinite loop
-    for (size_t i = 0; i < queue.size() - 1; ++i) {
+    for (int64_t i = 0; i < queue.size() - 1; ++i) {
       if (tree[next_pair.first].heuristic_distance == next_pair.second) {
         break;
       }

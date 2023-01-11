@@ -1,4 +1,3 @@
-#define ANKERL_NANOBENCH_IMPLEMENT
 #include "algorithms/bfs.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -12,26 +11,24 @@
 #include <boost/graph/breadth_first_search.hpp>
 #include <nanobench.h>
 
-using namespace graph;
-using namespace graph::algorithms;
-
 int main() {
   // Graphxx
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   std::fstream input_file("../data/cage4.mtx");
-  io::matrix_market::deserialize(input_file, g, weights);
+  graph::io::matrix_market::deserialize(input_file, g, weights);
 
-  ankerl::nanobench::Bench().run("bfs graphxx",
-                                 [&]() { bfs::visit(g, Vertex{0}); });
+  ankerl::nanobench::Bench().run("bfs graphxx", [&]() {
+    graph::algorithms::bfs::visit(g, graph::Vertex{0});
+  });
 
   // Boost
-  typedef boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::directedS,
-      boost::property<boost::vertex_distance_t, double>, boost::no_property>
-      graph_t;
-  typedef boost::graph_traits<graph_t>::vertex_descriptor BoostVertex;
+  using graph_t =
+      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                            boost::property<boost::vertex_distance_t, double>,
+                            boost::no_property>;
+  using BoostVertex = boost::graph_traits<graph_t>::vertex_descriptor;
 
   graph_t boost_graph;
 
