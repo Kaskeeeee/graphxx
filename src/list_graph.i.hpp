@@ -27,13 +27,15 @@ AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph<DN> &graph)
   for (Edge e : graph.edges()) {
     flag = false;
     for (Edge ed : graph.edges()) {
-      if (e.v == ed.u && e.u == ed.v) {
-        _adj[e.u].push_back(e);
-        EdgeWrapper links = {e, ed};
-        _edge_map.insert({e, links});
-        flag = true;
-        break;
+      if (e.v != ed.u || e.u != ed.v) {
+        continue;
       }
+
+      _adj[e.u].push_back(e);
+      EdgeWrapper links = {e, ed};
+      _edge_map.insert({e, links});
+      flag = true;
+      break;
     }
 
     if (flag) {

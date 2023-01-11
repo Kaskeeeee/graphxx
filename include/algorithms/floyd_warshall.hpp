@@ -33,7 +33,7 @@ using Map = std::unordered_map<Id, std::unordered_map<Id, Node<WeightType>>>;
 /// @return a map of maps containing all shortest paths
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Map<WeightType> visit(G &graph, C &&weights);
+Map<WeightType> visit(const G &graph, C &&weights);
 
 } // namespace graph::algorithms::floyd_warshall
 

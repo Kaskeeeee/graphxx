@@ -30,10 +30,11 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
   queue.push(std::make_pair(source, 0));
 
   for (auto vertex : graph.vertices()) {
-    if (vertex != source) {
-      tree[vertex] =
-          Node{.distance = distance_upperbound, .parent = INVALID_VERTEX};
+    if (vertex == source) {
+      continue;
     }
+    tree[vertex] =
+        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX};
   }
 
   while (!queue.empty()) {

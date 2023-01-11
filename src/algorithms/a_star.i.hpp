@@ -33,12 +33,13 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
   queue.push(std::make_pair(source, 0));
 
   for (auto vertex : graph.vertices()) {
-    if (vertex != source) {
-      tree[vertex] = Node{.distance = distance_upperbound,
-                          .heuristic_distance = heuristic_weights[vertex],
-                          .parent = INVALID_VERTEX};
-      queue.push(std::make_pair(vertex, distance_upperbound));
+    if (vertex == source) {
+      continue;
     }
+    tree[vertex] = Node{.distance = distance_upperbound,
+                        .heuristic_distance = heuristic_weights[vertex],
+                        .parent = INVALID_VERTEX};
+    queue.push(std::make_pair(vertex, distance_upperbound));
   }
 
   // in this implementation, queue keeps also useless elements

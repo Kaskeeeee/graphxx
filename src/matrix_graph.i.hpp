@@ -59,11 +59,11 @@ void AdjacencyMatrixGraph<D>::remove_vertex(const Vertex &v) {
 
   auto it = _edge_map.begin();
   while (it != _edge_map.end()) {
-    if (it->second.u == v || it->second.v == v) {
-      it = _edge_map.erase(it);
-    } else {
+    if (it->second.u != v && it->second.v != v) {
       ++it;
+      continue;
     }
+    it = _edge_map.erase(it);
   }
 
   for (auto [_, id_map] : _adj) {

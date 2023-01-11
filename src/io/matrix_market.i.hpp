@@ -16,13 +16,14 @@ template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
 void serialize(std::ostream &out, const G &graph, C &weights) {
   std::string number_format = "";
-  if (std::is_integral_v<WeightType>)
+  if (std::is_integral_v<WeightType>) {
     number_format = "integer";
-  else if (std::is_floating_point_v<WeightType>)
+  } else if (std::is_floating_point_v<WeightType>) {
     number_format = "real";
-  else
+  } else {
     throw exceptions::InvariantViolationException(
         "Weight type must be numerical type");
+  }
 
   const std::string header =
       "%%MatrixMarket matrix coordinate " + number_format + " general";

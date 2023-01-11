@@ -58,9 +58,10 @@ template <concepts::Graph G> SCCVector visit(const G &graph) {
   }
 
   for (auto vertex : graph.vertices()) {
-    if (_tarjan_tree[vertex].index == -1) {
-      tarjan_rec(graph, vertex);
+    if (_tarjan_tree[vertex].index != -1) {
+      continue;
     }
+    tarjan_rec(graph, vertex);
   }
 
   return _scc_vector;

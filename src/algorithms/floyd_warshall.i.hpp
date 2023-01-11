@@ -13,7 +13,7 @@ Node<WeightType>::Node()
 
 template <concepts::Graph G, concepts::Subscriptable<Id> C,
           concepts::Numeric WeightType>
-Map<WeightType> visit(G &graph, C &&weights) {
+Map<WeightType> visit(const G &graph, C &&weights) {
   Map<WeightType> map;
   for (auto edge : graph.edges()) {
     map[edge.u][edge.v].distance = weights[edge.id];
