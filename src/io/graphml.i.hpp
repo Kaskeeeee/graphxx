@@ -5,12 +5,9 @@
 #include "pugixml.hpp"
 #include "string_utils.hpp"
 
-#include <fstream>
+#include <sstream>
 #include <functional>
-#include <iostream>
-#include <map>
 #include <set>
-#include <string.h>
 #include <string>
 #include <unordered_map>
 
@@ -161,7 +158,7 @@ void deserialize(std::istream &in, G &graph,
   for (pugi::xml_node key_node : graphml_node.children("key")) {
     pugi::xml_attribute attribute_id = key_node.attribute("id");
     pugi::xml_attribute attribute_name = key_node.attribute("attr.name");
-    attributes_names[std::string(attribute_id.value())] = attribute_name;
+    attributes_names[attribute_id.value()] = attribute_name;
   }
 
   // get vertices
@@ -175,7 +172,7 @@ void deserialize(std::istream &in, G &graph,
       pugi::xml_attribute attribute_key = attribute_node.attribute("key");
       std::string value = utils::trim(attribute_node.value());
       vertex_properties[v]
-                       [attributes_names[std::string(attribute_key.value())]] =
+                       [attributes_names[attribute_key.value()]] =
                            value;
     }
   }
@@ -191,7 +188,7 @@ void deserialize(std::istream &in, G &graph,
     for (pugi::xml_node attribute_node : edge_node.children("data")) {
       pugi::xml_attribute attribute_key = attribute_node.attribute("key");
       std::string value = attribute_node.value();
-      edge_properties[e][attributes_names[std::string(attribute_key.value())]] =
+      edge_properties[e][attributes_names[attribute_key.value()]] =
           value;
     }
   }

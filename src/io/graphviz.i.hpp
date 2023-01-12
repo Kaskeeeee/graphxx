@@ -4,10 +4,8 @@
 #include "io/graphviz.hpp"
 #include "utils/string_utils.hpp"
 
-#include <fstream>
 #include <functional>
-#include <iostream>
-#include <set>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 

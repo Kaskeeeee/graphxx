@@ -77,14 +77,21 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/ford_fulkerson.hpp
 )
 
+# include/generators
+set(INC_GEN
+        ${PROJECT_SOURCE_DIR}/include/generators/graph_generator.hpp
+)
+
 # include/utils
 set(INC_UTILS
-        ${PROJECT_SOURCE_DIR}/include/utils/graph_generator.hpp
+        ${PROJECT_SOURCE_DIR}/include/utils/string_utils.hpp
 )
 
 # include/io
 set(INC_IO
         ${PROJECT_SOURCE_DIR}/include/io/graphviz.hpp
+        ${PROJECT_SOURCE_DIR}/include/io/graphml.hpp
+        ${PROJECT_SOURCE_DIR}/include/io/matrix_market.hpp
 )
 
 # src
@@ -111,11 +118,18 @@ set(SRC_ALG
 # src/io
 set(SRC_IO
         ${PROJECT_SOURCE_DIR}/src/io/graphviz.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/io/graphml.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/io/matrix_market.i.hpp
 )
 
-# include/utils
+# src/generators
+set(SRC_GEN
+        ${PROJECT_SOURCE_DIR}/src/generators/graph_generator.i.hpp
+)
+
+# src/utils
 set(SRC_UTILS
-        ${PROJECT_SOURCE_DIR}/src/utils/graph_generator.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/utils/string_utils.cpp
 )
 
 # ###############################################################################
@@ -127,10 +141,12 @@ target_sources(graph
         PUBLIC ${INC}
         PUBLIC ${INC_ALG}
         PUBLIC ${INC_IO}
+        PUBLIC ${INC_GEN}
         PUBLIC ${INC_UTILS}
         PRIVATE ${SRC}
         PRIVATE ${SRC_ALG}
         PRIVATE ${SRC_IO}
+        PRIVATE ${SRC_GEN}
         PRIVATE ${SRC_UTILS}
 )
 
@@ -138,11 +154,14 @@ target_include_directories(graph
         PUBLIC ${PROJECT_SOURCE_DIR}/include
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
         PUBLIC ${PROJECT_SOURCE_DIR}/include/io
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/generators
         PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
-        PUBLIC ${PROJECT_SOURCE_DIR}/third_party/pugixml
+        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/pugixml
         PRIVATE ${PROJECT_SOURCE_DIR}/src
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
         PRIVATE ${PROJECT_SOURCE_DIR}/src/io
+        PRIVARE ${PROJECT_SOURCE_DIR}/src/generators
+        PRIVATE ${PROJECT_SOURCE_DIR}/src/utils
 )
 
 target_compile_options(graph
@@ -274,10 +293,6 @@ add_test(NAME digraphTest
 add_executable(graphviz_example)
 target_sources(graphviz_example
         PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
-)
-
-target_include_directories(graphviz_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
 )
 
 target_link_libraries(graphviz_example
