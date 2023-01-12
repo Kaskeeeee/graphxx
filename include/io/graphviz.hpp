@@ -75,7 +75,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
-               std::function<GraphvizProperties(Vertex)> get_vertex_properties);
+               const std::function<GraphvizProperties(Vertex)> &get_vertex_properties);
 
 /**
  * @brief Writes a graph object into an output stream in graphviz DOT format
@@ -94,8 +94,8 @@ void serialize(std::ostream &out, const G &graph,
  */
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
-               std::function<GraphvizProperties(Vertex)> get_vertex_properties,
-               std::function<GraphvizProperties(Edge)> get_edge_properties);
+               const std::function<GraphvizProperties(Vertex)> &get_vertex_properties,
+               const std::function<GraphvizProperties(Edge)> &get_edge_properties);
 
 /**
  * @brief Interprets a graph described using the graphviz DOT language and

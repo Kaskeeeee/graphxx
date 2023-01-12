@@ -1,3 +1,34 @@
+/**
+ * @file
+ *
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ *
+ * @license{<blockquote>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * </blockquote>}
+ *
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
+ * @date December, 2022
+ * @version v1.0
+ */
+
 #pragma once
 
 #include <string>
@@ -46,7 +77,31 @@ std::string trim(const std::string &str);
 std::vector<std::string> split(const std::string &str,
                                const std::string &separator,
                                const size_t offset = 0,
+<<<<<<< HEAD
                                const size_t end = std::string::npos);
+=======
+                               const size_t end = std::string::npos) {
+  std::vector<std::string> tokens;
+
+  size_t pos = offset;
+  size_t next = str.find(separator, offset);
+
+  while (next >= pos) {
+    if (next > pos && next <= end) {
+      tokens.push_back(str.substr(pos, next - pos));
+    }
+
+    if (next >= end) {
+      break;
+    }
+
+    pos = next + separator.size();
+    next = str.find(separator, pos);
+  }
+
+  return tokens;
+}
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Divides a string into a list of substrings by searching for the
 /// separators.
@@ -59,7 +114,32 @@ std::vector<std::string> split(const std::string &str,
 std::vector<std::string> split(const std::string &str,
                                const std::vector<std::string> &separators,
                                const size_t offset = 0,
+<<<<<<< HEAD
                                const size_t end = std::string::npos);
+=======
+                               const size_t end = std::string::npos) {
+  std::vector<std::string> tokens;
+
+  size_t separator_index = 0;
+  size_t pos = offset;
+  size_t next = find_first_of(str, separators, separator_index, pos);
+
+  while (next >= pos) {
+    if (next > pos && next <= end) {
+      tokens.push_back(str.substr(pos, next - pos));
+    }
+
+    if (next >= end) {
+      break;
+    }
+
+    pos = next + separators[separator_index].size();
+    next = find_first_of(str, separators, separator_index, pos);
+  }
+
+  return tokens;
+}
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Converts a string to lowercase letters and returns a new string,
 /// without modifying the original string.
@@ -78,7 +158,17 @@ void to_lower(std::string &str);
 /// @return True if a string contains a specified string, otherwise it returns
 /// false.
 bool contains(const std::string &str, const std::string &find,
+<<<<<<< HEAD
               bool case_sensitive = true);
+=======
+              bool case_sensitive = true) {
+  if (case_sensitive) {
+    return str.find(find, 0) != std::string::npos;
+  } else {
+    return to_lower(str).find(to_lower(find), 0) != std::string::npos;
+  }
+}
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Search for a substring between two delimiters from an input string.
 /// @param input Input string.
@@ -90,7 +180,52 @@ bool contains(const std::string &str, const std::string &find,
 inline bool get_text_between_delimiters(const std::string &input, size_t &start,
                                         size_t &end,
                                         const std::string &open_delimiter,
+<<<<<<< HEAD
                                         const std::string &close_delimiter);
+=======
+                                        const std::string &close_delimiter) {
+  const size_t min_open = input.find(open_delimiter, start);
+
+  if (min_open == std::string::npos) {
+    start = std::string::npos;
+    end = std::string::npos;
+    return false;
+  }
+
+  size_t max_close = min_open;
+
+  if (open_delimiter == close_delimiter) {
+    max_close = input.find(close_delimiter, min_open + close_delimiter.size());
+  } else {
+    const std::vector<std::string> delimiters = {open_delimiter,
+                                                 close_delimiter};
+
+    size_t count = 1;
+    size_t pos = min_open;
+    size_t index = 0;
+
+    while (count > 0 && pos != std::string::npos) {
+      pos = find_first_of(input, delimiters, index, pos + 1);
+
+      if (pos == std::string::npos) {
+        break;
+      }
+
+      if (index == 0) { // open tag
+        ++count;
+      } else if (index == 1) { // close tag
+        max_close = pos;
+        --count;
+      }
+    }
+  }
+
+  start = min_open;
+  end = max_close;
+
+  return min_open != std::string::npos && max_close != std::string::npos;
+}
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Extracts a substring between two delimiters from an input string.
 /// @param input Input strint.
@@ -100,6 +235,21 @@ inline bool get_text_between_delimiters(const std::string &input, size_t &start,
 inline std::string
 get_text_between_delimiters(const std::string &input,
                             const std::string &open_delimiter,
+<<<<<<< HEAD
                             const std::string &close_delimiter);
+=======
+                            const std::string &close_delimiter) {
+  size_t start = 0;
+  size_t end = 0;
+
+  if (get_text_between_delimiters(input, start, end, open_delimiter,
+                                  close_delimiter)) {
+    return input.substr(start + open_delimiter.size(),
+                        end - start - open_delimiter.size());
+  }
+
+  return std::string();
+}
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 } // namespace graph::utils
