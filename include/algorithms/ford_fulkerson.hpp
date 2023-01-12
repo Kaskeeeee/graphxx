@@ -49,9 +49,13 @@ struct BFSVertex {
 
 using BFSTree = std::unordered_map<Id, BFSVertex>;
 
+/// @brief 
+/// @tparam WeightType 
 template <concepts::Numeric WeightType>
 using FlowMap = std::unordered_map<Id, WeightType>;
 
+/// @brief 
+/// @tparam WeightType 
 template <concepts::Numeric WeightType> struct FFpair {
   FlowMap<WeightType> flow;
   WeightType max_flow;
