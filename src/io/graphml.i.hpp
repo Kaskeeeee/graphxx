@@ -1,3 +1,34 @@
+/**
+ * @file
+ *
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ *
+ * @license{<blockquote>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * </blockquote>}
+ *
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
+ * @date December, 2022
+ * @version v1.0
+ */
+
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
@@ -32,8 +63,9 @@ void serialize(std::ostream &out, const G &graph,
   for (auto vertex : graph.vertices()) {
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
     for (const auto &[name, value] : vertex_properties) {
-      if (vertex_key_ids.contains(name))
+      if (vertex_key_ids.contains(name)) {
         continue;
+      }
 
       std::string key_id = "k" + std::to_string(key_count++);
       vertex_key_ids[name] = key_id;
@@ -48,8 +80,9 @@ void serialize(std::ostream &out, const G &graph,
   for (auto edge : graph.edges()) {
     GraphMLProperties edge_properties = get_edge_properties(edge);
     for (const auto &[name, value] : edge_properties) {
-      if (edge_key_ids.contains(name))
+      if (edge_key_ids.contains(name)) {
         continue;
+      }
 
       std::string key_id = "k" + std::to_string(key_count++);
       edge_key_ids[name] = key_id;
@@ -142,20 +175,23 @@ void deserialize(std::istream &in, G &graph,
 
   pugi::xml_node graphml_node = doc.child("graphml");
 
-  if (graphml_node == nullptr)
+  if (graphml_node == nullptr) {
     throw exceptions::BadGraphmlParseException();
+  }
 
   pugi::xml_node graph_node = graphml_node.child("graph");
   pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
 
   // check graph directedness
   if (G::DIRECTEDNESS == Directedness::UNDIRECTED &&
-      directedness.name() != "undirected")
+      directedness.name() != "undirected") {
     throw exceptions::UndirectedGraphParseException();
+  }
 
   if (G::DIRECTEDNESS == Directedness::DIRECTED &&
-      directedness.name() != "directed")
+      directedness.name() != "directed") {
     throw exceptions::DirectedGraphParseException();
+  }
 
   // get GraphML-Attributes
   for (pugi::xml_node key_node : graphml_node.children("key")) {

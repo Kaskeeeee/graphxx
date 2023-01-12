@@ -1,3 +1,34 @@
+/**
+ * @file
+ *
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ *
+ * @license{<blockquote>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * </blockquote>}
+ *
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
+ * @date December, 2022
+ * @version v1.0
+ */
+
 #pragma once
 
 #include <string>
@@ -78,11 +109,13 @@ std::vector<std::string> split(const std::string &str,
   size_t next = str.find(separator, offset);
 
   while (next >= pos) {
-    if (next > pos && next <= end)
+    if (next > pos && next <= end) {
       tokens.push_back(str.substr(pos, next - pos));
+    }
 
-    if (next >= end)
+    if (next >= end) {
       break;
+    }
 
     pos = next + separator.size();
     next = str.find(separator, pos);
@@ -110,11 +143,13 @@ std::vector<std::string> split(const std::string &str,
   size_t next = find_first_of(str, separators, separator_index, pos);
 
   while (next >= pos) {
-    if (next > pos && next <= end)
+    if (next > pos && next <= end) {
       tokens.push_back(str.substr(pos, next - pos));
+    }
 
-    if (next >= end)
+    if (next >= end) {
       break;
+    }
 
     pos = next + separators[separator_index].size();
     next = find_first_of(str, separators, separator_index, pos);
@@ -147,10 +182,11 @@ void to_lower(std::string &str) {
 /// false.
 bool contains(const std::string &str, const std::string &find,
               bool case_sensitive = true) {
-  if (case_sensitive)
+  if (case_sensitive) {
     return str.find(find, 0) != std::string::npos;
-  else
+  } else {
     return to_lower(str).find(to_lower(find), 0) != std::string::npos;
+  }
 }
 
 /// @brief Search for a substring between two delimiters from an input string.
@@ -187,14 +223,13 @@ inline bool get_text_between_delimiters(const std::string &input, size_t &start,
     while (count > 0 && pos != std::string::npos) {
       pos = find_first_of(input, delimiters, index, pos + 1);
 
-      if (pos == std::string::npos)
+      if (pos == std::string::npos) {
         break;
+      }
 
-      if (index == 0) // open tag
-      {
+      if (index == 0) { // open tag
         ++count;
-      } else if (index == 1) // close tag
-      {
+      } else if (index == 1) { // close tag
         max_close = pos;
         --count;
       }
@@ -220,9 +255,10 @@ get_text_between_delimiters(const std::string &input,
   size_t end = 0;
 
   if (get_text_between_delimiters(input, start, end, open_delimiter,
-                                  close_delimiter))
+                                  close_delimiter)) {
     return input.substr(start + open_delimiter.size(),
                         end - start - open_delimiter.size());
+  }
 
   return std::string();
 }

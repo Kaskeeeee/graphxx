@@ -1,3 +1,34 @@
+/**
+ * @file
+ *
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ *
+ * @license{<blockquote>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * </blockquote>}
+ *
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
+ * @date December, 2022
+ * @version v1.0
+ */
+
 #include "algorithms/algorithms_base.hpp"
 #include "base.hpp"
 #include "bfs.hpp"
@@ -107,24 +138,24 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("work in undirected graph") {
-      AdjacencyListGraph<Directedness::UNDIRECTED> g1{};
-      auto a = g1.add_vertex(); // 0
-      auto b = g1.add_vertex(); // 1
-      auto c = g1.add_vertex(); // 2
-      auto d = g1.add_vertex(); // 3
-      auto e = g1.add_vertex(); // 4
+    AdjacencyListGraph<Directedness::UNDIRECTED> g1{};
+    auto a = g1.add_vertex(); // 0
+    auto b = g1.add_vertex(); // 1
+    auto c = g1.add_vertex(); // 2
+    auto d = g1.add_vertex(); // 3
+    auto e = g1.add_vertex(); // 4
 
-      auto a_to_b = g1.add_edge(a, b); // 0->1
-      auto a_to_c = g1.add_edge(a, c); // 0->2
-      auto a_to_d = g1.add_edge(a, d); // 0->3
-      auto b_to_c = g1.add_edge(b, c); // 1->2
-      auto d_to_e = g1.add_edge(d, e); // 3->4
+    auto a_to_b = g1.add_edge(a, b); // 0->1
+    auto a_to_c = g1.add_edge(a, c); // 0->2
+    auto a_to_d = g1.add_edge(a, d); // 0->3
+    auto b_to_c = g1.add_edge(b, c); // 1->2
+    auto d_to_e = g1.add_edge(d, e); // 3->4
 
-      auto tree = graph::algorithms::bfs::visit(g1, c);
+    auto tree = graph::algorithms::bfs::visit(g1, c);
 
-      for (auto vertex : g1.vertices()) {
-        REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
-      }
+    for (auto vertex : g1.vertices()) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
   }
 }
 } // namespace bfs_test

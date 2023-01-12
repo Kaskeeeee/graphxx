@@ -1,3 +1,34 @@
+/**
+ * @file
+ *
+ * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ *
+ * @license{<blockquote>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * </blockquote>}
+ *
+ * @author Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea
+ * Cinelli
+ * @date December, 2022
+ * @version v1.0
+ */
+
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
@@ -26,9 +57,10 @@ template <> struct GraphvizTraits<Directedness::UNDIRECTED> {
 };
 
 template <concepts::Graph G>
-void serialize(std::ostream &out, const G &graph,
-               std::function<GraphvizProperties(Vertex)> get_vertex_properties,
-               std::function<GraphvizProperties(Edge)> get_edge_properties) {
+void serialize(
+    std::ostream &out, const G &graph,
+    const std::function<GraphvizProperties(Vertex)> &get_vertex_properties,
+    const std::function<GraphvizProperties(Edge)> &get_edge_properties) {
 
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
@@ -44,8 +76,9 @@ void serialize(std::ostream &out, const G &graph,
       for (const auto &[key, value] : vertex_properties) {
         if (comma) {
           out << ",";
-        } else
+        } else {
           comma = true;
+        }
         out << key << "=\"" << value << "\"";
       }
       out << "]";
@@ -68,8 +101,9 @@ void serialize(std::ostream &out, const G &graph,
         for (const auto &[key, value] : edge_properties) {
           if (comma) {
             out << ",";
-          } else
+          } else {
             comma = true;
+          }
           out << key << "=\"" << value << "\"";
         }
         out << "]";
@@ -84,7 +118,7 @@ void serialize(std::ostream &out, const G &graph,
 template <concepts::Graph G>
 void serialize(
     std::ostream &out, const G &graph,
-    std::function<GraphvizProperties(Vertex)> get_vertex_properties) {
+    const std::function<GraphvizProperties(Vertex)> &get_vertex_properties) {
   GraphvizProperties empty_map;
   return serialize(out, graph, get_vertex_properties,
                    [&](Edge) { return empty_map; });
@@ -120,11 +154,12 @@ GraphvizProperties parse_properties(std::string &attributes_list) {
   for (const std::string &key_value_string : key_value_pairs) {
     std::vector<std::string> key_value_pair =
         utils::split(key_value_string, "=");
-    if (key_value_pair.size() == 2)
+    if (key_value_pair.size() == 2) {
       attributes[utils::trim(key_value_pair[0])] =
           utils::trim(utils::contains(key_value_pair[1], replacement_token)
                           ? quote_values[quote_value++]
                           : key_value_pair[1]);
+    }
   }
 
   return attributes;
@@ -158,12 +193,12 @@ void deserialize(std::istream &in, G &graph,
   size_t graph_type_index = 0;
   if (utils::find_first_of(string_graph, graph_types, graph_type_index) !=
       std::string::npos) {
-    Directedness directedness = static_cast<Directedness>(graph_type_index);
+    auto directedness = static_cast<Directedness>(graph_type_index);
     if (G::DIRECTEDNESS != directedness) {
-      if (directedness == Directedness::DIRECTED)
+      if (directedness == Directedness::DIRECTED) {
         throw exceptions::DirectedGraphParseException();
-      else
-        throw exceptions::UndirectedGraphParseException();
+      }
+      throw exceptions::UndirectedGraphParseException();
     }
   } else {
     throw exceptions::BadGraphvizParseException();
@@ -179,8 +214,9 @@ void deserialize(std::istream &in, G &graph,
 
     // get properties
     GraphvizProperties properties;
-    if (attr_start != std::string::npos && attr_end != std::string::npos)
+    if (attr_start != std::string::npos && attr_end != std::string::npos) {
       properties = parse_properties(statement);
+    }
 
     const std::string statement_body = statement.substr(0, attr_start);
     std::vector<std::string> edge_vertices =

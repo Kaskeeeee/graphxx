@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(Graphxx
         DESCRIPTION "C++ graph library"
-        HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
+        HOMEPAGE_URL "https://github.com/Kaskeeeee/graphxx"
         LANGUAGES CXX
 )
 
@@ -22,7 +22,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# find clang-tidy
+#find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
 
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
@@ -33,10 +35,6 @@ option(COVERAGE "Enable coverage output" OFF)
 # Compile with benchmark
 option(BENCHMARK "Enable benchmarking" OFF)
 
-# find clang-tidy
-# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
-
-# -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
         -Wall -Wextra -Wpedantic
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
@@ -176,9 +174,9 @@ endif()
 # ###############################################################################
 # TIDY
 # ###############################################################################
-# add_custom_target(tidy
-# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
-# )
+#add_custom_target(tidy
+#        COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json ${SRC_UTILS} #use -list-checks for reading checks used
+#)
 
 # ###############################################################################
 # DOCUMENTATION
@@ -204,11 +202,10 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # ###############################################################################
-# TEST CODE
+# PREPARING TEST
 # ###############################################################################
 add_executable(graph_test)
 
-# PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/digraph_test.cpp
@@ -260,11 +257,11 @@ add_test(NAME digraphTest
         COMMAND graph_test
 )
 
-# add_test(NAME valgrindTest
-# COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
-# --track-origins=yes
-# ${CMAKE_BINARY_DIR}/graph_test
-# )
+add_test(NAME valgrindTest
+        COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
+        --track-origins=yes
+        ${CMAKE_BINARY_DIR}/graph_test
+)
 
 # ###############################################################################
 # EXAMPLES
