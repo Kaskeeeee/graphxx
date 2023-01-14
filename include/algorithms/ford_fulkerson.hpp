@@ -38,7 +38,7 @@
 
 #include <unordered_map>
 
-namespace graph::algorithms::ford_fulkerson {
+namespace graphxx::algorithms::ford_fulkerson {
 
 struct BFSVertex {
   VertexStatus status;
@@ -47,12 +47,12 @@ struct BFSVertex {
   int residual_capacity = -1;
 };
 
-using BFSTree = std::unordered_map<Id, BFSVertex>;
+using BFSTree = std::unordered_map<DefaultIdType, BFSVertex>;
 
 /// @brief 
 /// @tparam WeightType 
 template <concepts::Numeric WeightType>
-using FlowMap = std::unordered_map<Id, WeightType>;
+using FlowMap = std::unordered_map<DefaultIdType, WeightType>;
 
 /// @brief 
 /// @tparam WeightType 
@@ -71,11 +71,11 @@ template <concepts::Numeric WeightType> struct FFpair {
 /// @param sink sink vertex
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 FFpair<WeightType> visit(const G &graph, const Vertex &source,
                          const Vertex &sink, C &&edges_capacity);
 
-} // namespace graph::algorithms::ford_fulkerson
+} // namespace graphxx::algorithms::ford_fulkerson
 
 #include "algorithms/ford_fulkerson.i.hpp"

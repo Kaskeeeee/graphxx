@@ -33,7 +33,7 @@
 
 #include <string>
 
-namespace graph::exceptions {
+namespace graphxx::exceptions {
 GraphException::GraphException(std::string message)
     : _message{std::move(message)} {};
 
@@ -69,4 +69,4 @@ BadGraphmlParseException::BadGraphmlParseException()
 BadMatrixMarketParseException::BadMatrixMarketParseException()
     : GraphException("Bad matrix market file syntax"){};
 
-} // namespace graph::exceptions
+} // namespace graphxx::exceptions

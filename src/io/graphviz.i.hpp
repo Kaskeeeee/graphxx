@@ -42,7 +42,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace graph::io::graphviz {
+namespace graphxx::io::graphviz {
 
 template <Directedness D> std::string GraphvizTraits<D>::name() {
   return "digraph";
@@ -87,7 +87,7 @@ void serialize(
   }
 
   // insert edges
-  std::set<Id> inserted_edges;
+  std::set<DefaultIdType> inserted_edges;
   for (auto edge : graph.edges()) {
     if (!inserted_edges.contains(edge)) {
       inserted_edges.insert(edge);
@@ -167,8 +167,8 @@ GraphvizProperties parse_properties(std::string &attributes_list) {
 
 template <concepts::Graph G>
 void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<Id, GraphvizProperties> &vertex_properties,
-                 std::unordered_map<Id, GraphvizProperties> &edge_properties) {
+                 std::unordered_map<DefaultIdType, GraphvizProperties> &vertex_properties,
+                 std::unordered_map<DefaultIdType, GraphvizProperties> &edge_properties) {
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
   const std::vector<std::string> STATEMENT_SEPARATORS = {";", "\r\n", "\n"};
@@ -180,7 +180,7 @@ void deserialize(std::istream &in, G &graph,
   const std::string string_graph((std::istreambuf_iterator<char>(in)),
                                  std::istreambuf_iterator<char>());
 
-  std::unordered_map<std::string, Id> inserted_vertices;
+  std::unordered_map<std::string, DefaultIdType> inserted_vertices;
 
   size_t body_start = 0;
   size_t body_end = 0;
@@ -263,4 +263,4 @@ void deserialize(std::istream &in, G &graph,
   }
 }
 
-} // namespace graph::io::graphviz
+} // namespace graphxx::io::graphviz

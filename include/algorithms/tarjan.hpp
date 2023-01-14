@@ -37,7 +37,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graph::algorithms::tarjan {
+namespace graphxx::algorithms::tarjan {
 
 /// @brief Vertex containing informations for the algorithm
 struct TarjanVertex {
@@ -47,10 +47,10 @@ struct TarjanVertex {
 };
 
 /// @brief a map of id to TarjanVertex
-using TarjanTree = std::unordered_map<Id, TarjanVertex>;
+using TarjanTree = std::unordered_map<DefaultIdType, TarjanVertex>;
 
 /// @brief a vector of id
-using StackVector = std::vector<Id>;
+using StackVector = std::vector<DefaultIdType>;
 
 /// @brief a vector containing all the strongly connected components
 using SCCVector = std::vector<StackVector>;
@@ -60,6 +60,6 @@ using SCCVector = std::vector<StackVector>;
 /// @return a vector containing all the strongly connected components
 template <concepts::Graph G> SCCVector visit(const G &graph);
 
-} // namespace graph::algorithms::tarjan
+} // namespace graphxx::algorithms::tarjan
 
 #include "algorithms/tarjan.i.hpp"

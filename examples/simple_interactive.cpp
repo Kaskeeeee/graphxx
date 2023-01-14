@@ -35,7 +35,7 @@
 #include <bits/stdc++.h>
 
 void printGraph(
-    graph::AdjacencyListGraph<graph::Directedness::DIRECTED> &graph) {
+    graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> &graph) {
   for (auto vertex : graph.vertices()) {
     std::cout << "V[" << vertex.id << "]: ";
     for (auto edge : graph.out_edges(vertex)) {
@@ -46,7 +46,7 @@ void printGraph(
 }
 
 int main() {
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> a;
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> a;
 
   while (true) {
     int opt = -1;
@@ -68,13 +68,13 @@ int main() {
       std::cout << "Insert v: ";
       std::cin >> v;
 
-      a.add_edge(graph::Vertex{u}, graph::Vertex{v});
+      a.add_edge(graphxx::Vertex{u}, graphxx::Vertex{v});
     } break;
     case 3: {
       int u;
       std::cout << "Remove vertex: ";
       std::cin >> u;
-      a.remove_vertex(graph::Vertex{u});
+      a.remove_vertex(graphxx::Vertex{u});
     } break;
     case 4: {
       int u, v;

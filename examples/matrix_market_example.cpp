@@ -39,10 +39,10 @@
 #include <unordered_map>
 
 int main() {
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
   std::fstream input_file("../data/mm.txt");
-  graph::io::matrix_market::deserialize(input_file, g, weights);
-  graph::io::matrix_market::serialize(std::cout, g, weights);
+  graphxx::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::matrix_market::serialize(std::cout, g, weights);
   return 0;
 }

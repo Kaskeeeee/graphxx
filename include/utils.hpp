@@ -36,7 +36,7 @@
 #include <limits>
 #include <type_traits>
 
-namespace graph {
+namespace graphxx {
 
 /// @brief Checks if the sum of two numbers will overflow
 /// @tparam T numeric type

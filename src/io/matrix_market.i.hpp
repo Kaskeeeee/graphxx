@@ -41,10 +41,10 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graph::io::matrix_market {
+namespace graphxx::io::matrix_market {
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 void serialize(std::ostream &out, const G &graph, C &weights) {
   std::string number_format = "";
   if (std::is_integral_v<WeightType>) {
@@ -95,8 +95,8 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
   }
 }
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 void deserialize(std::istream &in, G &graph, C &weights) {
   std::string input_string;
   bool symmetric = false;
@@ -148,7 +148,7 @@ void deserialize(std::istream &in, G &graph, C &weights) {
   }
 
   for (int64_t i = 0; i < entries; i++) {
-    Id source_id, target_id;
+    DefaultIdType source_id, target_id;
     WeightType weight{1.0};
 
     std::getline(in, input_string);
@@ -172,4 +172,4 @@ void deserialize(std::istream &in, G &graph, C &weights) {
   }
 }
 
-} // namespace graph::io::matrix_market
+} // namespace graphxx::io::matrix_market

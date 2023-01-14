@@ -39,56 +39,51 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graph::algorithms::dijkstra {
+namespace graphxx::algorithms::dijkstra {
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType>
-Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights) {
-  Tree<WeightType> tree;
-  auto distance_upperbound = std::numeric_limits<WeightType>::max();
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+DistanceTree<Distance> visit(const G &graph, typename G::Id source,
+                             Weight weight) {
+  constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
+  DistanceTree<Distance> distance_tree{
+      G.size(), Node{.distance = distance_upperbound, .parent = source}};
 
-  using VertexDistancePair = std::pair<Vertex, WeightType>;
-  constexpr auto COMPARATOR = [&](const VertexDistancePair &p,
-                                  const VertexDistancePair &q) {
-    return p.second > q.second;
-  };
+  using WeightedVertex = std::tuple<Distance, typename G::Id>;
+  std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
+                      std::greater<WeightedVertex>>
+      queue;
 
-  std::priority_queue<VertexDistancePair, std::vector<VertexDistancePair>,
-                      decltype(COMPARATOR)>
-      queue{COMPARATOR};
-
-  tree[source] = {.distance = 0, .parent = INVALID_VERTEX};
-  queue.push(std::make_pair(source, 0));
-
-  for (auto vertex : graph.vertices()) {
-    if (vertex == source) {
-      continue;
-    }
-    tree[vertex] =
-        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX};
-  }
+  distance_tree[source] = {.distance = 0, .parent = INVALID_VERTEX};
+  queue.push({distance_tree[source].distance, source});
 
   while (!queue.empty()) {
-    auto u = queue.top().first;
+    auto u = std::get<0>(queue.top());
     queue.pop();
 
-    for (auto edge : graph.out_edges(u)) {
-      if (weights[edge] < 0) {
+    for (auto edge : graph[u]) {
+      auto v = graph.target(edge);
+      auto edge_weight = weight(edge);
+
+      if (weight(edge) < 0) {
         throw exceptions::InvariantViolationException(
             "negative edge weight found");
       }
 
-      auto alternative_distance = tree[u].distance + weights[edge];
-      if (!sum_will_overflow(tree[u].distance, weights[edge]) &&
-          alternative_distance < tree[edge.v].distance) {
-        tree[edge.v].distance = alternative_distance;
-        tree[edge.v].parent = u;
-        queue.push(std::make_pair(edge.v, alternative_distance));
+      if (sum_will_overflow(distance_tree[u].distance, edge_weight)) {
+        continue;
+      }
+
+      auto alternative_distance = distance_tree[u].distance + edge_weight;
+      if (alternative_distance < distance_tree[v].distance) {
+        distance_tree[v].distance = alternative_distance;
+        distance_tree[v].parent = u;
+        queue.push({alternative_distance, v});
       }
     }
   }
 
-  return tree;
+  return distance_tree;
 }
 
-} // namespace graph::algorithms::dijkstra
+} // namespace graphxx::algorithms::dijkstra

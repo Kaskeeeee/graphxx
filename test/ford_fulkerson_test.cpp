@@ -37,12 +37,12 @@
 
 namespace ford_fulkerson_test {
 using namespace graph;
-using namespace graph::algorithms;
+using namespace graphxx::algorithms;
 
 TEST_CASE("Ford Fulkerson maximum flow", "[ford_fulkerson]") {
   AdjacencyListGraph<Directedness::DIRECTED> g{};
 
-  std::unordered_map<Id, int> weights;
+  std::unordered_map<DefaultIdType, int> weights;
 
   auto s = g.add_vertex(); // 0
   auto a = g.add_vertex(); // 1

@@ -37,7 +37,7 @@
 #include <functional>
 #include <queue>
 
-namespace graph::algorithms::bfs {
+namespace graphxx::algorithms::bfs {
 
 template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source) {
   return visit(graph, source, [](Vertex) {});
@@ -55,17 +55,17 @@ BFSTree visit(const G &graph, Vertex source,
   tree[source].distance = 0;
   tree[source].parent = -1;
 
-  std::queue<Id> queue;
+  std::queue<DefaultIdType> queue;
   queue.push(source);
 
   while (!queue.empty()) {
-    Id vertex_id = queue.front();
+    DefaultIdType vertex_id = queue.front();
     queue.pop();
 
     callback(Vertex{vertex_id});
 
     for (Edge out_edge : graph.out_edges(Vertex{vertex_id})) {
-      Id adjacent = out_edge.v;
+      DefaultIdType adjacent = out_edge.v;
 
       if (tree[adjacent].status == VertexStatus::READY) {
         tree[adjacent].status = VertexStatus::WAITING;
@@ -81,4 +81,4 @@ BFSTree visit(const G &graph, Vertex source,
   return tree;
 }
 
-} // namespace graph::algorithms::bfs
+} // namespace graphxx::algorithms::bfs

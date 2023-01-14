@@ -31,7 +31,7 @@
 
 #pragma once
 
-namespace graph::algorithms {
+namespace graphxx::algorithms {
 
 /// @brief Status of the vertices during the visit algorithms
 enum class VertexStatus {
@@ -40,4 +40,4 @@ enum class VertexStatus {
   PROCESSED,
 };
 
-} // namespace graph::algorithms
+} // namespace graphxx::algorithms

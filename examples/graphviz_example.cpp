@@ -39,7 +39,7 @@
 
 int main() {
 
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
 
   // std::unordered_map<int, std::string> vertex_map;
 
@@ -72,17 +72,17 @@ int main() {
 
   // gen.generate_random_graph(g, 1000, 3000);
 
-  std::unordered_map<graph::Id, graph::io::graphviz::GraphvizProperties>
+  std::unordered_map<graphxx::DefaultIdType, graphxx::io::graphviz::GraphvizProperties>
       vertex_properties;
-  std::unordered_map<graph::Id, graph::io::graphviz::GraphvizProperties>
+  std::unordered_map<graphxx::DefaultIdType, graphxx::io::graphviz::GraphvizProperties>
       edge_properties;
 
   std::fstream input_file("../data/test.txt");
-  graph::io::graphviz::deserialize(input_file, g, vertex_properties,
+  graphxx::io::graphviz::deserialize(input_file, g, vertex_properties,
                                    edge_properties);
 
-  graph::io::graphviz::serialize(
-      std::cout, g, [&](graph::Vertex v) { return vertex_properties[v.id]; });
+  graphxx::io::graphviz::serialize(
+      std::cout, g, [&](graphxx::Vertex v) { return vertex_properties[v.id]; });
 
   return 0;
 }

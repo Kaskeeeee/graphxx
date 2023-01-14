@@ -39,7 +39,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace graph::io::graphviz {
+namespace graphxx::io::graphviz {
 
 using GraphvizProperties = std::unordered_map<std::string, std::string>;
 
@@ -112,9 +112,9 @@ void serialize(std::ostream &out, const G &graph,
  */
 template <concepts::Graph G>
 void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<Id, GraphvizProperties> &vertex_properties,
-                 std::unordered_map<Id, GraphvizProperties> &edge_properties);
+                 std::unordered_map<DefaultIdType, GraphvizProperties> &vertex_properties,
+                 std::unordered_map<DefaultIdType, GraphvizProperties> &edge_properties);
 
-} // namespace graph::io::graphviz
+} // namespace graphxx::io::graphviz
 
 #include "io/graphviz.i.hpp"

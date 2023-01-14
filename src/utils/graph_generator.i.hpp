@@ -4,7 +4,7 @@
 #include <random>
 #include <unordered_map>
 
-namespace graph {
+namespace graphxx {
 GraphGenerator::GraphGenerator() : _seed{0}, _fixed_seed{false} {};
 GraphGenerator::GraphGenerator(unsigned int seed)
     : _seed{seed}, _fixed_seed{true} {};

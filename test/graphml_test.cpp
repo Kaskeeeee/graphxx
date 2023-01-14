@@ -40,7 +40,7 @@
 
 namespace graphml_test {
 using namespace graph;
-using namespace graph::io;
+using namespace graphxx::io;
 
 TEST_CASE("directed graph object is correctly serialized", "[graphml]") {}
 

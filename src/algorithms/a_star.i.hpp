@@ -38,9 +38,9 @@
 #include <queue>
 #include <vector>
 
-namespace graph::algorithms::a_star {
+namespace graphxx::algorithms::a_star {
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
                        C &&heuristic_weights) {
@@ -122,4 +122,4 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
   }
   return tree;
 }
-} // namespace graph::algorithms::a_star
+} // namespace graphxx::algorithms::a_star

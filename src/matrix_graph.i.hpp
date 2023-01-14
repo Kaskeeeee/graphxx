@@ -30,137 +30,84 @@
  */
 
 #include "exceptions.hpp"
-#include "id_manager.hpp"
 #include "matrix_graph.hpp"
 
-namespace graph {
-template <Directedness D>
-AdjacencyMatrixGraph<D>::AdjacencyMatrixGraph()
-    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
-      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
+namespace graphxx {
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(){};
 
-template <Directedness D>
-AdjacencyMatrixGraph<D>::AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph)
-    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
-      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {
-
-  for (Vertex v : graph.vertices) {
-    _adj[v] = {};
-  }
-
-  for (Edge e : graph.edges()) {
-    add_edge(e.u, e.v);
-  }
-};
-
-template <Directedness D> Vertex AdjacencyMatrixGraph<D>::add_vertex() {
-  auto id = _vertex_id_manager.allocate();
-
-  Vertex v{id};
-  _adj[v] = {};
-  return v;
-};
-
-template <Directedness D>
-Edge AdjacencyMatrixGraph<D>::add_edge(const Vertex &u, const Vertex &v) {
-  if (!_adj.contains(u) || !_adj.contains(v)) {
-    throw exceptions::NoSuchVertexException();
-  }
-
-  auto id = _edge_id_manager.allocate();
-
-  Edge e{id, u, v};
-  _adj[u][v] = id;
-
-  if constexpr (D == Directedness::UNDIRECTED) {
-    _adj[v][u] = id;
-  }
-
-  _edge_map[id] = e;
-  return e;
-}
-
-template <Directedness D>
-void AdjacencyMatrixGraph<D>::remove_vertex(const Vertex &v) {
-  if (!_adj.contains(v)) {
-    throw exceptions::NoSuchVertexException();
-  }
-
-  _adj.erase(v);
-
-  auto it = _edge_map.begin();
-  while (it != _edge_map.end()) {
-    if (it->second.u != v && it->second.v != v) {
-      ++it;
-      continue;
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
+    const AdjacencyMatrixGraph &graph) {
+  for (auto &&vertex : graph) {
+    for (auto &&edge : vertex) {
+      std::apply(
+          [&](auto &&...attributes) {
+            add_edge(source(edge), target(edge), attributes...)
+          },
+          elements_from_index<2>(edge));
     }
-    it = _edge_map.erase(it);
   }
-
-  for (auto [_, id_map] : _adj) {
-    id_map.erase(v);
-  }
-}
-
-template <Directedness D>
-void AdjacencyMatrixGraph<D>::remove_edge(const Edge &e) {
-  if (!_edge_map.contains(e)) {
-    throw exceptions::NoSuchEdgeException();
-  }
-
-  _edge_map.erase(e);
-  _adj.at(e.u).erase(e.v);
-
-  if constexpr (D == Directedness::UNDIRECTED) {
-    _adj.at(e.v).erase(e.u);
-  }
-}
-
-template <Directedness D> auto AdjacencyMatrixGraph<D>::vertices() const {
-  return _adj | std::views::transform(
-                    [](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
-                      return Vertex{pair.first};
-                    });
-}
-
-template <Directedness D> auto AdjacencyMatrixGraph<D>::edges() const {
-  return _edge_map | std::views::transform(
-                         [](std::pair<Id, Edge> pair) { return pair.second; });
 };
 
-template <Directedness D>
-auto AdjacencyMatrixGraph<D>::out_edges(const Vertex &v) const {
-  return _adj.at(v) | std::views::transform([&](std::pair<Id, Id> pair) {
-           return _edge_map.at(pair.second);
-         });
-}
-
-template <Directedness D>
-auto AdjacencyMatrixGraph<D>::in_edges(const Vertex &v) const {
-  return _adj |
-         std::views::filter(
-             [&](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
-               return pair.second.contains(v);
-             }) |
-         std::views::transform(
-             [&](const std::pair<Id, std::unordered_map<Id, Id>> &pair) {
-               return _edge_map.at(pair.second.at(v));
-             });
-}
-
-template <Directedness D>
-Vertex AdjacencyMatrixGraph<D>::get_vertex(const Id &id) const {
-  if (!_adj.contains(id)) {
-    return INVALID_VERTEX;
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
+  for (auto i = Base::size(); i <= id; ++i) {
+    Base::emplace_back();
   }
-  return Vertex{id};
+};
+
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_edge(
+    Id uid, Id vid, Attributes attrs) {
+  add_node(uid);
+  add_node(vid);
+
+  Base::operator[](uid).emplace({vid, {uid, vid, attrs...}});
+  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+    Base::operator[](vid).emplace({uid, {vid, uid, attrs...}});
+  }
 }
 
-template <Directedness D>
-Edge AdjacencyMatrixGraph<D>::get_edge(const Id &id) const {
-  if (!_edge_map.contains(id)) {
-    return INVALID_EDGE;
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
+  if (id < size()) {
+    Base::operator[](id).clear();
   }
-  return _edge_map.at(id);
+
+  for (size_t i = 0; i < size(); i++) {
+    std::ranges::remove_if(Base::at(i),
+                           [=](Edge edge) { return target(edge) == id; });
+  }
+}
+
+template <std::unsigned_integral IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
+                                                                     Id v) {
+  if (u < size() && v < size()) {
+    std::ranges::remove_if(Base::at(u),
+                           [=](Edge &&edge) { return target(edge) == v; });
+
+    if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+      std::ranges::remove_if(at(v),
+                             [=](Edge &&edge) { return target(edge) == u; });
+    }
+  }
+}
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+Id AdjacencyMatrixGraph<Id, D, AttributesType...>::source(Edge edge) {
+  return std::get<0>(edge);
+}
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+Id AdjacencyMatrixGraph<Id, D, AttributesType...>::target(Edge edge) {
+  return std::get<1>(edge);
 }
 } // namespace graph

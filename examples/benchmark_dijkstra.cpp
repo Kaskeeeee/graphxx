@@ -47,7 +47,7 @@
 
 int main() {
   // Graphxx
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   // auto s = g.add_vertex(); // 0
@@ -74,10 +74,10 @@ int main() {
   // weights[d_to_c] = 4;
 
   std::fstream input_file("../data/cage4.mtx");
-  graph::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run("dijkstra graphxx", [&]() {
-    graph::algorithms::dijkstra::visit(g, graph::Vertex{0}, weights);
+    graphxx::algorithms::dijkstra::visit(g, graphxx::Vertex{0}, weights);
   });
 
   // Boost

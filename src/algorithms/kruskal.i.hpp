@@ -34,18 +34,18 @@
 
 #include <queue>
 
-namespace graph::algorithms::kruskal {
+namespace graphxx::algorithms::kruskal {
 
 // Search for the repserentative vertex of the cluster, which is that element in
 // the map with same key and value
-Id find_representative(ClusterMap &map, Id id) {
+DefaultIdType find_representative(ClusterMap &map, DefaultIdType id) {
   if (id == map[id]) {
     return id;
   }
   return find_representative(map, map[id]);
 };
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 Tree visit(const G &graph, C &&weights) {
 
@@ -92,4 +92,4 @@ Tree visit(const G &graph, C &&weights) {
   return tree;
 };
 
-} // namespace graph::algorithms::kruskal
+} // namespace graphxx::algorithms::kruskal

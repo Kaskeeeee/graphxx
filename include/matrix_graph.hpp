@@ -33,45 +33,39 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
-#include "id_manager.hpp"
 
+#include <tuple>
 #include <unordered_map>
+#include <vector>
 
-namespace graph {
+namespace graphxx {
 
-template <Directedness D> class AdjacencyMatrixGraph {
-protected:
-  using AdjacencyMap = std::unordered_map<Id, Id>;
-  using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
-  using EdgeMap = std::unordered_map<Id, Edge>;
-
+template <std::unsigned_integral IdType = DefaultIdType,
+          Directedness D = Directedness::DIRECTED, typename... AttributesType>
+class AdjacencyMatrixGraph
+    : public std::vector<std::unordered_map<
+          IdType, std::tuple<IdType, IdType, AttributesType>>> {
 public:
+  using Id = IdType;
+  using Edge = std::tuple<Id, Id, AttributesType...>;
+  using Attributes = std::tuple<AttributesType...>;
+  using InnerRage = std::unordered_map<Id, Edge>;
+  using Base = std::vector<InnerRage>;
+
   static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyMatrixGraph();
   AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
 
-  Vertex add_vertex();
-  void remove_vertex(const Vertex &);
+  void add_vertex(Id);
+  void remove_vertex(Id);
 
-  Edge add_edge(const Vertex &, const Vertex &);
-  void remove_edge(const Edge &);
+  void add_edge(Id, Id, Attributes);
+  void remove_edge(Id, Id);
 
-  auto vertices() const;
-  auto edges() const;
-  auto out_edges(const Vertex &) const;
-  auto in_edges(const Vertex &) const;
-
-  Vertex get_vertex(const Id &id) const;
-  Edge get_edge(const Id &id) const;
-
-private:
-  AdjacencyMatrix _adj;
-  EdgeMap _edge_map;
-
-  utils::IdManager _vertex_id_manager;
-  utils::IdManager _edge_id_manager;
+  Id source(Edge);
+  Id target(Edge);
 };
-} // namespace graph
+} // namespace graphxx
 
 #include "matrix_graph.i.hpp"

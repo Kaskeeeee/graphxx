@@ -45,7 +45,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace graph::io::graphml {
+namespace graphxx::io::graphml {
 
 template <concepts::Graph G>
 void serialize(std::ostream &out, const G &graph,
@@ -119,7 +119,7 @@ void serialize(std::ostream &out, const G &graph,
   }
 
   // declaring edges
-  std::set<Id> inserted_edges;
+  std::set<DefaultIdType> inserted_edges;
   for (auto edge : graph.edges()) {
     if (!inserted_edges.contains(edge)) {
       inserted_edges.insert(edge);
@@ -165,8 +165,8 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
 
 template <concepts::Graph G>
 void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<Id, GraphMLProperties> &vertex_properties,
-                 std::unordered_map<Id, GraphMLProperties> &edge_properties) {
+                 std::unordered_map<DefaultIdType, GraphMLProperties> &vertex_properties,
+                 std::unordered_map<DefaultIdType, GraphMLProperties> &edge_properties) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load(in);
 
@@ -233,4 +233,4 @@ void deserialize(std::istream &in, G &graph,
   }
 }
 
-} // namespace graph::io::graphml
+} // namespace graphxx::io::graphml

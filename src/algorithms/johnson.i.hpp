@@ -34,9 +34,9 @@
 #include "algorithms/johnson.hpp"
 #include "base.hpp"
 
-namespace graph::algorithms::johnson {
+namespace graphxx::algorithms::johnson {
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 Map<WeightType> visit(G &graph, C &&edges_weights) {
   Map<WeightType> map;
@@ -76,4 +76,4 @@ Map<WeightType> visit(G &graph, C &&edges_weights) {
 
   return map;
 }
-} // namespace graph::algorithms::johnson
+} // namespace graphxx::algorithms::johnson

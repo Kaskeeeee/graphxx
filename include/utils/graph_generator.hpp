@@ -36,7 +36,7 @@
 
 #include <unordered_map>
 
-namespace graph {
+namespace graphxx {
 
 class GraphGenerator {
 public:
@@ -48,7 +48,7 @@ public:
                              int max_out_degree = -1, bool self_edges = true);
 
   template <concepts::Graph G, concepts::Numeric W>
-  std::unordered_map<Id, W> generate_random_weights(const G &graph,
+  std::unordered_map<DefaultIdType, W> generate_random_weights(const G &graph,
                                                     W min_weight, W max_weight);
 
 private:

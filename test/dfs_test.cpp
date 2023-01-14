@@ -64,7 +64,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graph::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(g, a);
 
     for (auto vertex : g.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -72,7 +72,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graph::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -82,7 +82,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graph::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -106,7 +106,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graph::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -116,7 +116,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graph::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(g, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -128,7 +128,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   SECTION("check if visit with function work properly") {
     std::vector<Vertex> vertices;
 
-    auto tree = graph::algorithms::dfs::visit(
+    auto tree = graphxx::algorithms::dfs::visit(
         g, a, [&](Vertex v) { vertices.push_back(v); });
 
     for (auto vertex : g.vertices()) {

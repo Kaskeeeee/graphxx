@@ -36,12 +36,12 @@
 
 namespace johnson_test {
 using namespace graph;
-using namespace graph::algorithms;
+using namespace graphxx::algorithms;
 
 TEST_CASE("Johnson shortest paths", "[johnson]") {
   AdjacencyListGraph<Directedness::DIRECTED> g{};
 
-  std::unordered_map<Id, int> weights;
+  std::unordered_map<DefaultIdType, int> weights;
 
   auto a = g.add_vertex(); // 0
   auto b = g.add_vertex(); // 1

@@ -35,9 +35,10 @@
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
-#include <unordered_map>
+#include <functional>
+#include <vector>
 
-namespace graph::algorithms::dijkstra {
+namespace graphxx::algorithms::dijkstra {
 
 /// @brief Node containing informations about the parent (which is the previous
 ///        node)
@@ -45,7 +46,7 @@ namespace graph::algorithms::dijkstra {
 /// @tparam WeightType numeric weight
 template <concepts::Numeric WeightType> struct Node {
   WeightType distance;
-  Id parent;
+  DefaultIdType parent;
 };
 
 /// @brief flatten Tree that collects all Node structs containing information
@@ -54,7 +55,7 @@ template <concepts::Numeric WeightType> struct Node {
 ///        node in the shortest path
 /// @tparam WeightType
 template <concepts::Numeric WeightType>
-using Tree = std::unordered_map<Id, Node<WeightType>>;
+using DistanceTree = std::vector<Node<WeightType>>;
 
 /// @brief Implementation of dijkstra algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -65,10 +66,15 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 /// @param source source vertex
 /// @param weights edges weights
 /// @return flatten tree as described for type Tree<WeightType>
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
-Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights);
+template <
+    concepts::Graph G,
+    std::invocable<typename G::Edge> Weight = std::function<
+        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
+    typename Distance = decltype(std::declval<Weight>()(typename G::Edge))>
+DistanceTree<Distance> visit(
+    const G &graph, typename G::Id source,
+    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
-} // namespace graph::algorithms::dijkstra
+} // namespace graphxx::algorithms::dijkstra
 
 #include "algorithms/dijkstra.i.hpp"

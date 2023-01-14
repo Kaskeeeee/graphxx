@@ -35,7 +35,7 @@
 
 #include <algorithm>
 
-namespace graph::algorithms::tarjan {
+namespace graphxx::algorithms::tarjan {
 
 SCCVector _scc_vector;
 TarjanTree _tarjan_tree;
@@ -60,7 +60,7 @@ template <concepts::Graph G> void tarjan_rec(const G &graph, Vertex v) {
     }
   }
   if (_tarjan_tree[v].low_link == _tarjan_tree[v].index) {
-    std::vector<Id> new_scc;
+    std::vector<DefaultIdType> new_scc;
 
     auto w = _stack.back();
     _stack.pop_back();
@@ -98,4 +98,4 @@ template <concepts::Graph G> SCCVector visit(const G &graph) {
   return _scc_vector;
 }
 
-} // namespace graph::algorithms::tarjan
+} // namespace graphxx::algorithms::tarjan

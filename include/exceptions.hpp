@@ -34,7 +34,7 @@
 #include <exception>
 #include <string>
 
-namespace graph::exceptions {
+namespace graphxx::exceptions {
 
 /// @brief Generic graph exceptions from which the other ones inherits
 /// its extends std::exception by adding a custom message
@@ -89,4 +89,4 @@ struct BadMatrixMarketParseException : GraphException {
   BadMatrixMarketParseException();
 };
 
-} // namespace graph::exceptions
+} // namespace graphxx::exceptions

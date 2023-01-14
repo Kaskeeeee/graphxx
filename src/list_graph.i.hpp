@@ -31,187 +31,84 @@
 
 #include "base.hpp"
 #include "exceptions.hpp"
-#include "id_manager.hpp"
 #include "list_graph.hpp"
+#include "utils/tuple_utils.hpp"
 
 #include <type_traits>
 
-namespace graph {
-template <Directedness D>
-AdjacencyListGraph<D>::AdjacencyListGraph()
-    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
-      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {};
+namespace graphxx {
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(){};
 
-template <Directedness D>
-template <Directedness DN>
-AdjacencyListGraph<D>::AdjacencyListGraph(const AdjacencyListGraph<DN> &graph)
-    : _vertex_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)},
-      _edge_id_manager{utils::IdManager(MIN_VALID_ID, MAX_VALID_ID)} {
-
-  for (Vertex v : graph.vertices()) {
-    _adj[v] = {};
-  }
-
-  bool flag;
-  for (Edge e : graph.edges()) {
-    flag = false;
-    for (Edge ed : graph.edges()) {
-      if (e.v != ed.u || e.u != ed.v) {
-        continue;
-      }
-
-      _adj[e.u].push_back(e);
-      EdgeWrapper links = {e, ed};
-      _edge_map.insert({e, links});
-      flag = true;
-      break;
-    }
-
-    if (flag) {
-      continue;
-    }
-
-    if constexpr (D == Directedness::UNDIRECTED) {
-      Edge e1{e, e.u, e.v};
-      Edge e2{e, e.v, e.u};
-      _adj[e.u].push_back(e1);
-      _adj[e.v].push_back(e2);
-
-      EdgeWrapper links = {e1, e2};
-      _edge_map.insert({e, links});
-    } else {
-      _adj[e.u].push_back(e);
-      EdgeWrapper links = {e};
-      _edge_map.insert({e, links});
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
+    const AdjacencyListGraph &graph) {
+  for (auto &&vertex : graph) {
+    for (auto &&edge : vertex) {
+      std::apply(
+          [&](auto &&...attributes) {
+            add_edge(source(edge), target(edge), attributes...)
+          },
+          elements_from_index<2>(edge));
     }
   }
 };
 
-template <Directedness D> Vertex AdjacencyListGraph<D>::add_vertex() {
-  auto id = _vertex_id_manager.allocate();
-
-  Vertex v{id};
-  _adj[v] = {};
-  return v;
-};
-
-template <Directedness D>
-Edge AdjacencyListGraph<D>::add_edge(const Vertex &u, const Vertex &v) {
-  if (!_adj.contains(u) || !_adj.contains(v)) {
-    throw exceptions::NoSuchVertexException();
-  }
-
-  auto id = _edge_id_manager.allocate();
-
-  if constexpr (D == Directedness::UNDIRECTED) {
-    Edge e1{id, u, v};
-    Edge e2{id, v, u};
-    _adj[u].push_back(e1);
-    _adj[v].push_back(e2);
-
-    EdgeWrapper links = {e1, e2};
-    _edge_map.insert({id, links});
-    return e1;
-  } else {
-    Edge e{id, u, v};
-    _adj[u].push_back(e);
-    EdgeWrapper links = {e};
-    _edge_map.insert({id, links});
-    return e;
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex(Id id) {
+  for (auto i = Base::size(); i <= id; ++i) {
+    Base::emplace_back();
   }
 };
 
-template <Directedness D>
-void AdjacencyListGraph<D>::remove_vertex(const Vertex &v) {
-  if (!_adj.contains(v)) {
-    throw exceptions::NoSuchVertexException();
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Id uid, Id vid,
+                                                            Attributes attrs) {
+  add_vertex(uid);
+  add_vertex(vid);
+
+  Base::operator[](uid).emplace_back(
+      {uid, vid, elements_from_index<0>(attrs)...});
+  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+    Base::operator[](vid).emplace_back(
+        {vid, uid, elements_from_index<0>(attrs)...});
+  }
+};
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Id id) {
+  if (id < size()) {
+    Base::operator[](id).clear();
   }
 
-  _vertex_id_manager.free(v);
-  _adj.erase(v);
+  constexpr auto is_edge_to_id = [=](Edge edge) { return target(edge) == id; };
 
-  auto edge_map_it = _edge_map.begin();
-  while (edge_map_it != _edge_map.end()) {
-    auto [id, edge_wrapper] = *edge_map_it;
-    auto edge = edge_wrapper[0];
+  for (size_t i = 0; i < size(); i++) {
+    std::ranges::remove_if(Base::at(i), is_edge_to_id);
+  }
+};
 
-    if (edge.u == v || edge.v == v) {
-      edge_map_it = _edge_map.erase(edge_map_it);
-    } else {
-      edge_map_it++;
-    }
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id uid, Id vid) {
+  if (u < size() && v < size()) {
+    std::ranges::remove_if(Base::at(u),
+                           [=](Edge &&edge) { return target(edge) == v; });
 
-    if (edge.v == v && edge.u != v) {
-      _adj.at(edge.u).remove(edge);
-    }
-
-    if constexpr (D == Directedness::UNDIRECTED) {
-      if (edge.u == v && edge.v != v) {
-        _adj.at(edge.v).remove(edge);
-      }
+    if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+      std::ranges::remove_if(at(v),
+                             [=](Edge &&edge) { return target(edge) == u; });
     }
   }
 };
 
-template <Directedness D>
-void AdjacencyListGraph<D>::remove_edge(const Edge &e) {
-  if (!_edge_map.contains(e)) {
-    throw exceptions::NoSuchEdgeException();
-  }
-
-  _edge_id_manager.free(e);
-  _adj.at(e.u).remove(e);
-
-  if constexpr (D == Directedness::UNDIRECTED) {
-    _adj.at(e.v).remove(e);
-  }
-
-  _edge_map.erase(e);
-};
-
-template <Directedness D> auto AdjacencyListGraph<D>::vertices() const {
-  return _adj | std::views::transform([](const std::pair<Id, EdgeList> &pair) {
-           return Vertex(pair.first);
-         });
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge edge) {
+  return std::get<0>(edge);
 }
 
-template <Directedness D> auto AdjacencyListGraph<D>::edges() const {
-  return _edge_map | std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
-           return pair.second;
-         }) |
-         std::views::join;
-}
-
-template <Directedness D>
-auto AdjacencyListGraph<D>::out_edges(const Vertex &v) const {
-  return _adj.at(v) |
-         std::views::transform([&](Id id) { return _edge_map.at(id); }) |
-         std::views::join;
-}
-
-template <Directedness D>
-auto AdjacencyListGraph<D>::in_edges(const Vertex &v) const {
-  return _edge_map | std::views::transform([](std::pair<Id, EdgeWrapper> pair) {
-           return pair.second;
-         }) |
-         std::views::join |
-         std::views::filter([&](Edge edge) { return edge.v == v; });
-}
-
-template <Directedness D>
-Vertex AdjacencyListGraph<D>::get_vertex(const Id &id) const {
-  if (!_adj.contains(id)) {
-    return INVALID_VERTEX;
-  }
-  return Vertex{id};
-}
-
-template <Directedness D>
-Edge AdjacencyListGraph<D>::get_edge(const Id &id) const {
-  if (!_edge_map.contains(id)) {
-    return INVALID_EDGE;
-  }
-  return _edge_map.at(id)[0];
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge edge) {
+  return std::get<1>(edge);
 }
 
 } // namespace graph

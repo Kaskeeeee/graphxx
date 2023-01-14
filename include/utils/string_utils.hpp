@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-namespace graph::utils {
+namespace graphxx::utils {
 
 /// @brief  Searches the input string for the first occurring word among those
 /// specified as an argument.
@@ -263,4 +263,4 @@ get_text_between_delimiters(const std::string &input,
   return std::string();
 }
 
-} // namespace graph::utils
+} // namespace graphxx::utils

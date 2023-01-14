@@ -37,14 +37,14 @@
 
 #include <unordered_map>
 
-namespace graph::algorithms::bellman_ford {
+namespace graphxx::algorithms::bellman_ford {
 
 /// @brief Node containing informations about its distance
 ///        and the previous node in the shortest path from a given source
 /// @tparam WeightType numeric weight
 template <concepts::Numeric WeightType> struct Node {
   WeightType distance;
-  Id parent;
+  DefaultIdType parent;
 
   Node();
 };
@@ -55,7 +55,7 @@ template <concepts::Numeric WeightType> struct Node {
 ///        node in the shortest path
 /// @tparam WeightType numeric weight
 template <concepts::Numeric WeightType>
-using Tree = std::unordered_map<Id, Node<WeightType>>;
+using Tree = std::unordered_map<DefaultIdType, Node<WeightType>>;
 
 /// @brief Implementation of bellman_ford algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -66,10 +66,10 @@ using Tree = std::unordered_map<Id, Node<WeightType>>;
 /// @param source source vertex
 /// @param edges_weights edges weights
 /// @return flatten tree as described for type Tree<WeightType>
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights);
 
-} // namespace graph::algorithms::bellman_ford
+} // namespace graphxx::algorithms::bellman_ford
 
 #include "algorithms/bellman_ford.i.hpp"

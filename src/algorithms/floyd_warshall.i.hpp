@@ -35,14 +35,14 @@
 
 #include <limits>
 
-namespace graph::algorithms::floyd_warshall {
+namespace graphxx::algorithms::floyd_warshall {
 
 template <concepts::Numeric WeightType>
 Node<WeightType>::Node()
     : distance{std::numeric_limits<WeightType>::max()}, parent{
                                                             INVALID_VERTEX} {};
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 Map<WeightType> visit(const G &graph, C &&weights) {
   Map<WeightType> map;
@@ -74,4 +74,4 @@ Map<WeightType> visit(const G &graph, C &&weights) {
   return map;
 }
 
-} // namespace graph::algorithms::floyd_warshall
+} // namespace graphxx::algorithms::floyd_warshall

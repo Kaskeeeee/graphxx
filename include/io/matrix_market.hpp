@@ -38,7 +38,7 @@
 #include <fstream>
 #include <functional>
 
-namespace graph::io::matrix_market {
+namespace graphxx::io::matrix_market {
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
 ///        format. It's possible to assign a weight to the edges of the graph.
@@ -48,8 +48,8 @@ namespace graph::io::matrix_market {
 /// @param out output stream
 /// @param graph input graph object
 /// @param weights weights map
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 void serialize(std::ostream &out, const G &graph, C &weights);
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
@@ -67,10 +67,10 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
 /// @param in input stream
 /// @param graph refrence to output graph
 /// @param weights reference to map in which store edges' weights
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 void deserialize(std::istream &in, G &graph, C &weights);
 
-} // namespace graph::io::matrix_market
+} // namespace graphxx::io::matrix_market
 
 #include "io/matrix_market.i.hpp"

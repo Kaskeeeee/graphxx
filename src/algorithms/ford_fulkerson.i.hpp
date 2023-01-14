@@ -38,9 +38,9 @@
 #include <limits>
 #include <queue>
 
-namespace graph::algorithms::ford_fulkerson {
+namespace graphxx::algorithms::ford_fulkerson {
 
-template <concepts::Graph G, concepts::Graph DG, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Graph DG, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
             C &&edge_capacity, const FlowMap<WeightType> &edges_flow) {
@@ -52,7 +52,7 @@ BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
   tree[source].status = VertexStatus::WAITING;
   tree[source].parent = -1;
 
-  std::queue<Id> queue;
+  std::queue<DefaultIdType> queue;
   queue.push(source);
 
   while (!queue.empty()) {
@@ -65,7 +65,7 @@ BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
             "negative edge weight found");
       }
 
-      Id adjacent = out_edge.v;
+      DefaultIdType adjacent = out_edge.v;
 
       WeightType cf;
       if (digraph.get_edge(out_edge) != INVALID_EDGE) {
@@ -89,7 +89,7 @@ BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
   return tree;
 }
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 FFpair<WeightType> visit(const G &graph, const Vertex &source,
                          const Vertex &sink, C &&edges_capacity) {
@@ -130,4 +130,4 @@ FFpair<WeightType> visit(const G &graph, const Vertex &source,
   return FFpair{flow, max_flow};
 }
 
-} // namespace graph::algorithms::ford_fulkerson
+} // namespace graphxx::algorithms::ford_fulkerson

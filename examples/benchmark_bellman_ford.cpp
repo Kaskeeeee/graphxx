@@ -44,14 +44,14 @@
 
 int main() {
   // Graphxx
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   std::fstream input_file("../data/cage4.mtx");
-  graph::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run("bellman_ford graphxx", [&]() {
-    graph::algorithms::bellman_ford::visit(g, graph::Vertex{0}, weights);
+    graphxx::algorithms::bellman_ford::visit(g, graphxx::Vertex{0}, weights);
   });
 
   // Boost

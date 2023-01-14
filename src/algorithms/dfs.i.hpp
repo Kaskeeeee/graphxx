@@ -36,7 +36,7 @@
 
 #include <functional>
 
-namespace graph::algorithms::dfs {
+namespace graphxx::algorithms::dfs {
 
 template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source) {
   return visit(graph, source, [](Vertex) {});
@@ -66,7 +66,7 @@ void visit_rec(const G &graph, Vertex vertex,
   tree[vertex].discovery_time = ++time;
 
   for (Edge out_edge : graph.out_edges(vertex)) {
-    Id adjacent = out_edge.v;
+    DefaultIdType adjacent = out_edge.v;
 
     if (tree[adjacent].status == VertexStatus::READY) {
       tree[adjacent].parent = vertex;
@@ -78,4 +78,4 @@ void visit_rec(const G &graph, Vertex vertex,
   tree[vertex].finishing_time = ++time;
 }
 
-} // namespace graph::algorithms::dfs
+} // namespace graphxx::algorithms::dfs

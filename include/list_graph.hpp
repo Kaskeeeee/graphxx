@@ -33,54 +33,45 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
-#include "id_manager.hpp"
 
-#include <array>
 #include <list>
-#include <unordered_map>
+#include <vector>
 
-namespace graph {
+namespace graphxx {
 
-template <Directedness D> class AdjacencyListGraph {
-
-protected:
-  using EdgeList = std::list<Id>;
-  using AdjacencyList = std::unordered_map<Id, EdgeList>;
-  using EdgeWrapper =
-      std::conditional_t<D == Directedness::DIRECTED, std::array<Edge, 1>,
-                         std::array<Edge, 2>>;
-  using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
-
+template <std::unsigned_integral IdType = DefaultIdType,
+          Directedness D = Directedness::DIRECTED, typename... AttributesType>
+class AdjacencyListGraph
+    : public std::vector<
+          std::list<std::tuple<IdType, IdType, AttributesType...>>> {
 public:
+  using Id = IdType;
+  using Edge = std::tuple<Id, Id, AttributesType...>;
+  using Attributes = std::tuple<AttributesType...>;
+
+  using EdgeList = std::list<Edge>;
+  using Base = std::vector<EdgeList>;
+
   static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyListGraph();
+  AdjacencyListGraph(const AdjacencyListGraph &graph);
 
-  template <Directedness DN>
-  explicit AdjacencyListGraph(const AdjacencyListGraph<DN> &graph);
+  void add_vertex(Id);
+  void remove_vertex(Id);
 
-  Vertex add_vertex();
-  void remove_vertex(const Vertex &v);
+  void add_edge(Id, Id, Attributes);
+  void remove_edge(Id, Id);
 
-  Edge add_edge(const Vertex &u, const Vertex &v);
-  void remove_edge(const Edge &e);
+  Id source(Edge);
+  Id target(Edge);
 
   auto vertices() const;
   auto edges() const;
   auto out_edges(const Vertex &v) const;
   auto in_edges(const Vertex &v) const;
-
-  Vertex get_vertex(const Id &id) const;
-  Edge get_edge(const Id &id) const;
-
-private:
-  AdjacencyList _adj;
-  EdgeMap _edge_map;
-
-  utils::IdManager _vertex_id_manager;
-  utils::IdManager _edge_id_manager;
 };
 
-} // namespace graph
+} // namespace graphxx
 
 #include "list_graph.i.hpp"

@@ -38,16 +38,16 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graph::algorithms::kruskal {
+namespace graphxx::algorithms::kruskal {
 
 /// @brief flatten Tree that will collect the Edge ids of the minimum spanning
 ///        tree
-using Tree = std::vector<Id>;
+using Tree = std::vector<DefaultIdType>;
 
 /// @brief Map that divides the vertices into "clusters" and allows us to check
 ///        if two vertices belong to the same cluster or not and hence decide whether
 ///        adding an edge creates a cycle
-using ClusterMap = std::unordered_map<Id, int>;
+using ClusterMap = std::unordered_map<DefaultIdType, int>;
 
 /// @brief Implementation of kruskal algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -57,10 +57,10 @@ using ClusterMap = std::unordered_map<Id, int>;
 /// @param graph input graph
 /// @param weights edges weights
 /// @return flatten tree as described for type Tree
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<Id, C>>
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 Tree visit(const G &graph, C &&weights);
 
-} // namespace graph::algorithms::kruskal
+} // namespace graphxx::algorithms::kruskal
 
 #include "algorithms/kruskal.i.hpp"

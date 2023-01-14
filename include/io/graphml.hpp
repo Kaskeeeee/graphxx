@@ -37,7 +37,7 @@
 #include <fstream>
 #include <functional>
 
-namespace graph::io::graphml {
+namespace graphxx::io::graphml {
 
 using GraphMLProperties = std::unordered_map<std::string, std::string>;
 
@@ -106,9 +106,9 @@ void serialize(std::ostream &out, const G &graph,
  */
 template <concepts::Graph G>
 void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<Id, GraphMLProperties> &vertex_properties,
-                 std::unordered_map<Id, GraphMLProperties> &edge_properties);
+                 std::unordered_map<DefaultIdType, GraphMLProperties> &vertex_properties,
+                 std::unordered_map<DefaultIdType, GraphMLProperties> &edge_properties);
 
-} // namespace graph::io::graphml
+} // namespace graphxx::io::graphml
 
 #include "io/graphml.i.hpp"

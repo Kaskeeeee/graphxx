@@ -38,14 +38,14 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph::algorithms::dfs {
+namespace graphxx::algorithms::dfs {
 
 /// @brief Structure to store information about graph vertices during the visit
 struct DFSVertex {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Id of the predecessor Vertex in DFS Tree
-  Id parent = -1;
+  DefaultIdType parent = -1;
   /// @brief Counter indicating when vertex is discovered
   int discovery_time = -1;
   /// @brief Counter indicating when the processing of vertex is finished
@@ -54,7 +54,7 @@ struct DFSVertex {
 
 /// @brief flatten Tree that collects all DFSVertex structs generated during the
 ///        visit
-using DFSTree = std::unordered_map<Id, DFSVertex>;
+using DFSTree = std::unordered_map<DefaultIdType, DFSVertex>;
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -82,6 +82,6 @@ template <concepts::Graph G>
 DFSTree visit(const G &graph, Vertex source,
               const std::function<void(Vertex)> &callback);
 
-} // namespace graph::algorithms::dfs
+} // namespace graphxx::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"

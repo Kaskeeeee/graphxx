@@ -45,14 +45,14 @@
 
 int main() {
   // Graphxx
-  graph::AdjacencyListGraph<graph::Directedness::DIRECTED> g{};
+  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
 
   std::fstream input_file("../data/cage4.mtx");
-  graph::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::matrix_market::deserialize(input_file, g, weights);
 
   ankerl::nanobench::Bench().run("dfs graphxx", [&]() {
-    graph::algorithms::dfs::visit(g, graph::Vertex{0});
+    graphxx::algorithms::dfs::visit(g, graphxx::Vertex{0});
   });
 
   // Boost

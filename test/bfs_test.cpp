@@ -62,7 +62,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graph::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(g, a);
 
     for (auto vertex : g.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -70,7 +70,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graph::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -80,7 +80,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graph::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -106,7 +106,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
 
   SECTION("check if all the distances from the source are correct, now with "
           "cycles") {
-    auto tree = graph::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -116,7 +116,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graph::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(g, a);
 
     REQUIRE(tree[a].parent == -1);
     REQUIRE(tree[b].parent == a);
@@ -128,7 +128,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   SECTION("check if visit with function work properly") {
     std::vector<Vertex> vertices;
 
-    auto tree = graph::algorithms::bfs::visit(
+    auto tree = graphxx::algorithms::bfs::visit(
         g, a, [&](Vertex v) { vertices.push_back(v); });
 
     for (auto vertex : g.vertices()) {
@@ -151,7 +151,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
     auto b_to_c = g1.add_edge(b, c); // 1->2
     auto d_to_e = g1.add_edge(d, e); // 3->4
 
-    auto tree = graph::algorithms::bfs::visit(g1, c);
+    auto tree = graphxx::algorithms::bfs::visit(g1, c);
 
     for (auto vertex : g1.vertices()) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);

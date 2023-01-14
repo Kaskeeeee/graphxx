@@ -38,7 +38,7 @@
 #include <functional>
 #include <unordered_map>
 
-namespace graph::algorithms::bfs {
+namespace graphxx::algorithms::bfs {
 
 /// @brief Structure to store information about graph vertices during the visit
 struct BFSVertex {
@@ -47,12 +47,12 @@ struct BFSVertex {
   /// @brief Number of edges in the shortest path from the source vertex
   int distance = -1;
   /// @brief Id of the predecessor Vertex in BFS Tree
-  Id parent = -1;
+  DefaultIdType parent = -1;
 };
 
 /// @brief flatten Tree that collects all BFSVertex structs generated during the
 ///        visit
-using BFSTree = std::unordered_map<Id, BFSVertex>;
+using BFSTree = std::unordered_map<DefaultIdType, BFSVertex>;
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -76,6 +76,6 @@ template <concepts::Graph G>
 BFSTree visit(const G &graph, Vertex source,
               const std::function<void(Vertex)> &callback);
 
-} // namespace graph::algorithms::bfs
+} // namespace graphxx::algorithms::bfs
 
 #include "algorithms/bfs.i.hpp"

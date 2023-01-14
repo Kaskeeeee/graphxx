@@ -36,14 +36,14 @@
 
 #include <limits>
 
-namespace graph::algorithms::bellman_ford {
+namespace graphxx::algorithms::bellman_ford {
 
 template <concepts::Numeric WeightType>
 Node<WeightType>::Node()
     : distance{std::numeric_limits<WeightType>::max()}, parent{
                                                             INVALID_VERTEX} {};
 
-template <concepts::Graph G, concepts::Subscriptable<Id> C,
+template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType>
 Tree<WeightType> visit(const G &graph, const Vertex &source,
                        C &&edges_weights) {
@@ -81,4 +81,4 @@ Tree<WeightType> visit(const G &graph, const Vertex &source,
 
   return tree;
 }
-} // namespace graph::algorithms::bellman_ford
+} // namespace graphxx::algorithms::bellman_ford
