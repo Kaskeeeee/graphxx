@@ -63,8 +63,11 @@ public:
   void add_edge(Id, Id, Attributes);
   void remove_edge(Id, Id);
 
-  Id source(Edge);
-  Id target(Edge);
+  Id source(Edge) const;
+  Id target(Edge) const;
+
+  size_t num_vertices() const;
+  size_t num_edges() const;
 };
 } // namespace graphxx
 

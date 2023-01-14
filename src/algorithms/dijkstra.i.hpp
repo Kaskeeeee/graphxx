@@ -47,14 +47,14 @@ DistanceTree<Distance> visit(const G &graph, typename G::Id source,
                              Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   DistanceTree<Distance> distance_tree{
-      G.size(), Node{.distance = distance_upperbound, .parent = source}};
+      graph.size(), Node{.distance = distance_upperbound, .parent = source}};
 
   using WeightedVertex = std::tuple<Distance, typename G::Id>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
                       std::greater<WeightedVertex>>
       queue;
 
-  distance_tree[source] = {.distance = 0, .parent = INVALID_VERTEX};
+  distance_tree[source] = {.distance = 0, .parent = source};
   queue.push({distance_tree[source].distance, source});
 
   while (!queue.empty()) {
@@ -63,7 +63,7 @@ DistanceTree<Distance> visit(const G &graph, typename G::Id source,
 
     for (auto edge : graph[u]) {
       auto v = graph.target(edge);
-      auto edge_weight = weight(edge);
+      Distance edge_weight = weight(edge);
 
       if (weight(edge) < 0) {
         throw exceptions::InvariantViolationException(
@@ -74,7 +74,7 @@ DistanceTree<Distance> visit(const G &graph, typename G::Id source,
         continue;
       }
 
-      auto alternative_distance = distance_tree[u].distance + edge_weight;
+      Distance alternative_distance = distance_tree[u].distance + edge_weight;
       if (alternative_distance < distance_tree[v].distance) {
         distance_tree[v].distance = alternative_distance;
         distance_tree[v].parent = u;

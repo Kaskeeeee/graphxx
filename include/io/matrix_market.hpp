@@ -67,9 +67,8 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
 /// @param in input stream
 /// @param graph refrence to output graph
 /// @param weights reference to map in which store edges' weights
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-void deserialize(std::istream &in, G &graph, C &weights);
+template <concepts::Graph G, concepts::Numeric WeightType>
+void deserialize(std::istream &in, G &graph);
 
 } // namespace graphxx::io::matrix_market
 

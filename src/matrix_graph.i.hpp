@@ -32,6 +32,7 @@
 #include "exceptions.hpp"
 #include "matrix_graph.hpp"
 
+#include <algorithm>
 namespace graphxx {
 template <std::unsigned_integral IdType, Directedness D,
           typename... AttributesType>
@@ -45,7 +46,7 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
     for (auto &&edge : vertex) {
       std::apply(
           [&](auto &&...attributes) {
-            add_edge(source(edge), target(edge), attributes...)
+            add_edge(source(edge), target(edge), attributes)
           },
           elements_from_index<2>(edge));
     }
@@ -67,22 +68,23 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_edge(
   add_node(uid);
   add_node(vid);
 
-  Base::operator[](uid).emplace({vid, {uid, vid, attrs...}});
+  Base::operator[](uid).emplace(vid, std::forward_as_tuple(uid, vid, attrs...));
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    Base::operator[](vid).emplace({uid, {vid, uid, attrs...}});
+    Base::operator[](vid).emplace(uid,
+                                  std::forward_as_tuple(vid, uid, attrs...));
   }
 }
 
 template <std::unsigned_integral IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
-  if (id < size()) {
+  if (id < Base::size()) {
     Base::operator[](id).clear();
   }
 
-  for (size_t i = 0; i < size(); i++) {
+  for (size_t i = 0; i < Base::size(); i++) {
     std::ranges::remove_if(Base::at(i),
-                           [=](Edge edge) { return target(edge) == id; });
+                           [&](Edge edge) { return target(edge) == id; });
   }
 }
 
@@ -90,24 +92,39 @@ template <std::unsigned_integral IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
                                                                      Id v) {
-  if (u < size() && v < size()) {
+  if (u < Base::size() && v < Base::size()) {
     std::ranges::remove_if(Base::at(u),
-                           [=](Edge &&edge) { return target(edge) == v; });
+                           [&](Edge &&edge) { return target(edge) == v; });
 
     if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-      std::ranges::remove_if(at(v),
-                             [=](Edge &&edge) { return target(edge) == u; });
+      std::ranges::remove_if(Base::at(v),
+                             [&](Edge &&edge) { return target(edge) == u; });
     }
   }
 }
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
-Id AdjacencyMatrixGraph<Id, D, AttributesType...>::source(Edge edge) {
+Id AdjacencyMatrixGraph<Id, D, AttributesType...>::source(Edge edge) const {
   return std::get<0>(edge);
 }
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
-Id AdjacencyMatrixGraph<Id, D, AttributesType...>::target(Edge edge) {
+Id AdjacencyMatrixGraph<Id, D, AttributesType...>::target(Edge edge) const {
   return std::get<1>(edge);
 }
-} // namespace graph
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_vertices() const {
+  return Base::size();
+}
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_edges() const {
+  size_t count = 0;
+  for (size_t i = 0; i < Base::size(); i++) {
+    count += (*this)[i].size();
+  }
+  return count;
+}
+
+} // namespace graphxx

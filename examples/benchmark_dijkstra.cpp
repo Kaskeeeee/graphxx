@@ -31,11 +31,8 @@
 
 #include "algorithms/dijkstra.hpp"
 #include "base.hpp"
-#include "io/graphml.hpp"
-#include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
 #include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
@@ -47,8 +44,9 @@
 
 int main() {
   // Graphxx
-  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
-  std::unordered_map<int, double> weights;
+  graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                              double>
+      g{};
 
   // auto s = g.add_vertex(); // 0
   // auto a = g.add_vertex(); // 1
@@ -74,10 +72,10 @@ int main() {
   // weights[d_to_c] = 4;
 
   std::fstream input_file("../data/cage4.mtx");
-  graphxx::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file, g);
 
   ankerl::nanobench::Bench().run("dijkstra graphxx", [&]() {
-    graphxx::algorithms::dijkstra::visit(g, graphxx::Vertex{0}, weights);
+    graphxx::algorithms::dijkstra::visit(g, 0);
   });
 
   // Boost
@@ -89,8 +87,10 @@ int main() {
 
   graph_t boost_graph;
 
-  for (auto e : g.edges()) {
-    boost::add_edge(e.u, e.v, weights[e], boost_graph);
+  for (auto v : g) {
+    for (auto e : v) {
+      boost::add_edge(g.source(e), g.target(e), std::get<2>(e), boost_graph);
+    }
   }
 
   BoostVertex start = boost::vertex(0, boost_graph);

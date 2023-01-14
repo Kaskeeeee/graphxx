@@ -34,6 +34,7 @@
 #include "list_graph.hpp"
 #include "utils/tuple_utils.hpp"
 
+#include <algorithm>
 #include <type_traits>
 
 namespace graphxx {
@@ -47,7 +48,7 @@ AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
     for (auto &&edge : vertex) {
       std::apply(
           [&](auto &&...attributes) {
-            add_edge(source(edge), target(edge), attributes...)
+            add_edge(source(edge), target(edge), attributes...);
           },
           elements_from_index<2>(edge));
     }
@@ -67,48 +68,67 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Id uid, Id vid,
   add_vertex(uid);
   add_vertex(vid);
 
-  Base::operator[](uid).emplace_back(
-      {uid, vid, elements_from_index<0>(attrs)...});
+  std::apply(
+      [&](auto &&...props) {
+        Base::operator[](uid).emplace_back(uid, vid, props...);
+      },
+      attrs);
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    Base::operator[](vid).emplace_back(
-        {vid, uid, elements_from_index<0>(attrs)...});
+    std::apply(
+        [&](auto &&...props) {
+          Base::operator[](vid).emplace_back(vid, uid, props...);
+        },
+        attrs);
   }
 };
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Id id) {
-  if (id < size()) {
+  if (id < Base::size()) {
     Base::operator[](id).clear();
   }
 
-  constexpr auto is_edge_to_id = [=](Edge edge) { return target(edge) == id; };
-
-  for (size_t i = 0; i < size(); i++) {
-    std::ranges::remove_if(Base::at(i), is_edge_to_id);
+  for (size_t i = 0; i < Base::size(); i++) {
+    std::ranges::remove_if(Base::at(i),
+                           [&](Edge edge) { return target(edge) == id; });
   }
 };
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
-void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id uid, Id vid) {
-  if (u < size() && v < size()) {
+void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id u, Id v) {
+  if (u < Base::size() && v < Base::size()) {
     std::ranges::remove_if(Base::at(u),
-                           [=](Edge &&edge) { return target(edge) == v; });
+                           [&](Edge &&edge) { return target(edge) == v; });
 
     if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-      std::ranges::remove_if(at(v),
-                             [=](Edge &&edge) { return target(edge) == u; });
+      std::ranges::remove_if(Base::at(v),
+                             [&](Edge &&edge) { return target(edge) == u; });
     }
   }
 };
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
-Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge edge) {
+Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge edge) const {
   return std::get<0>(edge);
 }
 
 template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
-Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge edge) {
+Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge edge) const {
   return std::get<1>(edge);
 }
 
-} // namespace graph
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+size_t AdjacencyListGraph<Id, D, AttributesType...>::num_vertices() const {
+  return Base::size();
+}
+
+template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+size_t AdjacencyListGraph<Id, D, AttributesType...>::num_edges() const {
+  size_t count = 0;
+  for (size_t i = 0; i < Base::size(); i++) {
+    count += (*this)[i].size();
+  }
+  return count;
+}
+
+} // namespace graphxx

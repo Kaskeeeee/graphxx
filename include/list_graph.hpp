@@ -63,13 +63,11 @@ public:
   void add_edge(Id, Id, Attributes);
   void remove_edge(Id, Id);
 
-  Id source(Edge);
-  Id target(Edge);
+  size_t num_vertices() const;
+  size_t num_edges() const;
 
-  auto vertices() const;
-  auto edges() const;
-  auto out_edges(const Vertex &v) const;
-  auto in_edges(const Vertex &v) const;
+  Id source(Edge) const;
+  Id target(Edge) const;
 };
 
 } // namespace graphxx

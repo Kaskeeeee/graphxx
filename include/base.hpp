@@ -31,6 +31,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace graphxx {
 /// The id type that is used to identify vertices and edges
 using DefaultIdType = int64_t;

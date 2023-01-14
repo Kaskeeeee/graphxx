@@ -43,7 +43,9 @@
 
 namespace graphxx::io::matrix_market {
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
+/*
+// TODO
+ template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
           concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
 void serialize(std::ostream &out, const G &graph, C &weights) {
   std::string number_format = "";
@@ -75,29 +77,24 @@ void serialize(std::ostream &out, const G &graph, C &weights) {
         << std::endl;
   }
 }
-
+ */
 template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
   const std::string header = "%%MatrixMarket matrix coordinate pattern general";
 
-  size_t num_vertices, num_edges;
-  for (auto _ : graph.vertices()) {
-    num_vertices++;
-  }
-  for (auto _ : graph.edges()) {
-    num_edges++;
-  }
-
   out << header << std::endl;
-  out << num_vertices << " " << num_vertices << " " << num_edges << std::endl;
+  out << graph.num_vertices() << " " << graph.num_vertices() << " "
+      << graph.num_edges() << std::endl;
 
-  for (auto edge : graph.edges()) {
-    out << (edge.u + 1) << " " << (edge.v + 1) << std::endl;
+  for (auto vertex : graph) {
+    for (auto edge : vertex) {
+      out << (graph.source(edge) + 1) << " " << (graph.target(edge) + 1)
+          << std::endl;
+    }
   }
 }
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-void deserialize(std::istream &in, G &graph, C &weights) {
+template <concepts::Graph G, concepts::Numeric WeightType>
+void deserialize(std::istream &in, G &graph) {
   std::string input_string;
   bool symmetric = false;
   bool weighted = false;
@@ -144,7 +141,7 @@ void deserialize(std::istream &in, G &graph, C &weights) {
 
   size_t num_vertices = rows * (symmetric ? 2 : 1);
   for (int64_t i = 0; i < num_vertices; i++) {
-    graph.add_vertex();
+    graph.add_vertex(i);
   }
 
   for (int64_t i = 0; i < entries; i++) {
@@ -152,21 +149,20 @@ void deserialize(std::istream &in, G &graph, C &weights) {
     WeightType weight{1.0};
 
     std::getline(in, input_string);
+    auto string_stream = std::stringstream(input_string);
+    string_stream >> source_id >> target_id;
     if (weighted) {
-      std::stringstream(input_string) >> source_id >> target_id >> weight;
+      string_stream >> weight;
+      graph.add_edge(source_id - 1, target_id - 1, {weight});
     } else {
-      std::stringstream(input_string) >> source_id >> target_id;
-    }
-
-    Edge e1 = graph.add_edge(Vertex{source_id - 1}, Vertex{target_id - 1});
-    if (weighted) {
-      weights[e1] = weight;
+      graph.add_edge(source_id - 1, target_id - 1, {});
     }
 
     if (symmetric && (source_id != target_id)) {
-      Edge e2 = graph.add_edge(Vertex{target_id - 1}, Vertex{source_id - 1});
       if (weighted) {
-        weights[e2] = weight;
+        graph.add_edge(target_id - 1, source_id - 1, {weight});
+      } else {
+        graph.add_edge(target_id - 1, source_id - 1, {});
       }
     }
   }
