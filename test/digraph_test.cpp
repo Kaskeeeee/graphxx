@@ -37,7 +37,7 @@
 
 namespace digraph_test {
 
-using namespace graph;
+using namespace graphxx;
 
 TEST_CASE("digraph is built correctly", "[digraph]") {
   AdjacencyListGraph<Directedness::DIRECTED> g;

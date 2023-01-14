@@ -39,7 +39,7 @@
 #include <unordered_map>
 
 namespace bellman_ford_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {

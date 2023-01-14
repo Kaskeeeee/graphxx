@@ -35,7 +35,7 @@
 #include "list_graph.hpp"
 
 namespace dijsktra_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {

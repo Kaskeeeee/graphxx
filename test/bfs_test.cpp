@@ -36,7 +36,7 @@
 #include "list_graph.hpp"
 
 namespace bfs_test {
-using namespace graph;
+using namespace graphxx;
 using namespace algorithms;
 
 TEST_CASE("BFS Tree correct visited order", "[BFS]") {

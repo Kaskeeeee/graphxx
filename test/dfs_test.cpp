@@ -38,7 +38,7 @@
 #include <algorithm>
 
 namespace dfs_test {
-using namespace graph;
+using namespace graphxx;
 using namespace algorithms;
 
 TEST_CASE("DFS Tree correct visited order", "[DFS]") {

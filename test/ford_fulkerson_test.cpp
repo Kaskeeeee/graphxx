@@ -36,7 +36,7 @@
 #include <iostream>
 
 namespace ford_fulkerson_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Ford Fulkerson maximum flow", "[ford_fulkerson]") {

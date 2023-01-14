@@ -35,7 +35,7 @@
 #include "list_graph.hpp"
 
 namespace kruskal_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {

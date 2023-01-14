@@ -35,7 +35,7 @@
 #include "tarjan.hpp"
 
 namespace tarjan_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Tarjan for strongly connected components", "[tarjan]") {

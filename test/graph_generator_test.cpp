@@ -35,7 +35,7 @@
 #include "utils/graph_generator.hpp"
 
 namespace graph_generator_test {
-using namespace graph;
+using namespace graphxx;
 
 TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
   AdjacencyListGraph<Directedness::DIRECTED> undirected_list_graph{};

@@ -35,7 +35,7 @@
 #include "list_graph.hpp"
 
 namespace floyd_warshall_test {
-using namespace graph;
+using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
