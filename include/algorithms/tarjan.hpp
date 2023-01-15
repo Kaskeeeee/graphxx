@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -63,3 +65,5 @@ template <concepts::Graph G> SCCVector visit(const G &graph);
 } // namespace graphxx::algorithms::tarjan
 
 #include "algorithms/tarjan.i.hpp"
+
+#endif

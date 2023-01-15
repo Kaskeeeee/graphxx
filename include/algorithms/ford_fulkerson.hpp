@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "algorithms_base.hpp"
@@ -79,3 +81,5 @@ FFpair<WeightType> visit(const G &graph, const Vertex &source,
 } // namespace graphxx::algorithms::ford_fulkerson
 
 #include "algorithms/ford_fulkerson.i.hpp"
+
+#endif

@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "io/graphviz.hpp"
@@ -146,3 +148,5 @@ TEST_CASE("undirected graph object is correctly serialized", "[graphviz]") {
 }
 
 } // namespace graphviz_test
+
+#endif

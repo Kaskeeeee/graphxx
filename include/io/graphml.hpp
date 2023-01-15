@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -112,3 +114,5 @@ void deserialize(std::istream &in, G &graph,
 } // namespace graphxx::io::graphml
 
 #include "io/graphml.i.hpp"
+
+#endif

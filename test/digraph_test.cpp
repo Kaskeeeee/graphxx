@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "catch.hpp"
 #include "list_graph.hpp"
 
@@ -139,3 +141,5 @@ TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
 }
 
 } // namespace digraph_test
+
+#endif

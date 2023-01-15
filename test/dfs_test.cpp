@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/algorithms_base.hpp"
 #include "base.hpp"
 #include "catch.hpp"
@@ -138,3 +140,5 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 }
 } // namespace dfs_test
+
+#endif

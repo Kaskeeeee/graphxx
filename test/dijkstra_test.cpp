@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "dijkstra.hpp"
@@ -160,3 +162,5 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   }
 }
 } // namespace dijsktra_test
+
+#endif

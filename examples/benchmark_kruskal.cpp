@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/kruskal.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -75,3 +77,5 @@ int main() {
                                          std::back_inserter(spanning_tree));
   });
 }
+
+#endif

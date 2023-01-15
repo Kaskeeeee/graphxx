@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
@@ -169,3 +171,5 @@ void deserialize(std::istream &in, G &graph) {
 }
 
 } // namespace graphxx::io::matrix_market
+
+#endif

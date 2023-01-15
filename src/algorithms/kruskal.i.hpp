@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/kruskal.hpp"
 #include "base.hpp"
 
@@ -93,3 +95,5 @@ Tree visit(const G &graph, C &&weights) {
 };
 
 } // namespace graphxx::algorithms::kruskal
+
+#endif

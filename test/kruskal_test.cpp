@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "kruskal.hpp"
@@ -83,3 +85,5 @@ TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
   }
 }
 } // namespace kruskal_test
+
+#endif

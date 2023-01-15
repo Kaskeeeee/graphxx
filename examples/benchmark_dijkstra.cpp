@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/dijkstra.hpp"
 #include "base.hpp"
 #include "io/matrix_market.hpp"
@@ -105,3 +107,5 @@ int main() {
 
   return 0;
 }
+
+#endif

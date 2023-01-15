@@ -22,9 +22,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
-#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # find clang-tidy
-#find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
 
 # Undefined behavior checking at runtime
 OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
@@ -56,7 +56,6 @@ set(INC
         ${PROJECT_SOURCE_DIR}/include/graph_concepts.hpp
         ${PROJECT_SOURCE_DIR}/include/list_graph.hpp
         ${PROJECT_SOURCE_DIR}/include/matrix_graph.hpp
-        ${PROJECT_SOURCE_DIR}/include/id_manager.hpp
         ${PROJECT_SOURCE_DIR}/include/exceptions.hpp
         ${PROJECT_SOURCE_DIR}/include/utils.hpp
 )
@@ -87,7 +86,6 @@ set(INC_IO
 
 # src
 set(SRC
-        ${PROJECT_SOURCE_DIR}/src/id_manager.cpp
         ${PROJECT_SOURCE_DIR}/src/list_graph.i.hpp
         ${PROJECT_SOURCE_DIR}/src/matrix_graph.i.hpp
         ${PROJECT_SOURCE_DIR}/src/exceptions.cpp
@@ -174,9 +172,9 @@ endif()
 # ###############################################################################
 # TIDY
 # ###############################################################################
-#add_custom_target(tidy
-#        COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json ${SRC_UTILS} #use -list-checks for reading checks used
-#)
+# add_custom_target(tidy
+# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json ${SRC_UTILS} #use -list-checks for reading checks used
+# )
 
 # ###############################################################################
 # DOCUMENTATION
@@ -268,24 +266,23 @@ add_test(NAME valgrindTest
 # ###############################################################################
 
 # graphviz example
-add_executable(graphviz_example)
-target_sources(graphviz_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
-)
-
-target_include_directories(graphviz_example
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
-)
-
-target_link_libraries(graphviz_example
-        PUBLIC graph
-)
-
-install(
-        TARGETS graphviz_example
-        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-)
-
+# add_executable(graphviz_example)
+# target_sources(graphviz_example
+# PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
+# )
+#
+# target_include_directories(graphviz_example
+# PRIVATE ${PROJECT_SOURCE_DIR}/src
+# )
+#
+# target_link_libraries(graphviz_example
+# PUBLIC graph
+# )
+#
+# install(
+# TARGETS graphviz_example
+# RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+# )
 if(BENCHMARK)
         # Fetch nanobench for benchmarking
         include(FetchContent)

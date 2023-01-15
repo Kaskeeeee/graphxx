@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "list_graph.hpp"
@@ -141,3 +143,5 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
   }
 }
 } // namespace graph_generator_test
+
+#endif

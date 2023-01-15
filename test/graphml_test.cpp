@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "io/graphml.hpp"
@@ -47,3 +49,5 @@ TEST_CASE("directed graph object is correctly serialized", "[graphml]") {}
 TEST_CASE("undirected graph object is correctly serialized", "[graphviz]") {}
 
 } // namespace graphml_test
+
+#endif

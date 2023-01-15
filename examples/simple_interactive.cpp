@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bfs.hpp"
 #include "list_graph.hpp"
 
@@ -105,3 +107,5 @@ int main() {
 
   return 0;
 }
+
+#endif

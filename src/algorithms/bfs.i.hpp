@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bfs.hpp"
 #include "algorithms_base.hpp"
 #include "base.hpp"
@@ -82,3 +84,5 @@ BFSTree visit(const G &graph, Vertex source,
 }
 
 } // namespace graphxx::algorithms::bfs
+
+#endif

@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -67,3 +69,5 @@ Map<WeightType> visit(G &graph, C &&weights);
 } // namespace graphxx::algorithms::johnson
 
 #include "algorithms/johnson.i.hpp"
+
+#endif
