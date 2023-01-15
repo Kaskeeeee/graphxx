@@ -155,14 +155,14 @@ void deserialize(std::istream &in, G &graph) {
       string_stream >> weight;
       graph.add_edge(source_id - 1, target_id - 1, {weight});
     } else {
-      graph.add_edge(source_id - 1, target_id - 1, {});
+      graph.add_edge(source_id - 1, target_id - 1);
     }
 
     if (symmetric && (source_id != target_id)) {
       if (weighted) {
         graph.add_edge(target_id - 1, source_id - 1, {weight});
       } else {
-        graph.add_edge(target_id - 1, source_id - 1, {});
+        graph.add_edge(target_id - 1, source_id - 1);
       }
     }
   }

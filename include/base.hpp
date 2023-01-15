@@ -35,7 +35,7 @@
 
 namespace graphxx {
 /// The id type that is used to identify vertices and edges
-using DefaultIdType = int64_t;
+using DefaultIdType = uint64_t;
 
 /// @brief enum whose values are used to distinguish between directed and
 /// undirected graphs

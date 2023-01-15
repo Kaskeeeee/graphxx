@@ -60,7 +60,7 @@ public:
   void add_vertex(Id);
   void remove_vertex(Id);
 
-  void add_edge(Id, Id, Attributes);
+  void add_edge(Id, Id, Attributes = {});
   void remove_edge(Id, Id);
 
   size_t num_vertices() const;
