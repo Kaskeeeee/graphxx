@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -118,3 +120,5 @@ void deserialize(std::istream &in, G &graph,
 } // namespace graphxx::io::graphviz
 
 #include "io/graphviz.i.hpp"
+
+#endif

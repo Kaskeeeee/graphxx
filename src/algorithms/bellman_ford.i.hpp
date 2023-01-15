@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bellman_ford.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
@@ -82,3 +84,5 @@ Tree<WeightType> visit(const G &graph, const Vertex &source,
   return tree;
 }
 } // namespace graphxx::algorithms::bellman_ford
+
+#endif

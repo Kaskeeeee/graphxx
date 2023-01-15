@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/a_star.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
@@ -123,3 +125,5 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
   return tree;
 }
 } // namespace graphxx::algorithms::a_star
+
+#endif

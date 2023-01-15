@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bellman_ford.hpp"
 #include "algorithms/dijkstra.hpp"
 #include "algorithms/johnson.hpp"
@@ -77,3 +79,5 @@ Map<WeightType> visit(G &graph, C &&edges_weights) {
   return map;
 }
 } // namespace graphxx::algorithms::johnson
+
+#endif

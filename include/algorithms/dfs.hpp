@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "algorithms_base.hpp"
@@ -85,3 +87,5 @@ DFSTree visit(const G &graph, Vertex source,
 } // namespace graphxx::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"
+
+#endif

@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bellman_ford.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -75,3 +77,5 @@ int main() {
     boost::bellman_ford_shortest_paths(boost_graph, boost::root_vertex(start));
   });
 }
+
+#endif

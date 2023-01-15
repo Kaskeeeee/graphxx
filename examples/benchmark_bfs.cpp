@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/bfs.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -77,3 +79,5 @@ int main() {
         boost::distance_map(get(boost::vertex_distance, boost_graph)));
   });
 }
+
+#endif

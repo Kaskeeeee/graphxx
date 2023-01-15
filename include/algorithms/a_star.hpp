@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -75,3 +77,5 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights,
 } // namespace graphxx::algorithms::a_star
 
 #include "algorithms/a_star.i.hpp"
+
+#endif

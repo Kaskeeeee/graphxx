@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -73,3 +75,5 @@ Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights);
 } // namespace graphxx::algorithms::bellman_ford
 
 #include "algorithms/bellman_ford.i.hpp"
+
+#endif

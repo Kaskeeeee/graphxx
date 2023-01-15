@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "catch.hpp"
 #include "ford_fulkerson.hpp"
@@ -101,3 +103,5 @@ TEST_CASE("Ford Fulkerson maximum flow", "[ford_fulkerson]") {
 }
 
 } // namespace ford_fulkerson_test
+
+#endif

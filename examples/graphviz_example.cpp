@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "io/graphviz.hpp"
 #include "list_graph.hpp"
 #include "utils/graph_generator.hpp"
@@ -86,3 +88,5 @@ int main() {
 
   return 0;
 }
+
+#endif

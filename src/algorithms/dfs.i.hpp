@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/dfs.hpp"
 #include "algorithms_base.hpp"
 #include "base.hpp"
@@ -79,3 +81,5 @@ void visit_rec(const G &graph, Vertex vertex,
 }
 
 } // namespace graphxx::algorithms::dfs
+
+#endif

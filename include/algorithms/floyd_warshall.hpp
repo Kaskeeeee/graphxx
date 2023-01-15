@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #pragma once
 
 #include "base.hpp"
@@ -69,3 +71,5 @@ Map<WeightType> visit(const G &graph, C &&weights);
 } // namespace graphxx::algorithms::floyd_warshall
 
 #include "algorithms/floyd_warshall.i.hpp"
+
+#endif

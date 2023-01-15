@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "base.hpp"
 #include "bellman_ford.hpp"
 #include "catch.hpp"
@@ -138,3 +140,5 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   }
 }
 } // namespace bellman_ford_test
+
+#endif

@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "io/graphml.hpp"
 #include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
@@ -46,3 +48,5 @@ int main() {
   graphxx::io::matrix_market::serialize(std::cout, g, weights);
   return 0;
 }
+
+#endif

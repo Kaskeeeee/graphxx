@@ -29,6 +29,8 @@
  * @version v1.0
  */
 
+#if 0
+
 #include "algorithms/dfs.hpp"
 #include "base.hpp"
 #include "io/graphml.hpp"
@@ -76,3 +78,5 @@ int main() {
     boost::depth_first_search(boost_graph, boost::root_vertex(start));
   });
 }
+
+#endif
