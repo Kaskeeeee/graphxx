@@ -29,37 +29,34 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "base.hpp"
 #include "catch.hpp"
 #include "dijkstra.hpp"
 #include "list_graph.hpp"
+
+#include <map>
+#include <tuple>
 
 namespace dijsktra_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
+  Graph g{};
 
-  std::unordered_map<DefaultIdType, int> weights;
+  enum vertices { a, b, c, d, e, f };
 
-  auto a = g.add_vertex(); // 0
-  auto b = g.add_vertex(); // 1
-  auto c = g.add_vertex(); // 2
-  auto d = g.add_vertex(); // 3
-  auto e = g.add_vertex(); // 4
-  auto f = g.add_vertex(); // 5
+  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
 
-  auto a_to_b = g.add_edge(a, b); // 0->1
-  auto a_to_c = g.add_edge(a, c); // 0->2
-  auto b_to_c = g.add_edge(b, c); // 1->2
-  auto c_to_d = g.add_edge(c, d); // 2->3
-  auto c_to_e = g.add_edge(c, e); // 2->4
-  auto c_to_f = g.add_edge(c, f); // 2->5
-  auto d_to_f = g.add_edge(d, f); // 3->5
-  auto e_to_f = g.add_edge(e, f); // 4->5
+  g.add_edge(a, b); // 0->1
+  g.add_edge(a, c); // 0->2
+  g.add_edge(b, c); // 1->2
+  g.add_edge(c, d); // 2->3
+  g.add_edge(c, e); // 2->4
+  g.add_edge(c, f); // 2->5
+  g.add_edge(d, f); // 3->5
+  g.add_edge(e, f); // 4->5
 
   /*
     A-->B
@@ -70,51 +67,61 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
         ---------->F
   */
 
+  auto get_weight = [&](typename Graph::Edge e) {
+    return weight[{g.source(e), g.target(e)}];
+  };
+
   SECTION("throws on negative edge found") {
-    for (auto edge : g.edges()) {
-      weights[edge] = 1;
+    for (auto vertex : g) {
+      for (auto edge : vertex) {
+        weight[{g.source(edge), g.target(edge)}] = 1;
+      }
     }
 
-    weights[a_to_b] = -1;
+    weight[{a, b}] = -1;
 
-    REQUIRE_THROWS(dijkstra::visit(g, a, weights));
+    REQUIRE_THROWS(dijkstra::visit(g, a, get_weight));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
-    for (auto edge : g.edges()) {
-      weights[edge] = 1;
+    for (auto vertex : g) {
+      for (auto edge : vertex) {
+        weight[{g.source(edge), g.target(edge)}] = 1;
+      }
     }
 
-    weights[c_to_f] = 7;
+    weight[{c, f}] = 7;
 
-    auto tree = dijkstra::visit(g, a, weights);
+    auto distances = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(tree[a].distance == 0);
-    REQUIRE(tree[b].distance == 1);
-    REQUIRE(tree[c].distance == 1);
-    REQUIRE(tree[d].distance == 2);
-    REQUIRE(tree[e].distance == 2);
-    REQUIRE(tree[f].distance == 3);
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 1);
+    REQUIRE(distances[d].distance == 2);
+    REQUIRE(distances[e].distance == 2);
+    REQUIRE(distances[f].distance == 3);
   }
 
   SECTION("finds the previous hop with all positive weights") {
-    for (auto edge : g.edges()) {
-      weights[edge] = 1;
+    for (auto vertex : g) {
+      for (auto edge : vertex) {
+        weight[{g.source(edge), g.target(edge)}] = 1;
+      }
     }
 
-    auto tree = dijkstra::visit(g, a, weights);
+    auto result = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(tree[a].parent == INVALID_VERTEX);
-    REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
-    REQUIRE(tree[d].parent == c);
-    REQUIRE(tree[e].parent == c);
-    REQUIRE(tree[f].parent == c);
+    REQUIRE(result[a].parent == a);
+    REQUIRE(result[b].parent == a);
+    REQUIRE(result[c].parent == a);
+    REQUIRE(result[d].parent == c);
+    REQUIRE(result[e].parent == c);
+    REQUIRE(result[f].parent == c);
   }
 
-  auto a_to_a = g.add_edge(a, a); // 0->0
-  auto d_to_d = g.add_edge(d, d); // 3->3
-  auto e_to_c = g.add_edge(e, c); // 4->2
+  g.add_edge(a, a); // 0->0
+  g.add_edge(d, d); // 3->3
+  g.add_edge(e, c); // 4->2
 
   /*
    <->
@@ -128,39 +135,41 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
   SECTION("finds the shortest path length with all positive weights, now with "
           "cycles") {
-    for (auto edge : g.edges()) {
-      weights[edge] = 1;
+    for (auto vertex : g) {
+      for (auto edge : vertex) {
+        weight[{g.source(edge), g.target(edge)}] = 1;
+      }
     }
 
-    weights[c_to_f] = 7;
-    weights[d_to_d] = 0;
-    weights[e_to_c] = 0;
+    weight[{c, f}] = 7;
+    weight[{d, d}] = 0;
+    weight[{e, c}] = 0;
 
-    auto tree = dijkstra::visit(g, a, weights);
+    auto result = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(tree[a].distance == 0);
-    REQUIRE(tree[b].distance == 1);
-    REQUIRE(tree[c].distance == 1);
-    REQUIRE(tree[d].distance == 2);
-    REQUIRE(tree[e].distance == 2);
-    REQUIRE(tree[f].distance == 3);
+    REQUIRE(result[a].distance == 0);
+    REQUIRE(result[b].distance == 1);
+    REQUIRE(result[c].distance == 1);
+    REQUIRE(result[d].distance == 2);
+    REQUIRE(result[e].distance == 2);
+    REQUIRE(result[f].distance == 3);
   }
 
   SECTION("finds the previous hop with all positive weights, now with cycles") {
-    for (auto edge : g.edges()) {
-      weights[edge] = 1;
+    for (auto vertex : g) {
+      for (auto edge : vertex) {
+        weight[{g.source(edge), g.target(edge)}] = 1;
+      }
     }
 
-    auto tree = dijkstra::visit(g, a, weights);
+    auto result = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(tree[a].parent == INVALID_VERTEX);
-    REQUIRE(tree[b].parent == a);
-    REQUIRE(tree[c].parent == a);
-    REQUIRE(tree[d].parent == c);
-    REQUIRE(tree[e].parent == c);
-    REQUIRE(tree[f].parent == c);
+    REQUIRE(result[a].parent == a);
+    REQUIRE(result[b].parent == a);
+    REQUIRE(result[c].parent == a);
+    REQUIRE(result[d].parent == c);
+    REQUIRE(result[e].parent == c);
+    REQUIRE(result[f].parent == c);
   }
 }
 } // namespace dijsktra_test
-
-#endif
