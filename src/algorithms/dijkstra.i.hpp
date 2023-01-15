@@ -36,7 +36,6 @@
 #include "utils.hpp"
 
 #include <queue>
-#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::dijkstra {
@@ -58,7 +57,7 @@ DistanceTree<Distance> visit(const G &graph, typename G::Id source,
   queue.push({distance_tree[source].distance, source});
 
   while (!queue.empty()) {
-    auto u = std::get<0>(queue.top());
+    auto u = std::get<1>(queue.top());
     queue.pop();
 
     for (auto edge : graph[u]) {
