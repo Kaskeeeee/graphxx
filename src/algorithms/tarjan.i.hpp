@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/tarjan.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
@@ -44,21 +42,22 @@ TarjanTree _tarjan_tree;
 StackVector _stack;
 int index;
 
-template <concepts::Graph G> void tarjan_rec(const G &graph, Vertex v) {
+template <concepts::Graph G> void tarjan_rec(const G &graph, typename G::Id v) {
   _tarjan_tree[v].index = index;
   _tarjan_tree[v].low_link = index;
   ++index;
   _stack.push_back(v);
   _tarjan_tree[v].on_stack = true;
 
-  for (auto edge : graph.out_edges(v)) {
-    if (_tarjan_tree[edge.v].index == -1) {
-      tarjan_rec(graph, edge.v);
+  for (auto edge : graph[v]) {
+    auto target = graph.target(edge);
+    if (_tarjan_tree[target].index == -1) {
+      tarjan_rec(graph, target);
       _tarjan_tree[v].low_link =
-          std::min(_tarjan_tree[v].low_link, _tarjan_tree[edge.v].low_link);
-    } else if (_tarjan_tree[edge.v].on_stack) {
+          std::min(_tarjan_tree[v].low_link, _tarjan_tree[target].low_link);
+    } else if (_tarjan_tree[target].on_stack) {
       _tarjan_tree[v].low_link =
-          std::min(_tarjan_tree[v].low_link, _tarjan_tree[edge.v].index);
+          std::min(_tarjan_tree[v].low_link, _tarjan_tree[target].index);
     }
   }
   if (_tarjan_tree[v].low_link == _tarjan_tree[v].index) {
@@ -81,16 +80,11 @@ template <concepts::Graph G> void tarjan_rec(const G &graph, Vertex v) {
 }
 
 template <concepts::Graph G> SCCVector visit(const G &graph) {
-  _scc_vector.clear();
-  _tarjan_tree.clear();
-  _stack.clear();
+  DistanceTree<Distance> distance_tree{
+      graph.size(), Node{}};
   index = 0;
 
-  for (auto vertex : graph.vertices()) {
-    _tarjan_tree[vertex] = TarjanVertex{};
-  }
-
-  for (auto vertex : graph.vertices()) {
+  for (size_t vertex = 0; vertex < graph.size(); vertex++) {
     if (_tarjan_tree[vertex].index != -1) {
       continue;
     }
@@ -101,5 +95,3 @@ template <concepts::Graph G> SCCVector visit(const G &graph) {
 }
 
 } // namespace graphxx::algorithms::tarjan
-
-#endif

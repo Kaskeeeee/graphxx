@@ -29,15 +29,14 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
-#include <unordered_map>
+#include <functional>
+#include <vector>
 
 namespace graphxx::algorithms::johnson {
 
@@ -52,7 +51,7 @@ template <concepts::Numeric WeightType> struct Node {
 /// @brief A simple map of maps of ids to Nodes
 /// @tparam WeightType
 template <concepts::Numeric WeightType>
-using Map = std::unordered_map<DefaultIdType, std::unordered_map<DefaultIdType, Node<WeightType>>>;
+using Map = std::vector<std::vector<Node<WeightType>>>;
 
 /// @brief Implementation of johnson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -62,12 +61,15 @@ using Map = std::unordered_map<DefaultIdType, std::unordered_map<DefaultIdType, 
 /// @param graph input graph
 /// @param weights edges weights
 /// @return a map of maps containing all shortest paths
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-Map<WeightType> visit(G &graph, C &&weights);
+template <
+    concepts::Graph G,
+    std::invocable<typename G::Edge> Weight = std::function<
+        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
+    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
+Map<Distance> visit(
+    G &graph,
+    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::johnson
 
 #include "algorithms/johnson.i.hpp"
-
-#endif

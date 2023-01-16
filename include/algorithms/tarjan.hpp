@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "base.hpp"
@@ -42,14 +40,14 @@
 namespace graphxx::algorithms::tarjan {
 
 /// @brief Vertex containing informations for the algorithm
-struct TarjanVertex {
+struct Node {
   int index = -1;
   int low_link = -1;
   bool on_stack = false;
 };
 
-/// @brief a map of id to TarjanVertex
-using TarjanTree = std::unordered_map<DefaultIdType, TarjanVertex>;
+/// @brief a map of id to Node
+using TarjanTree = std::vector<Node>;
 
 /// @brief a vector of id
 using StackVector = std::vector<DefaultIdType>;
@@ -65,5 +63,3 @@ template <concepts::Graph G> SCCVector visit(const G &graph);
 } // namespace graphxx::algorithms::tarjan
 
 #include "algorithms/tarjan.i.hpp"
-
-#endif

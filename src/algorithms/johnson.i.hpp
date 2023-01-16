@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/bellman_ford.hpp"
 #include "algorithms/dijkstra.hpp"
 #include "algorithms/johnson.hpp"
@@ -38,37 +36,39 @@
 
 namespace graphxx::algorithms::johnson {
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-Map<WeightType> visit(G &graph, C &&edges_weights) {
-  Map<WeightType> map;
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+Map<Distance> visit(G &graph, Weight weight) {
+  Map<Distance> map;
 
-  // Add new vertex
-  auto q = graph.add_vertex();
+  // New vertex
+  auto q = graph.num_vertices();
 
   // Add new edge from q to every other vertex
-  for (auto vertex : graph.vertices()) {
-    auto added_edge = graph.add_edge(q, vertex);
-    edges_weights[added_edge] = 0;
+  for (auto vertex : graph) {
+    graph.add_edge(q, vertex);
   }
 
   // Run Bellman–Ford algorithm
-  auto bf_tree = bellman_ford::visit(graph, q, edges_weights);
+  auto bf_tree = bellman_ford::visit(graph, q, weight);
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
-  for (auto edge : graph.edges()) {
-    edges_weights[edge] = edges_weights[edge] + bf_tree[edge.u].distance -
-                          bf_tree[edge.v].distance;
+  for (auto vertex : graph) {
+    for (auto edge : vertex) {
+      weight[{g.source(edge), g.target(edge)}] =
+          weight(edge) + bf_tree[graph.source(edge)].distance -
+          bf_tree[graph.target(edge)].distance;
+    }
   }
 
   // Remove vertex q
   graph.remove_vertex(q);
 
   // Run Dijkstra for every vertex
-  for (auto vertex_source : graph.vertices()) {
-    auto d_tree = dijkstra::visit(graph, vertex_source, edges_weights);
-    for (auto vertex_target : graph.vertices()) {
+  for (auto vertex_source : graph) {
+    auto d_tree = dijkstra::visit(graph, vertex_source, weight);
+    for (auto vertex_target : graph) {
       map[vertex_source][vertex_target].parent = d_tree[vertex_target].parent;
       map[vertex_source][vertex_target].distance =
           d_tree[vertex_target].distance + bf_tree[vertex_target].distance -
@@ -79,5 +79,3 @@ Map<WeightType> visit(G &graph, C &&edges_weights) {
   return map;
 }
 } // namespace graphxx::algorithms::johnson
-
-#endif
