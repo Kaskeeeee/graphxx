@@ -33,16 +33,19 @@
 #include "base.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
+#include "exceptions.hpp"
 
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> //DA TENERE?
+
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <filesystem>
 #include <nanobench.h>
 #include <unordered_map>
 // #include <boost/graph/graph_traits.hpp>
 // #include <boost/graph/graphviz.hpp>
 
-int main() {
+int main(int argc, char **argv) {
   // Graphxx
   graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
                               double>
@@ -71,8 +74,28 @@ int main() {
   // weights[d_to_b] = 7;
   // weights[d_to_c] = 4;
 
-  std::fstream input_file("../data/cage4.mtx");
-  graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file, g);
+  if (argc <= 1) {
+    std::fstream input_file("../data/cage4.mtx");
+    graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file, g);
+  } else if (argc == 2) {
+    // Check if the file is a regular file and is not empty
+    if (std::filesystem::is_regular_file(argv[1])){
+      if (!std::filesystem::is_empty(argv[1])) {
+      std::fstream input_file(argv[1]);
+      graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file,
+                                                                   g);
+      } else {
+      // Throw exception file empty
+      throw exceptions::EmptyFileException();
+      }
+    } else {
+      // Throw exception file not exists
+      throw exceptions::NotFileException();
+    }
+  } else {
+    // Throw exception too many args
+    throw exceptions::TooManyArgumentsException();
+  }
 
   ankerl::nanobench::Bench().run("dijkstra graphxx", [&]() {
     graphxx::algorithms::dijkstra::visit(g, 0);

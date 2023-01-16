@@ -89,4 +89,16 @@ struct BadMatrixMarketParseException : GraphException {
   BadMatrixMarketParseException();
 };
 
+struct TooManyArgumentsException : GraphException {
+  TooManyArgumentsException();
+};
+
+struct NotFileException : GraphException {
+  NotFileException();
+};
+
+struct EmptyFileException : GraphException {
+  EmptyFileException();
+};
+
 } // namespace graphxx::exceptions

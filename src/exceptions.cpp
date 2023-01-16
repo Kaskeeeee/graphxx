@@ -69,4 +69,13 @@ BadGraphmlParseException::BadGraphmlParseException()
 BadMatrixMarketParseException::BadMatrixMarketParseException()
     : GraphException("Bad matrix market file syntax"){};
 
+TooManyArgumentsException::TooManyArgumentsException()
+    : GraphException("Too many arguments passed"){};
+
+NotFileException::NotFileException()
+    : GraphException("Path indicated is not a regular file"){};
+
+EmptyFileException::EmptyFileException()
+    : GraphException("File is empty"){};
+
 } // namespace graphxx::exceptions
