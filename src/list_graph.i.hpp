@@ -38,10 +38,10 @@
 #include <type_traits>
 
 namespace graphxx {
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(){};
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
     const AdjacencyListGraph &graph) {
   for (auto &&vertex : graph) {
@@ -55,14 +55,14 @@ AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
   }
 };
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex(Id id) {
   for (auto i = Base::size(); i <= id; ++i) {
     Base::emplace_back();
   }
 };
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Id uid, Id vid,
                                                             Attributes attrs) {
   add_vertex(uid);
@@ -82,7 +82,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Id uid, Id vid,
   }
 };
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Id id) {
   if (id < Base::size()) {
     Base::operator[](id).clear();
@@ -94,7 +94,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Id id) {
   }
 };
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id u, Id v) {
   if (u < Base::size() && v < Base::size()) {
     std::ranges::remove_if(Base::at(u),
@@ -107,22 +107,22 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id u, Id v) {
   }
 };
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge edge) const {
   return std::get<0>(edge);
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge edge) const {
   return std::get<1>(edge);
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyListGraph<Id, D, AttributesType...>::num_vertices() const {
   return Base::size();
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyListGraph<Id, D, AttributesType...>::num_edges() const {
   size_t count = 0;
   for (size_t i = 0; i < Base::size(); i++) {

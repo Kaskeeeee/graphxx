@@ -34,11 +34,11 @@
 
 #include <algorithm>
 namespace graphxx {
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(){};
 
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
     const AdjacencyMatrixGraph &graph) {
@@ -53,7 +53,7 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
   }
 };
 
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
   for (auto i = Base::size(); i <= id; ++i) {
@@ -61,7 +61,7 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
   }
 };
 
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_edge(
     Id uid, Id vid, Attributes attrs) {
@@ -75,7 +75,7 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_edge(
   }
 }
 
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
   if (id < Base::size()) {
@@ -88,7 +88,7 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
   }
 }
 
-template <std::unsigned_integral IdType, Directedness D,
+template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
                                                                      Id v) {
@@ -103,22 +103,22 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
   }
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 Id AdjacencyMatrixGraph<Id, D, AttributesType...>::source(Edge edge) const {
   return std::get<0>(edge);
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 Id AdjacencyMatrixGraph<Id, D, AttributesType...>::target(Edge edge) const {
   return std::get<1>(edge);
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_vertices() const {
   return Base::size();
 }
 
-template <std::unsigned_integral Id, Directedness D, typename... AttributesType>
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_edges() const {
   size_t count = 0;
   for (size_t i = 0; i < Base::size(); i++) {

@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "algorithms_base.hpp"
@@ -38,25 +36,26 @@
 #include "graph_concepts.hpp"
 
 #include <functional>
-#include <unordered_map>
+#include <vector>
 
 namespace graphxx::algorithms::dfs {
 
 /// @brief Structure to store information about graph vertices during the visit
-struct DFSVertex {
+template <concepts::Identifier Id>
+struct Node {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Id of the predecessor Vertex in DFS Tree
-  DefaultIdType parent = -1;
+  Id parent;
   /// @brief Counter indicating when vertex is discovered
-  int discovery_time = -1;
+  int discovery_time;
   /// @brief Counter indicating when the processing of vertex is finished
-  int finishing_time = -1;
+  int finishing_time;
 };
 
 /// @brief flatten Tree that collects all DFSVertex structs generated during the
 ///        visit
-using DFSTree = std::unordered_map<DefaultIdType, DFSVertex>;
+template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -67,7 +66,8 @@ using DFSTree = std::unordered_map<DefaultIdType, DFSVertex>;
 /// @param graph input graph
 /// @param source vertex
 /// @return flatten tree as described for type DFSTree
-template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source);
+template <concepts::Graph G>
+DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -81,11 +81,10 @@ template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source,
-              const std::function<void(Vertex)> &callback);
+DistanceTree<typename G::Id>
+visit(const G &graph, typename G::Id source,
+      const std::function<void(typename G::Id)> &callback);
 
 } // namespace graphxx::algorithms::dfs
 
 #include "algorithms/dfs.i.hpp"
-
-#endif

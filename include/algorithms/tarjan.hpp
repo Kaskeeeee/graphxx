@@ -34,31 +34,31 @@
 #include "base.hpp"
 #include "graph_concepts.hpp"
 
-#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::tarjan {
 
 /// @brief Vertex containing informations for the algorithm
 struct Node {
-  int index = -1;
-  int low_link = -1;
-  bool on_stack = false;
+  int index;
+  int low_link;
+  bool on_stack;
 };
 
 /// @brief a map of id to Node
 using TarjanTree = std::vector<Node>;
 
 /// @brief a vector of id
-using StackVector = std::vector<DefaultIdType>;
+template <concepts::Identifier Id> using StackVector = std::vector<Id>;
 
 /// @brief a vector containing all the strongly connected components
-using SCCVector = std::vector<StackVector>;
+template <concepts::Identifier Id>
+using SCCVector = std::vector<StackVector<Id>>;
 
 /// @brief Implementation of tarjan algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @return a vector containing all the strongly connected components
-template <concepts::Graph G> SCCVector visit(const G &graph);
+template <concepts::Graph G> SCCVector<typename G::Id> visit(const G &graph);
 
 } // namespace graphxx::algorithms::tarjan
 

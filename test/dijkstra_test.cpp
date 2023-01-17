@@ -72,8 +72,9 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   };
 
   SECTION("throws on negative edge found") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -84,8 +85,9 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   }
 
   SECTION("finds the shortest path length with all positive weights") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -103,8 +105,9 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   }
 
   SECTION("finds the previous hop with all positive weights") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -135,8 +138,9 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
   SECTION("finds the shortest path length with all positive weights, now with "
           "cycles") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -156,8 +160,9 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
   }
 
   SECTION("finds the previous hop with all positive weights, now with cycles") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }

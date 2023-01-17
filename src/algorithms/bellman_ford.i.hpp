@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/bellman_ford.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
@@ -40,30 +38,33 @@
 
 namespace graphxx::algorithms::bellman_ford {
 
-template <concepts::Numeric WeightType>
-Node<WeightType>::Node()
-    : distance{std::numeric_limits<WeightType>::max()}, parent{
-                                                            INVALID_VERTEX} {};
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+DistanceTree<typename G::Id, Distance>
+visit(const G &graph, typename G::Id source, Weight weight) {
+  constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
+  DistanceTree<typename G::Id, Distance> distance_tree{
+      graph.num_vertices(),
+      Node{.parent = source, .distance = distance_upperbound}};
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-Tree<WeightType> visit(const G &graph, const Vertex &source,
-                       C &&edges_weights) {
-  Tree<WeightType> tree;
-  tree[source].distance = 0;
-  tree[source].parent = INVALID_VERTEX;
+  distance_tree[source].distance = 0;
 
   // Relax edges |nodes| - 1 times
-  for (int64_t i = 0; i < static_cast<int64_t>(graph.vertices().size() - 1);
-       ++i) {
-    for (auto edge : graph.edges()) {
-      auto &edge_source = tree[edge.u];
-      auto &edge_target = tree[edge.v];
+  for (size_t i = 0; i < graph.num_vertices() - 1; ++i) {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        auto edge_source = graph.source(edge);
+        auto edge_target = graph.target(edge);
 
-      if (!sum_will_overflow(edge_source.distance, edges_weights[edge]) &&
-          edge_source.distance + edges_weights[edge] < edge_target.distance) {
-        edge_target.distance = edge_source.distance + edges_weights[edge];
-        edge_target.parent = edge.u;
+        if (!sum_will_overflow(distance_tree[edge_source].distance,
+                               weight(edge)) &&
+            distance_tree[edge_source].distance + weight(edge) <
+                distance_tree[edge_target].distance) {
+          distance_tree[edge_target].distance =
+              distance_tree[edge_source].distance + weight(edge);
+          distance_tree[edge_target].parent = edge_source;
+        }
       }
     }
   }
@@ -71,18 +72,21 @@ Tree<WeightType> visit(const G &graph, const Vertex &source,
   // Detect if there are negative cycles
   // if value changes then we have a negative cycle in the graph and we cannot
   // find the shortest distances
-  for (auto edge : graph.edges()) {
-    auto &edge_source = tree[edge.u];
-    auto &edge_target = tree[edge.v];
+  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      auto edge_source = graph.source(edge);
+      auto edge_target = graph.target(edge);
 
-    if (!sum_will_overflow(edge_source.distance, edges_weights[edge]) &&
-        edge_source.distance + edges_weights[edge] < edge_target.distance) {
-      throw exceptions::InvariantViolationException("negative cycle found");
+      if (!sum_will_overflow(distance_tree[edge_source].distance,
+                             weight(edge)) &&
+          distance_tree[edge_source].distance + weight(edge) <
+              distance_tree[edge_target].distance) {
+        throw exceptions::InvariantViolationException("negative cycle found");
+      }
     }
   }
 
-  return tree;
+  return distance_tree;
 }
 } // namespace graphxx::algorithms::bellman_ford
-
-#endif

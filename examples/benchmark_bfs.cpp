@@ -29,32 +29,50 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/bfs.hpp"
 #include "base.hpp"
-#include "io/graphml.hpp"
-#include "io/graphviz.hpp"
+#include "exceptions.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
 #include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
+#include <filesystem>
 #include <nanobench.h>
 
-int main() {
+int main(int argc, char **argv) {
   // Graphxx
-  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
-  std::unordered_map<int, double> weights;
+  graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                              double>
+      g{};
 
-  std::fstream input_file("../data/cage4.mtx");
-  graphxx::io::matrix_market::deserialize(input_file, g, weights);
+  if (argc <= 1) {
+    // default file, if not specified
+    std::fstream input_file("../data/cage4.mtx");
+    graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file, g);
+  } else if (argc == 2) {
+    // Check if the file is a regular file and is not empty
+    if (std::filesystem::is_regular_file(argv[1])) {
+      if (!std::filesystem::is_empty(argv[1])) {
+        std::fstream input_file(argv[1]);
+        graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file,
+                                                                     g);
+      } else {
+        // Throw exception file empty
+        throw graphxx::exceptions::EmptyFileException();
+      }
+    } else {
+      // Throw exception file not exists
+      throw graphxx::exceptions::NotFileException();
+    }
+  } else {
+    // Throw exception too many args
+    throw graphxx::exceptions::TooManyArgumentsException();
+  }
 
-  ankerl::nanobench::Bench().run("bfs graphxx", [&]() {
-    graphxx::algorithms::bfs::visit(g, graphxx::Vertex{0});
-  });
+  ankerl::nanobench::Bench().run(
+      "bfs graphxx", [&]() { graphxx::algorithms::bfs::visit(g, 0); });
 
   // Boost
   using graph_t =
@@ -65,8 +83,10 @@ int main() {
 
   graph_t boost_graph;
 
-  for (auto e : g.edges()) {
-    boost::add_edge(e.u, e.v, boost_graph);
+  for (auto v : g) {
+    for (auto e : v) {
+      boost::add_edge(g.source(e), g.target(e), boost_graph);
+    }
   }
 
   BoostVertex start = boost::vertex(0, boost_graph);
@@ -79,5 +99,3 @@ int main() {
         boost::distance_map(get(boost::vertex_distance, boost_graph)));
   });
 }
-
-#endif

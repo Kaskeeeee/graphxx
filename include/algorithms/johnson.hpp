@@ -40,18 +40,15 @@
 
 namespace graphxx::algorithms::johnson {
 
-/// @brief Node containing informations about its distance and
-///        the previous node in the shortest path from a given source
-/// @tparam WeightType numeric weight
-template <concepts::Numeric WeightType> struct Node {
-  WeightType distance;
-  DefaultIdType parent;
+template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+  Id parent;
+  Distance distance;
 };
 
 /// @brief A simple map of maps of ids to Nodes
 /// @tparam WeightType
-template <concepts::Numeric WeightType>
-using Map = std::vector<std::vector<Node<WeightType>>>;
+template <concepts::Identifier Id, concepts::Numeric Distance>
+using DistanceTree = std::vector<std::vector<Node<Id, Distance>>>;
 
 /// @brief Implementation of johnson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -66,7 +63,7 @@ template <
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-Map<Distance> visit(
+DistanceTree<typename G::Id, Distance> visit(
     G &graph,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 

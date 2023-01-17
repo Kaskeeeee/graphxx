@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/dfs.hpp"
 #include "algorithms_base.hpp"
 #include "base.hpp"
@@ -40,46 +38,52 @@
 
 namespace graphxx::algorithms::dfs {
 
-template <concepts::Graph G> DFSTree visit(const G &graph, Vertex source) {
-  return visit(graph, source, [](Vertex) {});
+template <concepts::Graph G>
+DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source) {
+  return visit(graph, source, [](typename G::Id) {});
 }
 
 template <concepts::Graph G>
-DFSTree visit(const G &graph, Vertex source,
-              const std::function<void(Vertex)> &callback) {
-  DFSTree tree;
-  int time = 0;
-  for (Vertex vertex : graph.vertices()) {
-    tree[vertex] = DFSVertex{VertexStatus::READY};
+DistanceTree<typename G::Id>
+visit(const G &graph, typename G::Id source,
+      const std::function<void(typename G::Id)> &callback) {
+
+  DistanceTree<typename G::Id> distance_tree;
+
+  for (typename G::Id vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(Node{.status = VertexStatus::READY,
+                                 .parent = vertex,
+                                 .discovery_time = -1,
+                                 .finishing_time = -1});
   }
 
-  visit_rec(graph, source, callback, time, tree);
+  int time = 0;
 
-  return tree;
+  visit_rec(graph, source, callback, time, distance_tree);
+
+  return distance_tree;
 }
 
 template <concepts::Graph G>
-void visit_rec(const G &graph, Vertex vertex,
-               const std::function<void(Vertex)> &callback, int &time,
-               DFSTree &tree) {
+void visit_rec(const G &graph, typename G::Id vertex,
+               const std::function<void(typename G::Id)> &callback, int &time,
+               DistanceTree<typename G::Id> &distance_tree) {
   callback(vertex);
 
-  tree[vertex].status = VertexStatus::WAITING;
-  tree[vertex].discovery_time = ++time;
+  distance_tree[vertex].status = VertexStatus::WAITING;
+  distance_tree[vertex].discovery_time = ++time;
 
-  for (Edge out_edge : graph.out_edges(vertex)) {
-    DefaultIdType adjacent = out_edge.v;
+  for (auto edge : graph[vertex]) {
+    typename G::Id adjacent = graph.target(edge);
 
-    if (tree[adjacent].status == VertexStatus::READY) {
-      tree[adjacent].parent = vertex;
-      visit_rec(graph, Vertex{adjacent}, callback, time, tree);
+    if (distance_tree[adjacent].status == VertexStatus::READY) {
+      distance_tree[adjacent].parent = vertex;
+      visit_rec(graph, adjacent, callback, time, distance_tree);
     }
   }
 
-  tree[vertex].status = VertexStatus::PROCESSED;
-  tree[vertex].finishing_time = ++time;
+  distance_tree[vertex].status = VertexStatus::PROCESSED;
+  distance_tree[vertex].finishing_time = ++time;
 }
 
 } // namespace graphxx::algorithms::dfs
-
-#endif

@@ -31,6 +31,8 @@
 
 #pragma once
 
+#include "graph_concepts.hpp"
+
 namespace graphxx::algorithms {
 
 /// @brief Status of the vertices during the visit algorithms
@@ -39,5 +41,17 @@ enum class VertexStatus {
   WAITING,
   PROCESSED,
 };
+
+// template <concepts::Identifier Id> struct StructWithParent {
+//   Id parent;
+// };
+//
+// template <concepts::Numeric Distance> struct StructWithDistance {
+//   Distance distance;
+// };
+//
+// template <concepts::Identifier Id, concepts::Numeric Distance>
+// struct CommonNode : public StructWithParent<Id>,
+//                     public StructWithDistance<Distance> {};
 
 } // namespace graphxx::algorithms

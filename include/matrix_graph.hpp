@@ -40,7 +40,7 @@
 
 namespace graphxx {
 
-template <std::unsigned_integral IdType = DefaultIdType,
+template <concepts::Identifier IdType = DefaultIdType,
           Directedness D = Directedness::DIRECTED, typename... AttributesType>
 class AdjacencyMatrixGraph
     : public std::vector<std::unordered_map<

@@ -29,26 +29,25 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
+#include "algorithms_base.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
-#include <unordered_map>
+#include <functional>
+#include <limits>
+#include <vector>
 
 namespace graphxx::algorithms::bellman_ford {
 
 /// @brief Node containing informations about its distance
 ///        and the previous node in the shortest path from a given source
 /// @tparam WeightType numeric weight
-template <concepts::Numeric WeightType> struct Node {
-  WeightType distance;
-  DefaultIdType parent;
-
-  Node();
+template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+  Id parent;
+  Distance distance;
 };
 
 /// @brief flatten Tree that collects all Node structs containing information
@@ -56,8 +55,8 @@ template <concepts::Numeric WeightType> struct Node {
 ///        i.e. for each vertex its distance from the source and the previous
 ///        node in the shortest path
 /// @tparam WeightType numeric weight
-template <concepts::Numeric WeightType>
-using Tree = std::unordered_map<DefaultIdType, Node<WeightType>>;
+template <concepts::Identifier Id, concepts::Numeric Distance>
+using DistanceTree = std::vector<Node<Id, Distance>>;
 
 /// @brief Implementation of bellman_ford algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -68,12 +67,15 @@ using Tree = std::unordered_map<DefaultIdType, Node<WeightType>>;
 /// @param source source vertex
 /// @param edges_weights edges weights
 /// @return flatten tree as described for type Tree<WeightType>
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-Tree<WeightType> visit(const G &graph, const Vertex &source, C &&edges_weights);
+template <
+    concepts::Graph G,
+    std::invocable<typename G::Edge> Weight = std::function<
+        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
+    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
+DistanceTree<typename G::Id, Distance> visit(
+    const G &graph, typename G::Id source,
+    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::bellman_ford
 
 #include "algorithms/bellman_ford.i.hpp"
-
-#endif

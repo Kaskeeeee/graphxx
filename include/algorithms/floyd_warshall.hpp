@@ -29,32 +29,28 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
+#include "algorithms_base.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
-#include <unordered_map>
+#include <functional>
+#include <vector>
 
 namespace graphxx::algorithms::floyd_warshall {
 
 /// @brief Node containing informations about its distance and
 ///        and the previous node on the shortest path from a given source
 /// @tparam WeightType
-template <concepts::Numeric WeightType> struct Node {
-  WeightType distance;
-  DefaultIdType parent;
-
-  Node();
+template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+  Id parent;
+  Distance distance;
 };
 
-/// @brief A simple map of maps of ids to Nodes
-/// @tparam WeightType
-template <concepts::Numeric WeightType>
-using Map = std::unordered_map<DefaultIdType, std::unordered_map<DefaultIdType, Node<WeightType>>>;
+template <concepts::Identifier Id, concepts::Numeric Distance>
+using DistanceTree = std::vector<Node<Id, Distance>>;
 
 /// @brief Implementantation of Floyd Warhsall algorithm for multi source
 ///        shortest paths
@@ -64,12 +60,15 @@ using Map = std::unordered_map<DefaultIdType, std::unordered_map<DefaultIdType, 
 /// @param graph input graph
 /// @param weights edges weights
 /// @return a map of maps containing all shortest paths
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-Map<WeightType> visit(const G &graph, C &&weights);
+template <
+    concepts::Graph G,
+    std::invocable<typename G::Edge> Weight = std::function<
+        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
+    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
+DistanceTree<typename G::Id, Distance> visit(
+    const G &graph,
+    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::floyd_warshall
 
 #include "algorithms/floyd_warshall.i.hpp"
-
-#endif

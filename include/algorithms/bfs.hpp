@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "algorithms_base.hpp"
@@ -38,23 +36,23 @@
 #include "graph_concepts.hpp"
 
 #include <functional>
-#include <unordered_map>
+#include <vector>
 
 namespace graphxx::algorithms::bfs {
 
 /// @brief Structure to store information about graph vertices during the visit
-struct BFSVertex {
+template <concepts::Identifier Id> struct Node {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Number of edges in the shortest path from the source vertex
-  int distance = -1;
+  size_t distance;
   /// @brief Id of the predecessor Vertex in BFS Tree
-  DefaultIdType parent = -1;
+  Id parent;
 };
 
 /// @brief flatten Tree that collects all BFSVertex structs generated during the
 ///        visit
-using BFSTree = std::unordered_map<DefaultIdType, BFSVertex>;
+template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -63,7 +61,8 @@ using BFSTree = std::unordered_map<DefaultIdType, BFSVertex>;
 /// @param graph input graph
 /// @param source source vertex
 /// @return flatten tree as described for type BFSTree
-template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source);
+template <concepts::Graph G>
+DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -75,11 +74,10 @@ template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-BFSTree visit(const G &graph, Vertex source,
-              const std::function<void(Vertex)> &callback);
+DistanceTree<typename G::Id>
+visit(const G &graph, typename G::Id source,
+      const std::function<void(typename G::Id)> &callback);
 
 } // namespace graphxx::algorithms::bfs
 
 #include "algorithms/bfs.i.hpp"
-
-#endif

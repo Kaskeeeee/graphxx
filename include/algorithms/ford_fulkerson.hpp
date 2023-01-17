@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "algorithms_base.hpp"
@@ -38,29 +36,31 @@
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
+#include <functional>
 #include <unordered_map>
+#include <vector>
 
 namespace graphxx::algorithms::ford_fulkerson {
 
-struct BFSVertex {
+template <concepts::Identifier Id> struct Node {
   VertexStatus status;
-  int parent = -1;
   int edge = -1;
   int residual_capacity = -1;
+  Id parent;
 };
 
-using BFSTree = std::unordered_map<DefaultIdType, BFSVertex>;
+template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 
-/// @brief 
-/// @tparam WeightType 
-template <concepts::Numeric WeightType>
-using FlowMap = std::unordered_map<DefaultIdType, WeightType>;
+/// @brief
+/// @tparam WeightType
+template <concepts::Identifier Id, concepts::Numeric Distance>
+using FlowMap = std::unordered_map<Id, Distance>;
 
-/// @brief 
-/// @tparam WeightType 
-template <concepts::Numeric WeightType> struct FFpair {
-  FlowMap<WeightType> flow;
-  WeightType max_flow;
+/// @brief
+/// @tparam WeightType
+template <concepts::Identifier Id, concepts::Numeric Distance> struct FFpair {
+  FlowMap<Id, Distance> flow;
+  Distance max_flow;
 };
 
 /// @brief Implementation of ford_fulkerson algorithm
@@ -73,13 +73,15 @@ template <concepts::Numeric WeightType> struct FFpair {
 /// @param sink sink vertex
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-FFpair<WeightType> visit(const G &graph, const Vertex &source,
-                         const Vertex &sink, C &&edges_capacity);
+template <
+    concepts::Graph G, concepts::Numeric WeightType,
+    std::invocable<typename G::Edge> Weight = std::function<
+        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
+    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
+FFpair<typename G::Id, WeightType> visit(
+    const G &graph, typename G::Id source, typename G::Id sink,
+    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::ford_fulkerson
 
 #include "algorithms/ford_fulkerson.i.hpp"
-
-#endif

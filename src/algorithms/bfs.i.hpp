@@ -29,60 +29,67 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/bfs.hpp"
 #include "algorithms_base.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
 
 #include <functional>
+#include <limits>
 #include <queue>
+#include <vector>
 
 namespace graphxx::algorithms::bfs {
 
-template <concepts::Graph G> BFSTree visit(const G &graph, Vertex source) {
-  return visit(graph, source, [](Vertex) {});
+template <concepts::Graph G>
+DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source) {
+  return visit(graph, source, [](typename G::Id) {});
 }
 
 template <concepts::Graph G>
-BFSTree visit(const G &graph, Vertex source,
-              const std::function<void(Vertex)> &callback) {
-  BFSTree tree;
-  for (auto vertex : graph.vertices()) {
-    tree[vertex] = BFSVertex{VertexStatus::READY};
+DistanceTree<typename G::Id>
+visit(const G &graph, typename G::Id source,
+      const std::function<void(typename G::Id)> &callback) {
+
+  using Vertex = typename G::Id;
+
+  DistanceTree<Vertex> distance_tree;
+  constexpr auto distance_upperbound = std::numeric_limits<size_t>::max();
+
+  for (Vertex vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(Node{.status = VertexStatus::READY,
+                                 .distance = distance_upperbound,
+                                 .parent = vertex});
   }
 
-  tree[source].status = VertexStatus::WAITING;
-  tree[source].distance = 0;
-  tree[source].parent = -1;
+  distance_tree[source].status = VertexStatus::WAITING;
+  distance_tree[source].distance = 0;
 
-  std::queue<DefaultIdType> queue;
+  std::queue<Vertex> queue;
   queue.push(source);
 
   while (!queue.empty()) {
-    DefaultIdType vertex_id = queue.front();
+    Vertex vertex_id = queue.front();
     queue.pop();
 
-    callback(Vertex{vertex_id});
+    callback(vertex_id);
 
-    for (Edge out_edge : graph.out_edges(Vertex{vertex_id})) {
-      DefaultIdType adjacent = out_edge.v;
+    for (auto edge : graph[vertex_id]) {
+      Vertex adjacent = graph.target(edge);
 
-      if (tree[adjacent].status == VertexStatus::READY) {
-        tree[adjacent].status = VertexStatus::WAITING;
-        tree[adjacent].distance = tree[vertex_id].distance + 1;
-        tree[adjacent].parent = vertex_id;
+      if (distance_tree[adjacent].status == VertexStatus::READY) {
+        distance_tree[adjacent].status = VertexStatus::WAITING;
+        distance_tree[adjacent].distance =
+            distance_tree[vertex_id].distance + 1;
+        distance_tree[adjacent].parent = vertex_id;
         queue.push(adjacent);
       }
     }
 
-    tree[vertex_id].status = VertexStatus::PROCESSED;
+    distance_tree[vertex_id].status = VertexStatus::PROCESSED;
   }
 
-  return tree;
+  return distance_tree;
 }
 
 } // namespace graphxx::algorithms::bfs
-
-#endif

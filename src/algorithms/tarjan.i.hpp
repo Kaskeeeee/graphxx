@@ -37,61 +37,67 @@
 
 namespace graphxx::algorithms::tarjan {
 
-SCCVector _scc_vector;
-TarjanTree _tarjan_tree;
-StackVector _stack;
-int index;
-
-template <concepts::Graph G> void tarjan_rec(const G &graph, typename G::Id v) {
-  _tarjan_tree[v].index = index;
-  _tarjan_tree[v].low_link = index;
+template <concepts::Graph G>
+void tarjan_rec(const G &graph, typename G::Id v, TarjanTree &tarjan_tree,
+                SCCVector<typename G::Id> &scc_vector,
+                StackVector<typename G::Id> &stack, int &index) {
+  tarjan_tree[v].index = index;
+  tarjan_tree[v].low_link = index;
   ++index;
-  _stack.push_back(v);
-  _tarjan_tree[v].on_stack = true;
+  stack.push_back(v);
+  tarjan_tree[v].on_stack = true;
 
   for (auto edge : graph[v]) {
     auto target = graph.target(edge);
-    if (_tarjan_tree[target].index == -1) {
-      tarjan_rec(graph, target);
-      _tarjan_tree[v].low_link =
-          std::min(_tarjan_tree[v].low_link, _tarjan_tree[target].low_link);
-    } else if (_tarjan_tree[target].on_stack) {
-      _tarjan_tree[v].low_link =
-          std::min(_tarjan_tree[v].low_link, _tarjan_tree[target].index);
+    if (tarjan_tree[target].index == -1) {
+      tarjan_rec(graph, target, tarjan_tree, scc_vector, stack, index);
+      tarjan_tree[v].low_link =
+          std::min(tarjan_tree[v].low_link, tarjan_tree[target].low_link);
+    } else if (tarjan_tree[target].on_stack) {
+      tarjan_tree[v].low_link =
+          std::min(tarjan_tree[v].low_link, tarjan_tree[target].index);
     }
   }
-  if (_tarjan_tree[v].low_link == _tarjan_tree[v].index) {
-    std::vector<DefaultIdType> new_scc;
+  if (tarjan_tree[v].low_link == tarjan_tree[v].index) {
+    std::vector<typename G::Id> new_scc;
 
-    auto w = _stack.back();
-    _stack.pop_back();
-    _tarjan_tree[w].on_stack = false;
+    auto w = stack.back();
+    stack.pop_back();
+    tarjan_tree[w].on_stack = false;
     new_scc.push_back(w);
 
     while (w != v) {
-      w = _stack.back();
-      _stack.pop_back();
-      _tarjan_tree[w].on_stack = false;
+      w = stack.back();
+      stack.pop_back();
+      tarjan_tree[w].on_stack = false;
       new_scc.push_back(w);
     }
 
-    _scc_vector.push_back(new_scc);
+    scc_vector.push_back(new_scc);
   }
 }
 
-template <concepts::Graph G> SCCVector visit(const G &graph) {
-  DistanceTree<Distance> distance_tree{
-      graph.size(), Node{}};
-  index = 0;
+template <concepts::Graph G> SCCVector<typename G::Id> visit(const G &graph) {
 
-  for (size_t vertex = 0; vertex < graph.size(); vertex++) {
-    if (_tarjan_tree[vertex].index != -1) {
-      continue;
-    }
-    tarjan_rec(graph, vertex);
+  using Vertex = typename G::Id;
+
+  SCCVector<Vertex> scc_vector;
+  TarjanTree tarjan_tree;
+  StackVector<Vertex> stack;
+  int index = 0;
+
+  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    tarjan_tree.push_back(Node{.index = -1, .low_link = -1, .on_stack = false});
   }
 
-  return _scc_vector;
+  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    if (tarjan_tree[vertex].index != -1) {
+      continue;
+    }
+    tarjan_rec(graph, vertex, tarjan_tree, scc_vector, stack, index);
+  }
+
+  return scc_vector;
 }
 
 } // namespace graphxx::algorithms::tarjan

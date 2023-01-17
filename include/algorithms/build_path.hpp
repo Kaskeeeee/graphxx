@@ -31,45 +31,28 @@
 
 #pragma once
 
-#include "base.hpp"
+#include "algorithms_base.hpp"
 #include "graph_concepts.hpp"
 
-#include <list>
+#include <algorithm>
 #include <vector>
 
-namespace graphxx {
+namespace graphxx::algorithms {
 
-template <concepts::Identifier IdType = DefaultIdType,
-          Directedness D = Directedness::DIRECTED, typename... AttributesType>
-class AdjacencyListGraph
-    : public std::vector<
-          std::list<std::tuple<IdType, IdType, AttributesType...>>> {
-public:
-  using Id = IdType;
-  using Edge = std::tuple<Id, Id, AttributesType...>;
-  using Attributes = std::tuple<AttributesType...>;
+template <concepts::Identifier Id, concepts::HasParent Node>
+std::vector<Id> build_path(std::vector<Node> vector_of_struct, Id source,
+                           Id target) {
+  std::vector<Id> path;
+  StructWithParent<Id> node = vector_of_struct[target];
+  path.push_back(target);
+  while (node.parent != source) {
+    path.push_back(node.parent);
+    node = node.parent;
+  }
+  path.push_back(source);
+  std::reverse(path.begin(), path.end());
 
-  using EdgeList = std::list<Edge>;
-  using Base = std::vector<EdgeList>;
-
-  static constexpr Directedness DIRECTEDNESS = D;
-
-  AdjacencyListGraph();
-  AdjacencyListGraph(const AdjacencyListGraph &graph);
-
-  void add_vertex(Id);
-  void remove_vertex(Id);
-
-  void add_edge(Id, Id, Attributes = {});
-  void remove_edge(Id, Id);
-
-  size_t num_vertices() const;
-  size_t num_edges() const;
-
-  Id source(Edge) const;
-  Id target(Edge) const;
+  return path;
 };
 
-} // namespace graphxx
-
-#include "list_graph.i.hpp"
+} // namespace graphxx::algorithms

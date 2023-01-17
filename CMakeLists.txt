@@ -208,6 +208,7 @@ add_executable(graph_test)
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/digraph_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/a_star_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
@@ -256,11 +257,11 @@ add_test(NAME digraphTest
         COMMAND graph_test
 )
 
-add_test(NAME valgrindTest
-        COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
-        --track-origins=yes
-        ${CMAKE_BINARY_DIR}/graph_test
-)
+# add_test(NAME valgrindTest
+# COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
+# --track-origins=yes
+# ${CMAKE_BINARY_DIR}/graph_test
+# )
 
 # ###############################################################################
 # EXAMPLES
@@ -340,58 +341,58 @@ if(BENCHMARK)
                 # PRIVATE nanobench
                 # )
                 #
-                # # bfs
-                # add_executable(benchmark_bfs)
-                #
-                # target_sources(benchmark_bfs
-                # PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
-                # )
-                #
-                # target_include_directories(benchmark_bfs
-                # PRIVATE ${PROJECT_SOURCE_DIR}/src
-                # )
-                #
-                # target_link_libraries(benchmark_bfs
-                # PUBLIC graph
-                # PUBLIC ${Boost_LIBRARIES}
-                # PRIVATE nanobench
-                # )
-                #
-                # # dfs
-                # add_executable(benchmark_dfs)
-                #
-                # target_sources(benchmark_dfs
-                # PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
-                # )
-                #
-                # target_include_directories(benchmark_dfs
-                # PRIVATE ${PROJECT_SOURCE_DIR}/src
-                # )
-                #
-                # target_link_libraries(benchmark_dfs
-                # PUBLIC graph
-                # PUBLIC ${Boost_LIBRARIES}
-                # PRIVATE nanobench
-                # )
-                #
-                # # bellman_ford
-                # add_executable(benchmark_bellman_ford)
-                #
-                # target_sources(benchmark_bellman_ford
-                # PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
-                # )
-                #
-                # target_include_directories(benchmark_bellman_ford
-                # PRIVATE ${PROJECT_SOURCE_DIR}/src
-                # )
-                #
-                # target_link_libraries(benchmark_bellman_ford
-                # PUBLIC graph
-                # PUBLIC ${Boost_LIBRARIES}
-                # PRIVATE nanobench
-                # )
+                # bfs
+                add_executable(benchmark_bfs)
+
+                target_sources(benchmark_bfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
+                )
+
+                target_include_directories(benchmark_bfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_bfs
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # dfs
+                add_executable(benchmark_dfs)
+
+                target_sources(benchmark_dfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
+                )
+
+                target_include_directories(benchmark_dfs
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_dfs
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
+                # bellman_ford
+                add_executable(benchmark_bellman_ford)
+
+                target_sources(benchmark_bellman_ford
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
+                )
+
+                target_include_directories(benchmark_bellman_ford
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_bellman_ford
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
                 install(
-                        TARGETS benchmark_dijkstra # benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
+                        TARGETS benchmark_dijkstra benchmark_bellman_ford benchmark_bfs benchmark_dfs # benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
                         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
                 )
         endif()

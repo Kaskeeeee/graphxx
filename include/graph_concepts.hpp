@@ -73,6 +73,12 @@ concept Graph =
     IsRangeOfRanges<G> && HasGraphBasicTraits<G> && HasGraphBasicMethods<G>;
 
 template <typename T>
+concept Identifier = std::unsigned_integral<T>;
+
+template <typename T>
+concept HasParent = requires(T t) { t.parent; };
+
+template <typename T>
 concept Numeric = std::is_arithmetic_v<T>;
 
 template <typename Container, typename Key>
