@@ -36,13 +36,14 @@
 #include "utils.hpp"
 
 #include <functional>
+#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::kruskal {
 
 /// @brief flatten Tree that will collect the Edge ids of the minimum spanning
 ///        tree
-template <concepts::Graph G> using DistanceTree = std::vector<G::Edge>;
+template <concepts::Graph G> using DistanceTree = std::vector<typename G::Edge>;
 
 /// @brief Map that divides the vertices into "clusters" and allows us to check
 ///        if two vertices belong to the same cluster or not and hence decide
@@ -63,7 +64,7 @@ template <
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<Distance> visit(
+DistanceTree<G> visit(
     const G &graph,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 

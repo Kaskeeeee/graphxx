@@ -37,19 +37,30 @@
 #include "utils.hpp"
 
 #include <functional>
+#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::a_star {
 
+/// @brief Node containing informations about its distance,
+///        its heurisitc_distance (initially given by the user) and
+///        the previous node in the shortest path from a given source
+/// @tparam Distance numeric weight
+template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+  Distance distance;
+  Id parent;
+};
+
 template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceTree = std::vector<CommonNode<Id, Distance>>;
+using DistanceTree = std::vector<Node<Id, Distance>>;
 
 /// @brief Flatten Tree that collects all Node structs containing information
 ///        based on the source vertex
 ///        i.e. for each vertex its distance and the heuristic one from
 ///        respectively the source and the previous node in the shortest path
 /// @tparam WeightType numeric weight
-template <concepts::Identifier Id> using PathVector = std::vector<Id>;
+template <concepts::Identifier Id, concepts::Numeric Distance>
+using PathVector = std::vector<Node<Id, Distance>>;
 
 /// @brief Implementation of a_star algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -66,9 +77,9 @@ template <
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-PathVector<typename G::Id> visit(
+PathVector<typename G::Id, Distance> visit(
     const G &graph, typename G::Id source, typename G::Id target,
-    Weight heuristic_weight,
+    std::unordered_map<typename G::Id, Distance> heuristic_weight,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 } // namespace graphxx::algorithms::a_star
 

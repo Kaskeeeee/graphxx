@@ -38,15 +38,29 @@ namespace graphxx::algorithms::johnson {
 
 template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
           typename Distance>
-Map<Distance> visit(G &graph, Weight weight) {
-  Map<Distance> map;
+DistanceTree<typename G::Id, Distance> visit(G &graph, Weight weight) {
+
+  using Vertex = typename G::Id;
+
+  DistanceTree<Vertex, Distance> map;
 
   // New vertex
-  auto q = graph.num_vertices();
+  Vertex q = graph.num_vertices();
+  graph.add_vertex(q);
+
+  WeightMap<G, Distance> weight_map;
+
+  auto get_weight = [&](typename G::Edge e) {
+    return weight_map[{graph.source(e), graph.target(e)}];
+  };
 
   // Add new edge from q to every other vertex
-  for (auto vertex : graph) {
+  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
     graph.add_edge(q, vertex);
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      weight_map[edge] = weight(edge);
+    }
   }
 
   // Run Bellman–Ford algorithm
@@ -54,11 +68,11 @@ Map<Distance> visit(G &graph, Weight weight) {
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
-  for (auto vertex : graph) {
-    for (auto edge : vertex) {
-      weight[{g.source(edge), g.target(edge)}] =
-          weight(edge) + bf_tree[graph.source(edge)].distance -
-          bf_tree[graph.target(edge)].distance;
+  for (Vertex vertex = 0; vertex < graph.size(); vertex++) {
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      weight_map[edge] += bf_tree[graph.source(edge)].distance -
+                          bf_tree[graph.target(edge)].distance;
     }
   }
 
@@ -66,14 +80,18 @@ Map<Distance> visit(G &graph, Weight weight) {
   graph.remove_vertex(q);
 
   // Run Dijkstra for every vertex
-  for (auto vertex_source : graph) {
-    auto d_tree = dijkstra::visit(graph, vertex_source, weight);
-    for (auto vertex_target : graph) {
-      map[vertex_source][vertex_target].parent = d_tree[vertex_target].parent;
-      map[vertex_source][vertex_target].distance =
-          d_tree[vertex_target].distance + bf_tree[vertex_target].distance -
-          bf_tree[vertex_source].distance;
+  for (Vertex vertex_source = 0; vertex_source < graph.num_vertices();
+       vertex_source++) {
+    auto d_tree = dijkstra::visit(graph, vertex_source, get_weight);
+    std::vector<Node<Vertex, Distance>> temp;
+    for (Vertex vertex_target = 0; vertex_target < graph.num_vertices();
+         vertex_target++) {
+      temp.push_back({.distance = d_tree[vertex_target].distance +
+                                  bf_tree[vertex_target].distance -
+                                  bf_tree[vertex_source].distance,
+                      .parent = d_tree[vertex_target].parent});
     }
+    map.push_back(temp);
   }
 
   return map;

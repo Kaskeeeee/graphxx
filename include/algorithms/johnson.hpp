@@ -36,19 +36,23 @@
 #include "utils.hpp"
 
 #include <functional>
+#include <map>
 #include <vector>
 
 namespace graphxx::algorithms::johnson {
 
 template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
-  Id parent;
   Distance distance;
+  Id parent;
 };
 
 /// @brief A simple map of maps of ids to Nodes
 /// @tparam WeightType
 template <concepts::Identifier Id, concepts::Numeric Distance>
 using DistanceTree = std::vector<std::vector<Node<Id, Distance>>>;
+
+template <concepts::Graph G, concepts::Numeric Distance>
+using WeightMap = std::map<typename G::Edge, Distance>;
 
 /// @brief Implementation of johnson algorithm
 /// @tparam G graph type that is coherent with Graph concept

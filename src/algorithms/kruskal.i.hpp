@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/kruskal.hpp"
 #include "base.hpp"
 
@@ -40,38 +38,39 @@ namespace graphxx::algorithms::kruskal {
 
 // Search for the repserentative vertex of the cluster, which is that element in
 // the map with same key and value
-DefaultIdType find_representative(ClusterMap &map, DefaultIdType id) {
+template <concepts::Identifier Id>
+Id find_representative(ClusterMap<Id> &map, Id id) {
   if (id == map[id]) {
     return id;
   }
   return find_representative(map, map[id]);
 };
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-Tree visit(const G &graph, C &&weights) {
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+DistanceTree<G> visit(const G &graph, Weight weight) {
 
-  Tree tree;
-  ClusterMap map;
+  using Vertex = typename G::Id;
 
-  using EdgeWeightPair = std::pair<Edge, WeightType>;
-  constexpr auto COMPARATOR = [&](const EdgeWeightPair &p,
-                                  const EdgeWeightPair &q) {
-    return p.second > q.second;
-  };
+  DistanceTree<G> distance_tree;
+  ClusterMap<Vertex> map;
 
-  std::priority_queue<EdgeWeightPair, std::vector<EdgeWeightPair>,
-                      decltype(COMPARATOR)>
-      queue{COMPARATOR};
+  using WeightedEdge = std::tuple<Distance, typename G::Edge>;
+  std::priority_queue<WeightedEdge, std::vector<WeightedEdge>,
+                      std::greater<WeightedEdge>>
+      queue;
 
   // Queue ordered by ascending edge weight
-  for (auto edge : graph.edges()) {
-    queue.push(std::make_pair(edge, weights[edge]));
+  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      queue.push({weight(edge), edge});
+    }
   }
 
   // Initialize every vertex cluster with the vertex Id itself
-  for (auto vertex : graph.vertices()) {
-    map[vertex] = vertex.id;
+  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    map[vertex] = vertex;
   }
 
   // At every iteration, we want to add an edge to the tree, but we must check
@@ -80,20 +79,17 @@ Tree visit(const G &graph, C &&weights) {
   // add it. Then, we update the representative vertex of the cluster of one of
   // the two verteces
   while (!queue.empty()) {
-    EdgeWeightPair top_pair = queue.top();
+    auto edge = std::get<1>(queue.top());
     queue.pop();
 
-    auto edge = top_pair.first;
-
-    if (find_representative(map, edge.u) != find_representative(map, edge.v)) {
-      tree.push_back(edge);
-      map[edge.u] = map[edge.v];
+    if (find_representative(map, graph.source(edge)) !=
+        find_representative(map, graph.target(edge))) {
+      distance_tree.push_back(edge);
+      map[graph.source(edge)] = map[graph.target(edge)];
     }
   }
 
-  return tree;
+  return distance_tree;
 };
 
 } // namespace graphxx::algorithms::kruskal
-
-#endif

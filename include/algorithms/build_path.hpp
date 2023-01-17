@@ -40,16 +40,16 @@
 namespace graphxx::algorithms {
 
 template <concepts::Identifier Id, concepts::HasParent Node>
-std::vector<Id> build_path(std::vector<Node> vector_of_struct, Id source,
-                           Id target) {
-  std::vector<Id> path;
-  StructWithParent<Id> node = vector_of_struct[target];
-  path.push_back(target);
+std::vector<Node> build_path(std::vector<Node> vector_of_struct, Id source,
+                             Id target) {
+  std::vector<Node> path;
+  Node node = vector_of_struct[target];
+  path.push_back(node);
   while (node.parent != source) {
-    path.push_back(node.parent);
-    node = node.parent;
+    node = vector_of_struct[node.parent];
+    path.push_back(node);
   }
-  path.push_back(source);
+  path.push_back(vector_of_struct[source]);
   std::reverse(path.begin(), path.end());
 
   return path;

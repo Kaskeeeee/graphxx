@@ -29,26 +29,36 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "base.hpp"
 #include "catch.hpp"
 #include "kruskal.hpp"
 #include "list_graph.hpp"
+
+#include <map>
+#include <tuple>
 
 namespace kruskal_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
 TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
-  AdjacencyListGraph<Directedness::DIRECTED> g{};
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
+  Graph g{};
 
-  std::unordered_map<DefaultIdType, int> weights;
+  enum vertices { a, b, c, d };
 
-  auto a = g.add_vertex();
-  auto b = g.add_vertex();
-  auto c = g.add_vertex();
-  auto d = g.add_vertex();
+  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
+
+  g.add_edge(a, b);
+  g.add_edge(a, c);
+  g.add_edge(a, d);
+  g.add_edge(b, a);
+  g.add_edge(c, a);
+  g.add_edge(d, a);
+
+  g.add_edge(b, c);
+
+  g.add_edge(c, d);
 
   /*
       A       B       C       D
@@ -58,32 +68,23 @@ TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
       |-----------------------|
   */
 
-  auto a_to_b = g.add_edge(a, b);
-  auto a_to_c = g.add_edge(a, c);
-  auto a_to_d = g.add_edge(a, d);
-  auto b_to_a = g.add_edge(b, a);
-  auto c_to_a = g.add_edge(c, a);
-  auto d_to_a = g.add_edge(d, a);
+  weight[{a, b}] = 2;
+  weight[{a, c}] = 1;
+  weight[{a, d}] = 4;
+  weight[{b, a}] = 2;
+  weight[{d, a}] = 1;
+  weight[{d, a}] = 4;
+  weight[{b, c}] = 3;
+  weight[{c, d}] = 9;
 
-  auto b_to_c = g.add_edge(b, c);
-
-  auto c_to_d = g.add_edge(c, d);
-
-  weights[a_to_b] = 2;
-  weights[a_to_c] = 1;
-  weights[a_to_d] = 4;
-  weights[b_to_a] = 2;
-  weights[d_to_a] = 1;
-  weights[d_to_a] = 4;
-  weights[b_to_c] = 3;
-  weights[c_to_d] = 9;
+  auto get_weight = [&](typename Graph::Edge e) {
+    return weight[{g.source(e), g.target(e)}];
+  };
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(g, weights);
+    auto vector = kruskal::visit(g, get_weight);
 
     REQUIRE(vector.size() == 3);
   }
 }
 } // namespace kruskal_test
-
-#endif

@@ -70,8 +70,9 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
   };
 
   SECTION("finds the shortest path length with all positive weights") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -94,18 +95,19 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
   }
 
   SECTION("finds the parent nodes with all positive weights") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
 
     auto tree = johnson::visit(g, get_weight);
 
-    //REQUIRE(tree[a][a].parent == INVALID_VERTEX);
-    //REQUIRE(tree[b][b].parent == INVALID_VERTEX);
-    //REQUIRE(tree[c][c].parent == INVALID_VERTEX);
-    //REQUIRE(tree[d][d].parent == INVALID_VERTEX);
+    REQUIRE(tree[a][a].parent == a);
+    REQUIRE(tree[b][b].parent == b);
+    REQUIRE(tree[c][c].parent == c);
+    REQUIRE(tree[d][d].parent == d);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);
@@ -118,8 +120,9 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
   }
 
   SECTION("find the shortest path length with one negative weight") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -127,7 +130,6 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
     weight[{a, c}] = -2;
 
     auto tree = johnson::visit(g, get_weight);
-
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
     REQUIRE(tree[c][c].distance == 0);
@@ -144,8 +146,9 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
   }
 
   SECTION("finds the parent nodes with one negative weight") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -154,10 +157,10 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
 
     auto tree = johnson::visit(g, get_weight);
 
-    //REQUIRE(tree[a][a].parent == INVALID_VERTEX);
-    //REQUIRE(tree[b][b].parent == INVALID_VERTEX);
-    //REQUIRE(tree[c][c].parent == INVALID_VERTEX);
-    //REQUIRE(tree[d][d].parent == INVALID_VERTEX);
+    REQUIRE(tree[a][a].parent == a);
+    REQUIRE(tree[b][b].parent == b);
+    REQUIRE(tree[c][c].parent == c);
+    REQUIRE(tree[d][d].parent == d);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);
@@ -169,19 +172,8 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
     REQUIRE(tree[a][b].parent == d);
   }
 
-  /*
-    SECTION("throws on negative cycle found") {
-      for (auto edge : g.edges()) {
-        weights[edge] = 1;
-      }
-
-      weights[c_to_d] = -1;
-      weights[d_to_b] = -1;
-
-      REQUIRE_THROWS(floyd_warshall::visit(g, weights));
-    }
-  */
-
+  g.add_edge(c, a); // 2->0
+  g.add_edge(d, d); // 3->3
   g.add_edge(c, a); // 2->0
   g.add_edge(d, d); // 3->3
 
@@ -199,8 +191,9 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
 
   SECTION("finds the shortest path length with all positive weights, now with "
           "cycles") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
@@ -224,18 +217,19 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
   }
 
   SECTION("finds the parent nodes with all positive weights, now with cycles") {
-    for (auto vertex : g) {
-      for (auto edge : vertex) {
+    for (size_t vertex = 0; vertex < g.size(); vertex++) {
+      auto out_edge_list = g[vertex];
+      for (auto edge : out_edge_list) {
         weight[{g.source(edge), g.target(edge)}] = 1;
       }
     }
 
     auto tree = johnson::visit(g, get_weight);
 
-    //REQUIRE(tree[a][a].parent == INVALID_VERTEX);
-    //REQUIRE(tree[b][b].parent == INVALID_VERTEX);
-    //REQUIRE(tree[c][c].parent == INVALID_VERTEX);
-    //REQUIRE(tree[d][d].parent == INVALID_VERTEX);
+    REQUIRE(tree[a][a].parent == a);
+    REQUIRE(tree[b][b].parent == b);
+    REQUIRE(tree[c][c].parent == c);
+    REQUIRE(tree[d][d].parent == d);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);

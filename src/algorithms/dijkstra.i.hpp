@@ -49,7 +49,7 @@ visit(const G &graph, typename G::Id source, Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   DistanceTree<typename G::Id, Distance> distance_tree{
       graph.num_vertices(),
-      Node{.parent = source, .distance = distance_upperbound}};
+      Node{.distance = distance_upperbound, .parent = source}};
 
   using WeightedVertex = std::tuple<Distance, typename G::Id>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,

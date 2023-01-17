@@ -46,8 +46,8 @@ namespace graphxx::algorithms::dijkstra {
 ///        on the shortest path and its distance from the source
 /// @tparam WeightType numeric weight
 template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
-  Id parent;
   Distance distance;
+  Id parent;
 };
 
 /// @brief flatten Tree that collects all Node structs containing information

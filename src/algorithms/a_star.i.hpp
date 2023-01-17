@@ -29,101 +29,85 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/a_star.hpp"
 #include "base.hpp"
+#include "build_path.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
+#include <limits>
 #include <queue>
+#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::a_star {
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-Tree<WeightType> visit(const G &graph, const Vertex &source, C &&weights,
-                       C &&heuristic_weights) {
-  Tree<WeightType> tree;
-  auto distance_upperbound = std::numeric_limits<WeightType>::max();
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+PathVector<typename G::Id, Distance>
+visit(const G &graph, typename G::Id source, typename G::Id target,
+      std::unordered_map<typename G::Id, Distance> heuristic_weight,
+      Weight weight) {
 
-  using VertexHeuristicDistancePair = std::pair<Vertex, WeightType>;
-  constexpr auto COMPARATOR = [&](const VertexHeuristicDistancePair &p,
-                                  const VertexHeuristicDistancePair &q) {
-    return p.second > q.second;
-  };
+  using Vertex = typename G::Id;
 
-  std::priority_queue<VertexHeuristicDistancePair,
-                      std::vector<VertexHeuristicDistancePair>,
-                      decltype(COMPARATOR)>
-      queue{COMPARATOR};
+  constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
+  PathVector<Vertex, Distance> path_vector;
 
-  tree[source] = {.distance = 0,
-                  .heuristic_distance = heuristic_weights[source],
-                  .parent = INVALID_VERTEX};
-  queue.push(std::make_pair(source, 0));
+  DistanceTree<Vertex, Distance> distance_tree;
 
-  for (auto vertex : graph.vertices()) {
-    if (vertex == source) {
-      continue;
-    }
-    tree[vertex] = Node{.distance = distance_upperbound,
-                        .heuristic_distance = heuristic_weights[vertex],
-                        .parent = INVALID_VERTEX};
-    queue.push(std::make_pair(vertex, distance_upperbound));
+  for (Vertex vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(
+        Node{.distance = distance_upperbound, .parent = vertex});
   }
+
+  using WeightedVertex = std::tuple<Distance, Vertex>;
+  std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
+                      std::greater<WeightedVertex>>
+      queue;
+
+  distance_tree[source].distance = 0;
+  queue.push({heuristic_weight[source], source});
 
   // in this implementation, queue keeps also useless elements
   // this is due to the fact that you can't update order in the queue
   // without pushing a new element
   while (!queue.empty()) {
     // extract node and distance of min distance node
-    auto next_pair = queue.top();
-
-    // if the distance is not the one up to date, keep on popping elements
-    // WARNING: to avoid undefined behavior we pop from the queue only if
-    // it still has elements inside, otherwise there may be an infinite loop
-    for (int64_t i = 0; i < queue.size() - 1; ++i) {
-      if (tree[next_pair.first].heuristic_distance == next_pair.second) {
-        break;
-      }
-
-      queue.pop();
-      next_pair = queue.top();
-    }
-
+    auto first_element = queue.top();
+    auto u = std::get<1>(first_element);
     queue.pop();
 
-    [[unlikely]] if (tree[next_pair.first].heuristic_distance !=
-                     next_pair.second) {
-      return tree;
+    if (u == target) {
+      return build_path(distance_tree, source, target);
     }
 
-    auto [u, _] = next_pair;
+    for (auto edge : graph[u]) {
+      auto v = graph.target(edge);
+      Distance edge_weight = weight(edge);
 
-    for (auto edge : graph.out_edges(u)) {
-      if (weights[edge] < 0) {
+      if (edge_weight < 0) {
         throw exceptions::InvariantViolationException(
             "negative edge weight found");
       }
 
-      auto alternative_distance = tree[u].distance + weights[edge];
-      auto new_heuristic_distance =
-          alternative_distance + heuristic_weights[edge.v];
-      if (!sum_will_overflow(tree[u].distance, weights[edge]) &&
-          !sum_will_overflow(alternative_distance, heuristic_weights[edge.v]) &&
-          alternative_distance < tree[edge.v].distance) {
-        tree[edge.v].distance = alternative_distance;
-        tree[edge.v].parent = u;
-        tree[edge.v].heuristic_distance = new_heuristic_distance;
-        queue.push(std::make_pair(edge.v, new_heuristic_distance));
+      Distance alternative_distance = distance_tree[u].distance + edge_weight;
+      Distance new_heuristic_distance =
+          alternative_distance + heuristic_weight[v];
+
+      if (sum_will_overflow(distance_tree[u].distance, edge_weight) ||
+          sum_will_overflow(alternative_distance, heuristic_weight[v])) {
+        continue;
+      }
+
+      if (alternative_distance < distance_tree[v].distance) {
+        distance_tree[v].distance = alternative_distance;
+        distance_tree[v].parent = u;
+        queue.push({new_heuristic_distance, v});
       }
     }
   }
-  return tree;
+  return {};
 }
 } // namespace graphxx::algorithms::a_star
-
-#endif
