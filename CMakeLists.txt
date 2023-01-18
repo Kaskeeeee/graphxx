@@ -325,22 +325,22 @@ if(BENCHMARK)
                 )
 
                 # kruskal
-                # add_executable(benchmark_krsukal)
-                #
-                # target_sources(benchmark_krsukal
-                # PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
-                # )
-                #
-                # target_include_directories(benchmark_krsukal
-                # PRIVATE ${PROJECT_SOURCE_DIR}/src
-                # )
-                #
-                # target_link_libraries(benchmark_krsukal
-                # PUBLIC graph
-                # PUBLIC ${Boost_LIBRARIES}
-                # PRIVATE nanobench
-                # )
-                #
+                add_executable(benchmark_krsukal)
+
+                target_sources(benchmark_krsukal
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
+                )
+
+                target_include_directories(benchmark_krsukal
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_krsukal
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
                 # bfs
                 add_executable(benchmark_bfs)
 
@@ -392,7 +392,7 @@ if(BENCHMARK)
                         PRIVATE nanobench
                 )
                 install(
-                        TARGETS benchmark_dijkstra benchmark_bellman_ford benchmark_bfs benchmark_dfs # benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
+                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
                         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
                 )
         endif()

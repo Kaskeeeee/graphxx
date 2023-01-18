@@ -39,18 +39,18 @@
 namespace graphxx::algorithms::dfs {
 
 template <concepts::Graph G>
-DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source) {
-  return visit(graph, source, [](typename G::Id) {});
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source) {
+  return visit(graph, source, [](GraphId<G>) {});
 }
 
 template <concepts::Graph G>
-DistanceTree<typename G::Id>
-visit(const G &graph, typename G::Id source,
-      const std::function<void(typename G::Id)> &callback) {
+DistanceTree<GraphId<G>>
+visit(const G &graph, GraphId<G> source,
+      const std::function<void(GraphId<G>)> &callback) {
 
-  DistanceTree<typename G::Id> distance_tree;
+  DistanceTree<GraphId<G>> distance_tree;
 
-  for (typename G::Id vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(Node{.status = VertexStatus::READY,
                                  .parent = vertex,
                                  .discovery_time = -1,
@@ -65,16 +65,16 @@ visit(const G &graph, typename G::Id source,
 }
 
 template <concepts::Graph G>
-void visit_rec(const G &graph, typename G::Id vertex,
-               const std::function<void(typename G::Id)> &callback, int &time,
-               DistanceTree<typename G::Id> &distance_tree) {
+void visit_rec(const G &graph, GraphId<G> vertex,
+               const std::function<void(GraphId<G>)> &callback, int &time,
+               DistanceTree<GraphId<G>> &distance_tree) {
   callback(vertex);
 
   distance_tree[vertex].status = VertexStatus::WAITING;
   distance_tree[vertex].discovery_time = ++time;
 
   for (auto edge : graph[vertex]) {
-    typename G::Id adjacent = graph.target(edge);
+    GraphId<G> adjacent = graph.target(edge);
 
     if (distance_tree[adjacent].status == VertexStatus::READY) {
       distance_tree[adjacent].parent = vertex;

@@ -58,7 +58,7 @@ using SCCVector = std::vector<StackVector<Id>>;
 /// @brief Implementation of tarjan algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @return a vector containing all the strongly connected components
-template <concepts::Graph G> SCCVector<typename G::Id> visit(const G &graph);
+template <concepts::Graph G> SCCVector<GraphId<G>> visit(const G &graph);
 
 } // namespace graphxx::algorithms::tarjan
 

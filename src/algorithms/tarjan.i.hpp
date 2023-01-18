@@ -38,9 +38,9 @@
 namespace graphxx::algorithms::tarjan {
 
 template <concepts::Graph G>
-void tarjan_rec(const G &graph, typename G::Id v, TarjanTree &tarjan_tree,
-                SCCVector<typename G::Id> &scc_vector,
-                StackVector<typename G::Id> &stack, int &index) {
+void tarjan_rec(const G &graph, GraphId<G> v, TarjanTree &tarjan_tree,
+                SCCVector<GraphId<G>> &scc_vector,
+                StackVector<GraphId<G>> &stack, int &index) {
   tarjan_tree[v].index = index;
   tarjan_tree[v].low_link = index;
   ++index;
@@ -59,7 +59,7 @@ void tarjan_rec(const G &graph, typename G::Id v, TarjanTree &tarjan_tree,
     }
   }
   if (tarjan_tree[v].low_link == tarjan_tree[v].index) {
-    std::vector<typename G::Id> new_scc;
+    std::vector<GraphId<G>> new_scc;
 
     auto w = stack.back();
     stack.pop_back();
@@ -77,20 +77,18 @@ void tarjan_rec(const G &graph, typename G::Id v, TarjanTree &tarjan_tree,
   }
 }
 
-template <concepts::Graph G> SCCVector<typename G::Id> visit(const G &graph) {
+template <concepts::Graph G> SCCVector<GraphId<G>> visit(const G &graph) {
 
-  using Vertex = typename G::Id;
-
-  SCCVector<Vertex> scc_vector;
+  SCCVector<GraphId<G>> scc_vector;
   TarjanTree tarjan_tree;
-  StackVector<Vertex> stack;
+  StackVector<GraphId<G>> stack;
   int index = 0;
 
-  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     tarjan_tree.push_back(Node{.index = -1, .low_link = -1, .on_stack = false});
   }
 
-  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     if (tarjan_tree[vertex].index != -1) {
       continue;
     }

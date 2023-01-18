@@ -32,6 +32,7 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
 
 namespace graphxx {
 /// The id type that is used to identify vertices and edges
@@ -41,4 +42,9 @@ using DefaultIdType = uint64_t;
 /// undirected graphs
 enum class Directedness { DIRECTED, UNDIRECTED };
 
-} // namespace graph
+template <typename G> using GraphId = typename G::Id;
+
+template <typename G>
+constexpr GraphId<G> INVALID_VERTEX = std::numeric_limits<GraphId<G>>::max();
+
+} // namespace graphxx

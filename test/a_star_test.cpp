@@ -36,7 +36,6 @@
 
 #include <map>
 #include <tuple>
-#include <unordered_map>
 
 namespace a_star_test {
 using namespace graphxx;
@@ -49,7 +48,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
   enum vertices { a, b, c, d, e, f, z };
 
   std::map<std::tuple<unsigned long, unsigned long>, int> weight;
-  std::unordered_map<unsigned long, int> heuristic_weight;
+  std::map<unsigned long, int> heuristic_weight;
 
   g.add_edge(a, b); // 0->1
   g.add_edge(a, c); // 0->2
@@ -75,6 +74,10 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     return weight[{g.source(e), g.target(e)}];
   };
 
+  auto get_heuristic = [&](typename Graph::Id v) {
+    return heuristic_weight[v];
+  };
+
   SECTION("throws on negative edge found") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
@@ -86,7 +89,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
 
     weight[{a, b}] = -1;
 
-    REQUIRE_THROWS(a_star::visit(g, a, z, heuristic_weight, get_weight));
+    REQUIRE_THROWS(a_star::visit(g, a, z, get_heuristic, get_weight));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -101,7 +104,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     weight[{a, c}] = 2;
     weight[{b, f}] = 2;
 
-    auto distances = a_star::visit(g, a, z, heuristic_weight, get_weight);
+    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -119,7 +122,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       }
     }
 
-    auto distances = a_star::visit(g, a, z, heuristic_weight, get_weight);
+    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == a); // a
@@ -159,7 +162,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     weight[{d, d}] = 1;
     weight[{e, c}] = 1;
 
-    auto distances = a_star::visit(g, a, z, heuristic_weight, get_weight);
+    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -177,7 +180,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       }
     }
 
-    auto distances = a_star::visit(g, a, z, heuristic_weight, get_weight);
+    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == a); // a
@@ -198,7 +201,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     }
 
     auto distances =
-        a_star::visit(g, a, g.num_vertices() - 1, heuristic_weight, get_weight);
+        a_star::visit(g, a, g.num_vertices() - 1, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 0);
   }

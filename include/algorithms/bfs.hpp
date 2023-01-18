@@ -62,7 +62,7 @@ template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 /// @param source source vertex
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -74,9 +74,8 @@ DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-DistanceTree<typename G::Id>
-visit(const G &graph, typename G::Id source,
-      const std::function<void(typename G::Id)> &callback);
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source,
+                               const std::function<void(GraphId<G>)> &callback);
 
 } // namespace graphxx::algorithms::bfs
 

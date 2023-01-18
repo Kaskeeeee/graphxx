@@ -50,10 +50,8 @@ template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
           typename Distance>
 DistanceTree<G> visit(const G &graph, Weight weight) {
 
-  using Vertex = typename G::Id;
-
   DistanceTree<G> distance_tree;
-  ClusterMap<Vertex> map;
+  ClusterMap<GraphId<G>> map;
 
   using WeightedEdge = std::tuple<Distance, typename G::Edge>;
   std::priority_queue<WeightedEdge, std::vector<WeightedEdge>,
@@ -61,7 +59,7 @@ DistanceTree<G> visit(const G &graph, Weight weight) {
       queue;
 
   // Queue ordered by ascending edge weight
-  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
       queue.push({weight(edge), edge});
@@ -69,7 +67,7 @@ DistanceTree<G> visit(const G &graph, Weight weight) {
   }
 
   // Initialize every vertex cluster with the vertex Id itself
-  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     map[vertex] = vertex;
   }
 

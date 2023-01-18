@@ -1,5 +1,7 @@
 #include "utils/graph_generator.hpp"
 
+#if 0
+
 #include <chrono>
 #include <random>
 #include <unordered_map>
@@ -96,3 +98,5 @@ unsigned int GraphGenerator::get_seed() {
 }
 
 } // namespace graph
+
+#endif

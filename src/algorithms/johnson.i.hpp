@@ -38,14 +38,12 @@ namespace graphxx::algorithms::johnson {
 
 template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
           typename Distance>
-DistanceTree<typename G::Id, Distance> visit(G &graph, Weight weight) {
+DistanceTree<GraphId<G>, Distance> visit(G &graph, Weight weight) {
 
-  using Vertex = typename G::Id;
-
-  DistanceTree<Vertex, Distance> map;
+  DistanceTree<GraphId<G>, Distance> map;
 
   // New vertex
-  Vertex q = graph.num_vertices();
+  GraphId<G> q = graph.num_vertices();
   graph.add_vertex(q);
 
   WeightMap<G, Distance> weight_map;
@@ -55,7 +53,7 @@ DistanceTree<typename G::Id, Distance> visit(G &graph, Weight weight) {
   };
 
   // Add new edge from q to every other vertex
-  for (Vertex vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     graph.add_edge(q, vertex);
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
@@ -68,7 +66,7 @@ DistanceTree<typename G::Id, Distance> visit(G &graph, Weight weight) {
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
-  for (Vertex vertex = 0; vertex < graph.size(); vertex++) {
+  for (GraphId<G> vertex = 0; vertex < graph.size(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
       weight_map[edge] += bf_tree[graph.source(edge)].distance -
@@ -80,11 +78,11 @@ DistanceTree<typename G::Id, Distance> visit(G &graph, Weight weight) {
   graph.remove_vertex(q);
 
   // Run Dijkstra for every vertex
-  for (Vertex vertex_source = 0; vertex_source < graph.num_vertices();
+  for (GraphId<G> vertex_source = 0; vertex_source < graph.num_vertices();
        vertex_source++) {
     auto d_tree = dijkstra::visit(graph, vertex_source, get_weight);
-    std::vector<Node<Vertex, Distance>> temp;
-    for (Vertex vertex_target = 0; vertex_target < graph.num_vertices();
+    std::vector<Node<GraphId<G>, Distance>> temp;
+    for (GraphId<G> vertex_target = 0; vertex_target < graph.num_vertices();
          vertex_target++) {
       temp.push_back({.distance = d_tree[vertex_target].distance +
                                   bf_tree[vertex_target].distance -

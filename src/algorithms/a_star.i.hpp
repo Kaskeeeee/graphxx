@@ -43,32 +43,29 @@
 
 namespace graphxx::algorithms::a_star {
 
-template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
-          typename Distance>
-PathVector<typename G::Id, Distance>
-visit(const G &graph, typename G::Id source, typename G::Id target,
-      std::unordered_map<typename G::Id, Distance> heuristic_weight,
-      Weight weight) {
-
-  using Vertex = typename G::Id;
+template <concepts::Graph G, std::invocable<GraphId<G>> Heuristic,
+          std::invocable<typename G::Edge> Weight, typename Distance>
+PathVector<GraphId<G>, Distance>
+visit(const G &graph, GraphId<G> source, GraphId<G> target,
+      Heuristic heuristic_weight, Weight weight) {
 
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  PathVector<Vertex, Distance> path_vector;
+  PathVector<GraphId<G>, Distance> path_vector;
 
-  DistanceTree<Vertex, Distance> distance_tree;
+  DistanceTree<GraphId<G>, Distance> distance_tree;
 
-  for (Vertex vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(
         Node{.distance = distance_upperbound, .parent = vertex});
   }
 
-  using WeightedVertex = std::tuple<Distance, Vertex>;
+  using WeightedVertex = std::tuple<Distance, GraphId<G>>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
                       std::greater<WeightedVertex>>
       queue;
 
   distance_tree[source].distance = 0;
-  queue.push({heuristic_weight[source], source});
+  queue.push({heuristic_weight(source), source});
 
   // in this implementation, queue keeps also useless elements
   // this is due to the fact that you can't update order in the queue
@@ -94,10 +91,10 @@ visit(const G &graph, typename G::Id source, typename G::Id target,
 
       Distance alternative_distance = distance_tree[u].distance + edge_weight;
       Distance new_heuristic_distance =
-          alternative_distance + heuristic_weight[v];
+          alternative_distance + heuristic_weight(v);
 
       if (sum_will_overflow(distance_tree[u].distance, edge_weight) ||
-          sum_will_overflow(alternative_distance, heuristic_weight[v])) {
+          sum_will_overflow(alternative_distance, heuristic_weight(v))) {
         continue;
       }
 

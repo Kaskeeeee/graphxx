@@ -67,7 +67,7 @@ template <
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<typename G::Id, Distance> visit(
+DistanceTree<GraphId<G>, Distance> visit(
     G &graph,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 

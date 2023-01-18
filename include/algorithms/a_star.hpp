@@ -73,13 +73,13 @@ using PathVector = std::vector<Node<Id, Distance>>;
 /// @param heuristic_weight heuristic distances for each vertex
 /// @return flatten tree as described for type Tree<WeightType>
 template <
-    concepts::Graph G,
+    concepts::Graph G, std::invocable<GraphId<G>> Heuristic,
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-PathVector<typename G::Id, Distance> visit(
-    const G &graph, typename G::Id source, typename G::Id target,
-    std::unordered_map<typename G::Id, Distance> heuristic_weight,
+PathVector<GraphId<G>, Distance> visit(
+    const G &graph, GraphId<G> source, GraphId<G> target,
+    Heuristic heuristic_weight,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 } // namespace graphxx::algorithms::a_star
 

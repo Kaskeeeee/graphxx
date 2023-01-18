@@ -44,14 +44,14 @@ namespace graphxx::algorithms::dijkstra {
 
 template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
           typename Distance>
-DistanceTree<typename G::Id, Distance>
-visit(const G &graph, typename G::Id source, Weight weight) {
+DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
+                                         Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  DistanceTree<typename G::Id, Distance> distance_tree{
+  DistanceTree<GraphId<G>, Distance> distance_tree{
       graph.num_vertices(),
       Node{.distance = distance_upperbound, .parent = source}};
 
-  using WeightedVertex = std::tuple<Distance, typename G::Id>;
+  using WeightedVertex = std::tuple<Distance, GraphId<G>>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
                       std::greater<WeightedVertex>>
       queue;

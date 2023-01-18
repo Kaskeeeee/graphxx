@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/ford_fulkerson.hpp"
 #include "algorithms_base.hpp"
 #include "base.hpp"
@@ -42,81 +40,93 @@
 
 namespace graphxx::algorithms::ford_fulkerson {
 
-template <concepts::Graph G, concepts::Graph DG, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-BFSTree bfs(const G &graph, const DG &digraph, const Vertex &source,
-            C &&edge_capacity, const FlowMap<WeightType> &edges_flow) {
-  BFSTree tree;
-  for (auto vertex : graph.vertices()) {
-    tree[vertex] = BFSVertex{VertexStatus::READY};
+template <concepts::Graph G, concepts::Graph DG,
+          std::invocable<typename G::Edge> Weight, concepts::Numeric Distance>
+DistanceTree<G, Distance>
+bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
+    Weight edge_capacity,
+    const FlowMap<typename G::Edge, Distance> &edges_flow) {
+
+  DistanceTree<G, Distance> distance_tree;
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(Node{.status = VertexStatus::READY,
+                                 .edge = nullptr,
+                                 .residual_capacity = -1,
+                                 .parent = vertex});
   }
 
-  tree[source].status = VertexStatus::WAITING;
-  tree[source].parent = -1;
+  distance_tree[source].status = VertexStatus::WAITING;
+  distance_tree[source].parent = source;
 
-  std::queue<DefaultIdType> queue;
+  std::queue<GraphId<G>> queue;
   queue.push(source);
 
   while (!queue.empty()) {
-    Vertex vertex_id{queue.front()};
+    Vertex vertex_id = queue.front();
     queue.pop();
 
-    for (Edge out_edge : graph.out_edges(vertex_id)) {
-      if (edge_capacity[out_edge] < 0) {
+    for (auto out_edge : graph[vertex_id]) {
+      if (edge_capacity(out_edge) < 0) {
         throw exceptions::InvariantViolationException(
             "negative edge weight found");
       }
 
-      DefaultIdType adjacent = out_edge.v;
+      GraphId<G> adjacent = graph.target(out_edge);
 
-      WeightType cf;
-      if (digraph.get_edge(out_edge) != INVALID_EDGE) {
-        cf = edge_capacity[out_edge] - edges_flow.at(out_edge);
+      Distance cf;
+
+      if (digraph.source(out_edge) != INVALID_VERTEX<Vertex> &&
+          digraph.target(out_edge) != INVALID_VERTEX<Vertex>) {
+        cf = edge_capacity(out_edge) - edges_flow.at(out_edge);
       } else {
-        cf = edge_capacity[out_edge] + edges_flow.at(out_edge);
+        cf = edge_capacity(out_edge) + edges_flow.at(out_edge);
       }
 
-      if (tree[adjacent].status == VertexStatus::READY && cf > 0) {
-        tree[adjacent].status = VertexStatus::WAITING;
-        tree[adjacent].parent = vertex_id;
-        tree[adjacent].edge = out_edge;
-        tree[adjacent].residual_capacity = cf;
+      if (distance_tree[adjacent].status == VertexStatus::READY && cf > 0) {
+        distance_tree[adjacent].status = VertexStatus::WAITING;
+        distance_tree[adjacent].parent = vertex_id;
+        distance_tree[adjacent].edge = out_edge;
+        distance_tree[adjacent].residual_capacity = cf;
         queue.push(adjacent);
       }
     }
 
-    tree[vertex_id].status = VertexStatus::PROCESSED;
+    distance_tree[vertex_id].status = VertexStatus::PROCESSED;
   }
 
-  return tree;
+  return distance_tree;
 }
 
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType>
-FFpair<WeightType> visit(const G &graph, const Vertex &source,
-                         const Vertex &sink, C &&edges_capacity) {
+template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+          typename Distance>
+FFpair<G, Distance> visit(const G &graph, GraphId<G> &source, GraphId<G> &sink,
+                          Weight weight) {
 
-  FlowMap<WeightType> flow;
+  FlowMap<G, Distance> flow;
 
-  AdjacencyListGraph<Directedness::UNDIRECTED> g{graph};
+  AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED> g{graph};
 
-  for (auto edge : g.edges()) {
-    flow[edge] = 0;
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      flow[edge] = 0;
+    }
   }
 
-  WeightType max_flow = 0;
+  Distance max_flow = 0;
 
-  auto tree = bfs(g, graph, source, edges_capacity, flow);
+  auto tree = bfs(g, graph, source, weight, flow);
 
   // Relax edges |nodes| - 1 times
   while (tree[sink].status == VertexStatus::PROCESSED) {
-    WeightType path_flow = std::numeric_limits<WeightType>::max();
-    for (int v = sink; v != source; v = tree[v].parent) {
+    Distance path_flow = std::numeric_limits<Distance>::max();
+    for (GraphId<G> v = sink; v != source; v = tree[v].parent) {
       path_flow = std::min(path_flow, tree[v].residual_capacity);
     }
 
-    for (int v = sink; v != source; v = tree[v].parent) {
-      if (graph.get_edge(tree[v].edge) != INVALID_EDGE) {
+    for (GraphId<G> v = sink; v != source; v = tree[v].parent) {
+      if (graph.source(tree[v].edge) != INVALID_VERTEX<Vertex> &&
+          graph.target(tree[v].edge) != INVALID_VERTEX<Vertex>) {
         flow[tree[v].edge] += path_flow;
       } else {
         flow[tree[v].edge] -= path_flow;
@@ -126,12 +136,10 @@ FFpair<WeightType> visit(const G &graph, const Vertex &source,
     // Adding the path flows
     max_flow += path_flow;
 
-    tree = bfs(g, graph, source, edges_capacity, flow);
+    tree = bfs(g, graph, source, weight, flow);
   }
 
   return FFpair{flow, max_flow};
 }
 
 } // namespace graphxx::algorithms::ford_fulkerson
-
-#endif

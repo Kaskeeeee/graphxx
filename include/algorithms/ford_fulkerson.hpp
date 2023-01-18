@@ -37,29 +37,30 @@
 #include "utils.hpp"
 
 #include <functional>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 namespace graphxx::algorithms::ford_fulkerson {
 
-template <concepts::Identifier Id> struct Node {
+template <concepts::Graph G, concepts::Numeric Distance> struct Node {
   VertexStatus status;
-  int edge = -1;
-  int residual_capacity = -1;
-  Id parent;
+  typename G::Edge edge;
+  Distance residual_capacity;
+  GraphId<G> parent;
 };
 
-template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
+template <concepts::Graph G, concepts::Numeric Distance>
+using DistanceTree = std::vector<Node<G, Distance>>;
 
 /// @brief
 /// @tparam WeightType
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using FlowMap = std::unordered_map<Id, Distance>;
+template <concepts::Graph G, concepts::Numeric Distance>
+using FlowMap = std::map<typename G::Edge, Distance>;
 
 /// @brief
 /// @tparam WeightType
-template <concepts::Identifier Id, concepts::Numeric Distance> struct FFpair {
-  FlowMap<Id, Distance> flow;
+template <concepts::Graph G, concepts::Numeric Distance> struct FFpair {
+  FlowMap<G, Distance> flow;
   Distance max_flow;
 };
 
@@ -74,12 +75,12 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct FFpair {
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
 template <
-    concepts::Graph G, concepts::Numeric WeightType,
+    concepts::Graph G,
     std::invocable<typename G::Edge> Weight = std::function<
         std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
     typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-FFpair<typename G::Id, WeightType> visit(
-    const G &graph, typename G::Id source, typename G::Id sink,
+FFpair<G, Distance> visit(
+    const G &graph, GraphId<G> source, GraphId<G> sink,
     Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::ford_fulkerson

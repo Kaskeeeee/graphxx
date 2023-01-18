@@ -42,21 +42,19 @@
 namespace graphxx::algorithms::bfs {
 
 template <concepts::Graph G>
-DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source) {
-  return visit(graph, source, [](typename G::Id) {});
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source) {
+  return visit(graph, source, [](GraphId<G>) {});
 }
 
 template <concepts::Graph G>
-DistanceTree<typename G::Id>
-visit(const G &graph, typename G::Id source,
-      const std::function<void(typename G::Id)> &callback) {
+DistanceTree<GraphId<G>>
+visit(const G &graph, GraphId<G> source,
+      const std::function<void(GraphId<G>)> &callback) {
 
-  using Vertex = typename G::Id;
-
-  DistanceTree<Vertex> distance_tree;
+  DistanceTree<GraphId<G>> distance_tree;
   constexpr auto distance_upperbound = std::numeric_limits<size_t>::max();
 
-  for (Vertex vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(Node{.status = VertexStatus::READY,
                                  .distance = distance_upperbound,
                                  .parent = vertex});
@@ -65,17 +63,17 @@ visit(const G &graph, typename G::Id source,
   distance_tree[source].status = VertexStatus::WAITING;
   distance_tree[source].distance = 0;
 
-  std::queue<Vertex> queue;
+  std::queue<GraphId<G>> queue;
   queue.push(source);
 
   while (!queue.empty()) {
-    Vertex vertex_id = queue.front();
+    GraphId<G> vertex_id = queue.front();
     queue.pop();
 
     callback(vertex_id);
 
     for (auto edge : graph[vertex_id]) {
-      Vertex adjacent = graph.target(edge);
+      GraphId<G> adjacent = graph.target(edge);
 
       if (distance_tree[adjacent].status == VertexStatus::READY) {
         distance_tree[adjacent].status = VertexStatus::WAITING;

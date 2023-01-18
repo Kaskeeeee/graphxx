@@ -41,8 +41,7 @@
 namespace graphxx::algorithms::dfs {
 
 /// @brief Structure to store information about graph vertices during the visit
-template <concepts::Identifier Id>
-struct Node {
+template <concepts::Identifier Id> struct Node {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Id of the predecessor Vertex in DFS Tree
@@ -67,7 +66,7 @@ template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 /// @param source vertex
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -81,9 +80,8 @@ DistanceTree<typename G::Id> visit(const G &graph, typename G::Id source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-DistanceTree<typename G::Id>
-visit(const G &graph, typename G::Id source,
-      const std::function<void(typename G::Id)> &callback);
+DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source,
+                               const std::function<void(GraphId<G>)> &callback);
 
 } // namespace graphxx::algorithms::dfs
 
