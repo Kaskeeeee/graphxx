@@ -52,21 +52,27 @@ DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
 
   // Relax edges |nodes| - 1 times
   for (GraphId<G> i = 0; i < graph.num_vertices() - 1; ++i) {
+    bool at_least_one_edge_relaxed = false;
     for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
       auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        auto edge_source = graph.source(edge);
+        auto edge_weight = weight(edge);
+        auto source_distance = distance_tree[graph.source(edge)].distance;
+        auto target_distance = distance_tree[graph.target(edge)].distance;
         auto edge_target = graph.target(edge);
 
-        if (!sum_will_overflow(distance_tree[edge_source].distance,
-                               weight(edge)) &&
-            distance_tree[edge_source].distance + weight(edge) <
-                distance_tree[edge_target].distance) {
-          distance_tree[edge_target].distance =
-              distance_tree[edge_source].distance + weight(edge);
-          distance_tree[edge_target].parent = edge_source;
+        if (!sum_will_overflow(source_distance, edge_weight) &&
+            source_distance != distance_upperbound &&
+            source_distance + edge_weight < target_distance) {
+          distance_tree[edge_target].distance = source_distance + edge_weight;
+          distance_tree[edge_target].parent = graph.source(edge);
+          at_least_one_edge_relaxed = true;
         }
       }
+    }
+    // Exit if none of the edges has been relaxed
+    if (!at_least_one_edge_relaxed) {
+      break;
     }
   }
 
