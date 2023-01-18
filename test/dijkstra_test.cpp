@@ -114,7 +114,7 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
     auto result = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(result[a].parent == a);
+    REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
     REQUIRE(result[c].parent == a);
     REQUIRE(result[d].parent == c);
@@ -169,7 +169,7 @@ TEST_CASE("Dijkstra shortest paths", "[dijsktra]") {
 
     auto result = dijkstra::visit(g, a, get_weight);
 
-    REQUIRE(result[a].parent == a);
+    REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
     REQUIRE(result[c].parent == a);
     REQUIRE(result[d].parent == c);

@@ -104,10 +104,10 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
 
     auto tree = johnson::visit(g, get_weight);
 
-    REQUIRE(tree[a][a].parent == a);
-    REQUIRE(tree[b][b].parent == b);
-    REQUIRE(tree[c][c].parent == c);
-    REQUIRE(tree[d][d].parent == d);
+    REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);
@@ -157,10 +157,10 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
 
     auto tree = johnson::visit(g, get_weight);
 
-    REQUIRE(tree[a][a].parent == a);
-    REQUIRE(tree[b][b].parent == b);
-    REQUIRE(tree[c][c].parent == c);
-    REQUIRE(tree[d][d].parent == d);
+    REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);
@@ -226,10 +226,10 @@ TEST_CASE("Johnson shortest paths", "[johnson]") {
 
     auto tree = johnson::visit(g, get_weight);
 
-    REQUIRE(tree[a][a].parent == a);
-    REQUIRE(tree[b][b].parent == b);
-    REQUIRE(tree[c][c].parent == c);
-    REQUIRE(tree[d][d].parent == d);
+    REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(tree[a][c].parent == a);
     REQUIRE(tree[b][a].parent == b);

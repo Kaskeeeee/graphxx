@@ -104,10 +104,10 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
 
     auto distances = floyd_warshall::visit(g, get_weight);
 
-    REQUIRE(distances[a][a].parent == a);
-    REQUIRE(distances[b][b].parent == b);
-    REQUIRE(distances[c][c].parent == c);
-    REQUIRE(distances[d][d].parent == d);
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(distances[a][c].parent == a);
     REQUIRE(distances[b][a].parent == b);
@@ -158,10 +158,10 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
 
     auto distances = floyd_warshall::visit(g, get_weight);
 
-    REQUIRE(distances[a][a].parent == a);
-    REQUIRE(distances[b][b].parent == b);
-    REQUIRE(distances[c][c].parent == c);
-    REQUIRE(distances[d][d].parent == d);
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(distances[a][c].parent == a);
     REQUIRE(distances[b][a].parent == b);
@@ -238,10 +238,10 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
 
     auto distances = floyd_warshall::visit(g, get_weight);
 
-    REQUIRE(distances[a][a].parent == a);
-    REQUIRE(distances[b][b].parent == b);
-    REQUIRE(distances[c][c].parent == c);
-    REQUIRE(distances[d][d].parent == d);
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
 
     REQUIRE(distances[a][c].parent == a);
     REQUIRE(distances[b][a].parent == b);

@@ -46,7 +46,7 @@ DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   DistanceTree<GraphId<G>, Distance> distance_tree{
       graph.num_vertices(),
-      Node{.distance = distance_upperbound, .parent = source}};
+      Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>}};
 
   distance_tree[source].distance = 0;
 

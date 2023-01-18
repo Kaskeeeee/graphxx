@@ -107,7 +107,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
 
     auto distances = bellman_ford::visit(g, a, get_weight);
 
-    REQUIRE(distances[a].parent == a);
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
     REQUIRE(distances[c].parent == b);
     REQUIRE(distances[d].parent == a);
@@ -145,7 +145,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
 
     auto distances = bellman_ford::visit(g, a, get_weight);
 
-    REQUIRE(distances[a].parent == a);
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
     REQUIRE(distances[c].parent == e);
     REQUIRE(distances[d].parent == a);

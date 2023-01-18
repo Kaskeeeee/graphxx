@@ -52,7 +52,7 @@ bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
     distance_tree.push_back(Node{.status = VertexStatus::READY,
                                  .edge = nullptr,
                                  .residual_capacity = -1,
-                                 .parent = vertex});
+                                 .parent = INVALID_VERTEX<G>});
   }
 
   distance_tree[source].status = VertexStatus::WAITING;
@@ -75,8 +75,8 @@ bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
 
       Distance cf;
 
-      if (digraph.source(out_edge) != INVALID_VERTEX<Vertex> &&
-          digraph.target(out_edge) != INVALID_VERTEX<Vertex>) {
+      if (digraph.source(out_edge) != INVALID_VERTEX<G> &&
+          digraph.target(out_edge) != INVALID_VERTEX<G>) {
         cf = edge_capacity(out_edge) - edges_flow.at(out_edge);
       } else {
         cf = edge_capacity(out_edge) + edges_flow.at(out_edge);
@@ -125,8 +125,8 @@ FFpair<G, Distance> visit(const G &graph, GraphId<G> &source, GraphId<G> &sink,
     }
 
     for (GraphId<G> v = sink; v != source; v = tree[v].parent) {
-      if (graph.source(tree[v].edge) != INVALID_VERTEX<Vertex> &&
-          graph.target(tree[v].edge) != INVALID_VERTEX<Vertex>) {
+      if (graph.source(tree[v].edge) != INVALID_VERTEX<G> &&
+          graph.target(tree[v].edge) != INVALID_VERTEX<G>) {
         flow[tree[v].edge] += path_flow;
       } else {
         flow[tree[v].edge] -= path_flow;

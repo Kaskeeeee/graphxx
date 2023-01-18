@@ -49,7 +49,7 @@ DistanceTree<GraphId<G>, Distance> visit(const G &graph, Weight weight) {
   for (GraphId<G> i = 0; i < graph.num_vertices(); i++) {
     for (GraphId<G> j = 0; j < graph.num_vertices(); j++) {
       map[i][j].distance = distance_upperbound;
-      map[i][j].parent = i;
+      map[i][j].parent = INVALID_VERTEX<G>;
     }
   }
 
@@ -65,7 +65,7 @@ DistanceTree<GraphId<G>, Distance> visit(const G &graph, Weight weight) {
         for (GraphId<G> w = 0; w < graph.num_vertices(); w++) {
           if (v == w) {
             map[v][w].distance = 0;
-            map[v][w].parent = v;
+            map[v][w].parent = INVALID_VERTEX<G>;
             continue;
           }
           auto &v_to_u = map[v][u];

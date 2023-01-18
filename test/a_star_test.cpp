@@ -125,10 +125,10 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
-    REQUIRE(distances[0].parent == a); // a
-    REQUIRE(distances[1].parent == a); // b
-    REQUIRE(distances[2].parent == b); // e
-    REQUIRE(distances[3].parent == e); // z
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
   }
 
   g.add_edge(a, a); // 0->0
@@ -183,10 +183,10 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
 
     REQUIRE(distances.size() == 4);
-    REQUIRE(distances[0].parent == a); // a
-    REQUIRE(distances[1].parent == a); // b
-    REQUIRE(distances[2].parent == b); // e
-    REQUIRE(distances[3].parent == e); // z
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
   }
 
   SECTION("algorithm failure") {

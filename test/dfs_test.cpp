@@ -72,7 +72,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   SECTION("check if all parent node are correct") {
     auto tree = graphxx::algorithms::dfs::visit(g, a);
 
-    REQUIRE(tree[a].parent == a);
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
     REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);
@@ -106,7 +106,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   SECTION("check if all parent node are correct, now with cycles") {
     auto tree = graphxx::algorithms::dfs::visit(g, a);
 
-    REQUIRE(tree[a].parent == a);
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
     REQUIRE(tree[c].parent == b);
     REQUIRE(tree[d].parent == a);

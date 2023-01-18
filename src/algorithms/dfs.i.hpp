@@ -52,7 +52,7 @@ visit(const G &graph, GraphId<G> source,
 
   for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(Node{.status = VertexStatus::READY,
-                                 .parent = vertex,
+                                 .parent = INVALID_VERTEX<G>,
                                  .discovery_time = -1,
                                  .finishing_time = -1});
   }

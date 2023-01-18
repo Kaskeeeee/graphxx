@@ -56,7 +56,7 @@ visit(const G &graph, GraphId<G> source, GraphId<G> target,
 
   for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(
-        Node{.distance = distance_upperbound, .parent = vertex});
+        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
   }
 
   using WeightedVertex = std::tuple<Distance, GraphId<G>>;
