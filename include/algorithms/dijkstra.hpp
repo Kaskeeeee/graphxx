@@ -50,14 +50,6 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
   Id parent;
 };
 
-/// @brief flatten Tree that collects all Node structs containing information
-///        based on the source vertex
-///        i.e. for each vertex its distance from the source and the previous
-///        node in the shortest path
-/// @tparam WeightType
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceTree = std::vector<Node<Id, Distance>>;
-
 /// @brief Implementation of dijkstra algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
@@ -69,12 +61,12 @@ using DistanceTree = std::vector<Node<Id, Distance>>;
 /// @return flatten tree as described for type Tree<WeightType>
 template <
     concepts::Graph G,
-    std::invocable<typename G::Edge> Weight = std::function<
-        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
-    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<GraphId<G>, Distance> visit(
-    const G &graph, GraphId<G> source,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    std::invocable<Edge<G>> Weight = std::function<
+        std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+    typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+std::vector<Node<Vertex<G>, Distance>> visit(
+    const G &graph, Vertex<G> source,
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::dijkstra
 

@@ -57,11 +57,16 @@ public:
   AdjacencyListGraph();
   AdjacencyListGraph(const AdjacencyListGraph &graph);
 
+  void add_vertex();
   void add_vertex(Id);
   void remove_vertex(Id);
 
   void add_edge(Id, Id, Attributes = {});
   void remove_edge(Id, Id);
+
+  void set_attributes(Id, Id, Attributes);
+  Attributes get_attributes(Id, Id);
+  size_t num_attributes() const;
 
   size_t num_vertices() const;
   size_t num_edges() const;

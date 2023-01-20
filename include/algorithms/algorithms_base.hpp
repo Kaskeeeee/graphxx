@@ -42,16 +42,4 @@ enum class VertexStatus {
   PROCESSED,
 };
 
-// template <concepts::Identifier Id> struct StructWithParent {
-//   Id parent;
-// };
-//
-// template <concepts::Numeric Distance> struct StructWithDistance {
-//   Distance distance;
-// };
-//
-// template <concepts::Identifier Id, concepts::Numeric Distance>
-// struct CommonNode : public StructWithParent<Id>,
-//                     public StructWithDistance<Distance> {};
-
 } // namespace graphxx::algorithms

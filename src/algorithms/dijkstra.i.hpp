@@ -42,16 +42,18 @@
 
 namespace graphxx::algorithms::dijkstra {
 
-template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+template <concepts::Graph G, std::invocable<Edge<G>> Weight,
           typename Distance>
-DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
-                                         Weight weight) {
-  constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  DistanceTree<GraphId<G>, Distance> distance_tree{
-      graph.num_vertices(),
-      Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>}};
+std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
+                                             Weight weight) {
 
-  using WeightedVertex = std::tuple<Distance, GraphId<G>>;
+  using NodeType = Node<Vertex<G>, Distance>;
+  constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
+  std::vector<NodeType> distance_tree{
+      graph.num_vertices(),
+      NodeType{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>}};
+
+  using WeightedVertex = std::tuple<Distance, Vertex<G>>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
                       std::greater<WeightedVertex>>
       queue;

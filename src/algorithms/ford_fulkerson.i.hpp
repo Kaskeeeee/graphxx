@@ -40,15 +40,14 @@
 
 namespace graphxx::algorithms::ford_fulkerson {
 
-template <concepts::Graph G, concepts::Graph DG,
-          std::invocable<typename G::Edge> Weight, concepts::Numeric Distance>
-DistanceTree<G, Distance>
-bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
-    Weight edge_capacity,
-    const FlowMap<typename G::Edge, Distance> &edges_flow) {
+template <concepts::Graph G, concepts::Graph DG, std::invocable<Edge<G>> Weight,
+          concepts::Numeric Distance>
+DistanceTree<G, Distance> bfs(const G &graph, const DG &digraph,
+                              const Vertex<G> &source, Weight edge_capacity,
+                              const FlowMap<Edge<G>, Distance> &edges_flow) {
 
   DistanceTree<G, Distance> distance_tree;
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(Node{.status = VertexStatus::READY,
                                  .edge = nullptr,
                                  .residual_capacity = -1,
@@ -58,7 +57,7 @@ bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
   distance_tree[source].status = VertexStatus::WAITING;
   distance_tree[source].parent = source;
 
-  std::queue<GraphId<G>> queue;
+  std::queue<Vertex<G>> queue;
   queue.push(source);
 
   while (!queue.empty()) {
@@ -71,7 +70,7 @@ bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
             "negative edge weight found");
       }
 
-      GraphId<G> adjacent = graph.target(out_edge);
+      Vertex<G> adjacent = graph.target(out_edge);
 
       Distance cf;
 
@@ -97,16 +96,15 @@ bfs(const G &graph, const DG &digraph, const GraphId<G> &source,
   return distance_tree;
 }
 
-template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
-          typename Distance>
-FFpair<G, Distance> visit(const G &graph, GraphId<G> &source, GraphId<G> &sink,
+template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
+FFpair<G, Distance> visit(const G &graph, Vertex<G> &source, Vertex<G> &sink,
                           Weight weight) {
 
   FlowMap<G, Distance> flow;
 
   AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED> g{graph};
 
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
       flow[edge] = 0;
@@ -120,11 +118,11 @@ FFpair<G, Distance> visit(const G &graph, GraphId<G> &source, GraphId<G> &sink,
   // Relax edges |nodes| - 1 times
   while (tree[sink].status == VertexStatus::PROCESSED) {
     Distance path_flow = std::numeric_limits<Distance>::max();
-    for (GraphId<G> v = sink; v != source; v = tree[v].parent) {
+    for (Vertex<G> v = sink; v != source; v = tree[v].parent) {
       path_flow = std::min(path_flow, tree[v].residual_capacity);
     }
 
-    for (GraphId<G> v = sink; v != source; v = tree[v].parent) {
+    for (Vertex<G> v = sink; v != source; v = tree[v].parent) {
       if (graph.source(tree[v].edge) != INVALID_VERTEX<G> &&
           graph.target(tree[v].edge) != INVALID_VERTEX<G>) {
         flow[tree[v].edge] += path_flow;

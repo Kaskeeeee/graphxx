@@ -41,16 +41,6 @@
 
 namespace graphxx::algorithms::kruskal {
 
-/// @brief flatten Tree that will collect the Edge ids of the minimum spanning
-///        tree
-template <concepts::Graph G> using DistanceTree = std::vector<typename G::Edge>;
-
-/// @brief Map that divides the vertices into "clusters" and allows us to check
-///        if two vertices belong to the same cluster or not and hence decide
-///        whether adding an edge creates a cycle
-template <concepts::Identifier Id>
-using ClusterMap = std::unordered_map<Id, Id>;
-
 /// @brief Implementation of kruskal algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
@@ -61,12 +51,12 @@ using ClusterMap = std::unordered_map<Id, Id>;
 /// @return flatten tree as described for type Tree
 template <
     concepts::Graph G,
-    std::invocable<typename G::Edge> Weight = std::function<
-        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
-    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<G> visit(
+    std::invocable<Edge<G>> Weight = std::function<
+        std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+    typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+std::vector<Edge<G>> visit(
     const G &graph,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::kruskal
 

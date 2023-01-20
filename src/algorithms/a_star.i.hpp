@@ -43,23 +43,23 @@
 
 namespace graphxx::algorithms::a_star {
 
-template <concepts::Graph G, std::invocable<GraphId<G>> Heuristic,
-          std::invocable<typename G::Edge> Weight, typename Distance>
-PathVector<GraphId<G>, Distance>
-visit(const G &graph, GraphId<G> source, GraphId<G> target,
+template <concepts::Graph G, std::invocable<Vertex<G>> Heuristic,
+          std::invocable<Edge<G>> Weight, typename Distance>
+std::vector<Node<Vertex<G>, Distance>>
+visit(const G &graph, Vertex<G> source, Vertex<G> target,
       Heuristic heuristic_weight, Weight weight) {
 
+  using NodeType = Node<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  PathVector<GraphId<G>, Distance> path_vector;
+  std::vector<NodeType> path_vector;
+  std::vector<NodeType> distance_tree;
 
-  DistanceTree<GraphId<G>, Distance> distance_tree;
-
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
     distance_tree.push_back(
-        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
+        NodeType{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
   }
 
-  using WeightedVertex = std::tuple<Distance, GraphId<G>>;
+  using WeightedVertex = std::tuple<Distance, Vertex<G>>;
   std::priority_queue<WeightedVertex, std::vector<WeightedVertex>,
                       std::greater<WeightedVertex>>
       queue;
@@ -67,11 +67,7 @@ visit(const G &graph, GraphId<G> source, GraphId<G> target,
   distance_tree[source].distance = 0;
   queue.push({heuristic_weight(source), source});
 
-  // in this implementation, queue keeps also useless elements
-  // this is due to the fact that you can't update order in the queue
-  // without pushing a new element
   while (!queue.empty()) {
-    // extract node and distance of min distance node
     auto first_element = queue.top();
     auto u = std::get<1>(first_element);
     queue.pop();

@@ -42,9 +42,11 @@ using DefaultIdType = uint64_t;
 /// undirected graphs
 enum class Directedness { DIRECTED, UNDIRECTED };
 
-template <typename G> using GraphId = typename G::Id;
+template <typename G> using Vertex = typename G::Id;
+
+template <typename G> using Edge = typename G::Edge;
 
 template <typename G>
-constexpr GraphId<G> INVALID_VERTEX = std::numeric_limits<GraphId<G>>::max();
+constexpr Vertex<G> INVALID_VERTEX = std::numeric_limits<Vertex<G>>::max();
 
 } // namespace graphxx

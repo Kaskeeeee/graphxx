@@ -29,8 +29,6 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "catch.hpp"
 #include "list_graph.hpp"
 
@@ -40,106 +38,99 @@
 namespace digraph_test {
 
 using namespace graphxx;
+using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
 
 TEST_CASE("digraph is built correctly", "[digraph]") {
-  AdjacencyListGraph<Directedness::DIRECTED> g;
+  Graph g;
 
   SECTION("empty graph has no vertices or edges") {
-    auto vertices = g.vertices();
-    REQUIRE(vertices.empty());
-
-    auto edges = g.edges();
-    // REQUIRE(edges.empty());
+    REQUIRE(g.num_vertices() == 0);
+    REQUIRE(g.num_edges() == 0);
   }
 
   SECTION("vertices can be inserted and removed") {
-    Vertex u = g.add_vertex();
-    Vertex v = g.add_vertex();
-    Vertex z = g.add_vertex();
-    REQUIRE_FALSE(g.vertices().empty());
-    for (Vertex vertex : g.vertices())
-      REQUIRE((vertex.id == u.id || vertex.id == v.id || vertex.id == z.id));
+    g.add_vertex();
+    g.add_vertex();
+    g.add_vertex();
+    REQUIRE(g.num_vertices() == 3);
 
-    g.remove_vertex(v);
+    /* g.remove_vertex(0);
     REQUIRE_FALSE(g.vertices().empty());
     for (Vertex vertex : g.vertices())
       REQUIRE((vertex.id == u.id || vertex.id == z.id));
 
     g.remove_vertex(u);
     g.remove_vertex(z);
-    REQUIRE(g.vertices().empty());
-
-    REQUIRE_THROWS(g.remove_vertex(v));
+    REQUIRE(g.vertices().empty()); */
   }
 
   SECTION("edges can be inserted and removed") {
-    Vertex u = g.add_vertex();
-    Vertex v = g.add_vertex();
-    Edge e1 = g.add_edge(u, v);
-    Edge e2 = g.add_edge(u, u);
-    // REQUIRE_FALSE(g.edges().empty());
+    g.add_edge(0, 1);
+    g.add_edge(1, 1);
+    REQUIRE(g.num_edges() == 2);
 
-    // Edge e3 = g.add_edge(v, u);
-    // Edge e4 = g.add_edge(u, v);
-
-    // g.remove_edge(e1);
-    // g.remove_edge(e2);
-    // g.remove_edge(e3);
-    // g.remove_edge(e4);
-    // REQUIRE(g.edges().empty());
-
-    // REQUIRE_THROWS(g.remove_edge(e4));
+    g.remove_edge(0, 1);
+    g.remove_edge(1, 1);
+    REQUIRE(g.num_edges() == 0);
   }
 }
 
 TEST_CASE("digraph manages vertices and edges correctly", "[digraph]") {
-  AdjacencyListGraph<Directedness::DIRECTED> g;
+  Graph g;
 
   SECTION("removing a vertex will remove also the connected edges") {
-    Vertex u = g.add_vertex();
-    Vertex v = g.add_vertex();
-    g.add_edge(u, v);
-    // REQUIRE_FALSE(g.edges().empty());
-    // g.remove_vertex(u);
-    // REQUIRE(g.edges().empty());
+    g.add_vertex();
+    g.add_vertex();
+    g.add_edge(0, 1);
+
+    g.remove_vertex(1);
+    REQUIRE(g.num_edges() == 0);
   }
 
-  SECTION("the outgoing edges are calculated correctly") {
-    Vertex u = g.add_vertex();
-    Vertex v = g.add_vertex();
-    Vertex z = g.add_vertex();
-    g.add_edge(u, v);
-    Edge e2 = g.add_edge(v, v);
-    Edge e3 = g.add_edge(v, z);
+  SECTION("the outgoing edges are returned correctly") {
+    g.add_vertex();
+    g.add_vertex();
+    g.add_vertex();
+    g.add_edge(0, 1);
+    g.add_edge(1, 1);
+    g.add_edge(1, 2);
 
-    // REQUIRE_FALSE(g.out_edges(u).empty());
-    // REQUIRE_FALSE(g.out_edges(v).empty());
-    // REQUIRE(g.out_edges(z).empty());
+    REQUIRE(g[0].size() == 1);
+    REQUIRE(std::get<1>(*g[0].begin()) == 1);
 
-    // std::vector<Edge> out_edges{g.out_edges(v).begin(),
-    // g.out_edges(v).end()}; std::sort(out_edges.begin(), out_edges.end());
+    REQUIRE(g[1].size() == 2);
+    REQUIRE(std::get<1>(*(++g[0].begin())) == 1);
+    REQUIRE(std::get<1>(*(++g[1].begin())) == 2);
+  }
+}
 
-    // REQUIRE(out_edges[0] == e2.id);
-    // REQUIRE(out_edges[1] == e3.id);
+TEST_CASE("digraph helper methods", "[digraph]") {
+  Graph g;
+
+  SECTION("source and target getters") {
+    g.add_edge(0, 1);
+    REQUIRE(g.source(*g[0].begin()) == 0);
+    REQUIRE(g.target(*g[0].begin()) == 1);
   }
 
-  SECTION("the incoming edges are calculated correctly") {
-    Vertex u = g.add_vertex();
-    Vertex v = g.add_vertex();
-    Edge e1 = g.add_edge(u, v);
-    Edge e2 = g.add_edge(v, v);
+  SECTION("num vertices and num edges") {
+    REQUIRE(g.num_vertices() == 0);
+    REQUIRE(g.num_edges() == 0);
 
-    // REQUIRE(g.in_edges(u).empty());
-    // REQUIRE_FALSE(g.in_edges(v).empty());
+    for (int i = 0; i < 100; i++) {
+      g.add_vertex(i);
+    }
 
-    // std::vector<Edge> in_edges{g.in_edges(v).begin(), g.in_edges(v).end()};
-    // std::sort(in_edges.begin(), in_edges.end());
+    REQUIRE(g.num_vertices() == 100);
+    REQUIRE(g.num_edges() == 0);
 
-    // REQUIRE(in_edges[0] == e1.id);
-    // REQUIRE(in_edges[1] == e2.id);
+    for (int i = 0; i < 100; i++) {
+      g.add_edge(i, i);
+    }
+
+    REQUIRE(g.num_vertices() == 100);
+    REQUIRE(g.num_edges() == 100);
   }
 }
 
 } // namespace digraph_test
-
-#endif

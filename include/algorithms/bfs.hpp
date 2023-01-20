@@ -50,10 +50,6 @@ template <concepts::Identifier Id> struct Node {
   Id parent;
 };
 
-/// @brief flatten Tree that collects all BFSVertex structs generated during the
-///        visit
-template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
-
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
 ///        visiting vertices that are further away.
@@ -62,7 +58,7 @@ template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 /// @param source source vertex
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
+std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -74,8 +70,9 @@ DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source,
-                               const std::function<void(GraphId<G>)> &callback);
+std::vector<Node<Vertex<G>>>
+visit(const G &graph, Vertex<G> source,
+      const std::function<void(Vertex<G>)> &callback);
 
 } // namespace graphxx::algorithms::bfs
 

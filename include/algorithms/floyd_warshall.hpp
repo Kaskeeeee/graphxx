@@ -50,7 +50,7 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
 };
 
 template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceTree = std::map<Id, std::map<Id, Node<Id, Distance>>>;
+using DistanceMatrix = std::vector<std::vector<Node<Id, Distance>>>;
 
 /// @brief Implementantation of Floyd Warhsall algorithm for multi source
 ///        shortest paths
@@ -60,14 +60,13 @@ using DistanceTree = std::map<Id, std::map<Id, Node<Id, Distance>>>;
 /// @param graph input graph
 /// @param weight edges weights
 /// @return a map of maps containing all shortest paths
-template <
-    concepts::Graph G,
-    std::invocable<typename G::Edge> Weight = std::function<
-        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
-    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<GraphId<G>, Distance> visit(
+template <concepts::Graph G,
+          std::invocable<Edge<G>> Weight =
+              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+DistanceMatrix<Vertex<G>, Distance> visit(
     const G &graph,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::floyd_warshall
 

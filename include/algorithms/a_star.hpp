@@ -51,17 +51,6 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
   Id parent;
 };
 
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceTree = std::vector<Node<Id, Distance>>;
-
-/// @brief Flatten Tree that collects all Node structs containing information
-///        based on the source vertex
-///        i.e. for each vertex its distance and the heuristic one from
-///        respectively the source and the previous node in the shortest path
-/// @tparam WeightType numeric weight
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using PathVector = std::vector<Node<Id, Distance>>;
-
 /// @brief Implementation of a_star algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
@@ -72,15 +61,14 @@ using PathVector = std::vector<Node<Id, Distance>>;
 /// @param weight edges weights
 /// @param heuristic_weight heuristic distances for each vertex
 /// @return flatten tree as described for type Tree<WeightType>
-template <
-    concepts::Graph G, std::invocable<GraphId<G>> Heuristic,
-    std::invocable<typename G::Edge> Weight = std::function<
-        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
-    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-PathVector<GraphId<G>, Distance> visit(
-    const G &graph, GraphId<G> source, GraphId<G> target,
+template <concepts::Graph G, std::invocable<Vertex<G>> Heuristic,
+          std::invocable<Edge<G>> Weight =
+              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+std::vector<Node<Vertex<G>, Distance>> visit(
+    const G &graph, Vertex<G> source, Vertex<G> target,
     Heuristic heuristic_weight,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 } // namespace graphxx::algorithms::a_star
 
 #include "algorithms/a_star.i.hpp"

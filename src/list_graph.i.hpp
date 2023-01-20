@@ -56,6 +56,11 @@ AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex() {
+  Base::emplace_back();
+};
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex(Id id) {
   for (auto i = Base::size(); i <= id; ++i) {
     Base::emplace_back();
@@ -89,23 +94,46 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Id id) {
   }
 
   for (size_t i = 0; i < Base::size(); i++) {
-    std::ranges::remove_if(Base::at(i),
-                           [&](Edge edge) { return target(edge) == id; });
+    auto &inner = Base::operator[](i);
+    auto [start, end] = std::ranges::remove_if(
+        inner, [&](auto edge) { return target(edge) == id; });
+    inner.erase(start, end);
   }
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Id u, Id v) {
   if (u < Base::size() && v < Base::size()) {
-    std::ranges::remove_if(Base::at(u),
-                           [&](Edge &&edge) { return target(edge) == v; });
+    auto &inner = Base::operator[](u);
+    auto [start, end] = std::ranges::remove_if(
+        inner, [&](auto &&edge) { return target(edge) == v; });
+    inner.erase(start, end);
 
     if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-      std::ranges::remove_if(Base::at(v),
-                             [&](Edge &&edge) { return target(edge) == u; });
+      auto &other_inner = Base::operator[](v);
+      auto [other_start, other_end] = std::ranges::remove_if(
+          other_inner, [&](auto &&edge) { return target(edge) == u; });
+      other_inner.erase(other_start, other_end);
     }
   }
 };
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
+    Id u, Id v, Attributes attrs) {
+  if (u < Base::size() && v < Base::size()) {
+    auto it = std::ranges::find(Base::operator[](u),
+                                [&](auto &&edge) { return target(edge) == v; });
+
+    for (size_t i = 2; i < sizeof...(AttributesType); i++) {
+    }
+  }
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+size_t AdjacencyListGraph<Id, D, AttributesType...>::num_attributes() const {
+  return sizeof...(AttributesType);
+}
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge edge) const {

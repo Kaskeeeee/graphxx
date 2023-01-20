@@ -57,11 +57,15 @@ public:
   AdjacencyMatrixGraph();
   AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
 
+  void add_vertex();
   void add_vertex(Id);
   void remove_vertex(Id);
 
   void add_edge(Id, Id, Attributes = {});
   void remove_edge(Id, Id);
+
+  void set_attributes(Id, Id, Attributes);
+  void get_attributes(Id, Id) const;
 
   Id source(Edge) const;
   Id target(Edge) const;

@@ -58,10 +58,14 @@ template <typename G>
 concept HasGraphBasicMethods =
     requires(G g, typename G::Id id, typename G::Attributes attributes,
              typename G::Edge edge) {
+      g.add_vertex();
       g.add_vertex(id);
       g.add_edge(id, id, attributes);
       g.remove_vertex(id);
       g.remove_edge(id, id);
+      //  g.set_attributes(id, id, attributes);
+      //  { g.get_attributes(id, id) } -> std::same_as<typename G::Attributes>;
+      //  { g.num_attributes() } -> std::same_as<size_t>;
       { g.num_vertices() } -> std::same_as<size_t>;
       { g.num_edges() } -> std::same_as<size_t>;
       { g.source(edge) } -> std::convertible_to<typename G::Id>;

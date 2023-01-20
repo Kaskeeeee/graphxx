@@ -35,6 +35,7 @@
 
 #include <limits>
 #include <type_traits>
+#include <vector>
 
 namespace graphxx {
 
@@ -55,4 +56,10 @@ template <concepts::Numeric T> bool sum_will_overflow(T lhs, T rhs) {
 template <typename Key, concepts::Subscriptable<Key> C>
 using DecaySubscriptValue = std::decay_t<decltype(std::declval<C>()[Key()])>;
 
-} // namespace graph
+template <typename T> void fill_vector(std::vector<T> &v, size_t id, T &&t) {
+  for (auto i = v.size(); i <= id; ++i) {
+    v.push_back(t);
+  }
+}
+
+} // namespace graphxx

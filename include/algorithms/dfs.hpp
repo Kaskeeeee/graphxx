@@ -52,10 +52,6 @@ template <concepts::Identifier Id> struct Node {
   int finishing_time;
 };
 
-/// @brief flatten Tree that collects all DFSVertex structs generated during the
-///        visit
-template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
-
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
 ///        next. If all adjacent vertices have already been discovered, or there
@@ -66,7 +62,7 @@ template <concepts::Identifier Id> using DistanceTree = std::vector<Node<Id>>;
 /// @param source vertex
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
+std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -80,8 +76,9 @@ DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source,
-                               const std::function<void(GraphId<G>)> &callback);
+std::vector<Node<Vertex<G>>>
+visit(const G &graph, Vertex<G> source,
+      const std::function<void(Vertex<G>)> &callback);
 
 } // namespace graphxx::algorithms::dfs
 

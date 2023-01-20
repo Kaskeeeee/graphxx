@@ -38,50 +38,50 @@
 
 namespace graphxx::algorithms::floyd_warshall {
 
-template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
-          typename Distance>
-DistanceTree<GraphId<G>, Distance> visit(const G &graph, Weight weight) {
-
-  DistanceTree<GraphId<G>, Distance> map;
-
+template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
+DistanceMatrix<Vertex<G>, Distance> visit(const G &graph, Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
+  DistanceMatrix<Vertex<G>, Distance> matrix;
 
-  for (GraphId<G> i = 0; i < graph.num_vertices(); i++) {
-    for (GraphId<G> j = 0; j < graph.num_vertices(); j++) {
-      map[i][j].distance = distance_upperbound;
-      map[i][j].parent = INVALID_VERTEX<G>;
+  Vertex<G> u = 0;
+
+  for (auto &out_edge_list : graph) {
+    matrix.emplace_back();
+    for (auto &&edge : out_edge_list) {
+      Vertex<G> v = graph.target(edge);
+      fill_vector(
+          matrix[u], v,
+          Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
+      matrix[u][v].distance = weight(edge);
+      matrix[u][v].parent = u;
     }
+    fill_vector(
+        matrix[u], graph.num_vertices(),
+        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
+    u++;
   }
 
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    auto out_edge_list = graph[vertex];
-    for (auto edge : out_edge_list) {
-      map[graph.source(edge)][graph.target(edge)].distance = weight(edge);
-      map[graph.source(edge)][graph.target(edge)].parent = graph.source(edge);
-    }
-
-    for (GraphId<G> u = 0; u < graph.num_vertices(); u++) {
-      for (GraphId<G> v = 0; v < graph.num_vertices(); v++) {
-        for (GraphId<G> w = 0; w < graph.num_vertices(); w++) {
-          if (v == w) {
-            map[v][w].distance = 0;
-            map[v][w].parent = INVALID_VERTEX<G>;
-            continue;
-          }
-          auto &v_to_u = map[v][u];
-          auto &u_to_w = map[u][w];
-          auto &v_to_w = map[v][w];
-          if (!sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
-              v_to_u.distance + u_to_w.distance < v_to_w.distance) {
-            v_to_w.distance = v_to_u.distance + u_to_w.distance;
-            v_to_w.parent = u_to_w.parent;
-          }
+  for (Vertex<G> u = 0; u < graph.num_vertices(); u++) {
+    for (Vertex<G> v = 0; v < graph.num_vertices(); v++) {
+      for (Vertex<G> w = 0; w < graph.num_vertices(); w++) {
+        if (v == w) {
+          matrix[v][w].distance = 0;
+          matrix[v][w].parent = INVALID_VERTEX<G>;
+          continue;
+        }
+        auto &v_to_u = matrix[v][u];
+        auto &u_to_w = matrix[u][w];
+        auto &v_to_w = matrix[v][w];
+        if (!sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
+            v_to_u.distance + u_to_w.distance < v_to_w.distance) {
+          v_to_w.distance = v_to_u.distance + u_to_w.distance;
+          v_to_w.parent = u_to_w.parent;
         }
       }
     }
   }
 
-  return map;
+  return matrix;
 }
 
 } // namespace graphxx::algorithms::floyd_warshall

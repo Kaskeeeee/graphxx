@@ -56,6 +56,12 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
+  Base::emplace_back();
+};
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
   for (auto i = Base::size(); i <= id; ++i) {
     Base::emplace_back();
   }
@@ -83,8 +89,10 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
   }
 
   for (size_t i = 0; i < Base::size(); i++) {
-    std::ranges::remove_if(Base::at(i),
-                           [&](Edge edge) { return target(edge) == id; });
+    auto &inner = Base::operator[](i);
+    auto [start, end] = std::ranges::remove_if(
+        inner, [&](auto &&edge) { return target(edge) == id; });
+    inner.erase(start, end);
   }
 }
 
@@ -93,12 +101,16 @@ template <concepts::Identifier IdType, Directedness D,
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
                                                                      Id v) {
   if (u < Base::size() && v < Base::size()) {
-    std::ranges::remove_if(Base::at(u),
-                           [&](Edge &&edge) { return target(edge) == v; });
+    auto &inner_u = Base::operator[](u);
+    auto [start_u, end_u] = std::ranges::remove_if(
+        inner_u, [&](auto &&edge) { return target(edge) == v; });
+    inner_u.erase(start_u, end_u);
 
     if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-      std::ranges::remove_if(Base::at(v),
-                             [&](Edge &&edge) { return target(edge) == u; });
+      auto &inner_v = Base::operator[](v);
+      auto [start_v, end_v] = std::ranges::remove_if(
+          inner_v, [&](Edge &&edge) { return target(edge) == u; });
+      inner_v.erase(start_v, end_v);
     }
   }
 }

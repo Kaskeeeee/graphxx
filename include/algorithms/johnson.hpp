@@ -52,7 +52,7 @@ template <concepts::Identifier Id, concepts::Numeric Distance>
 using DistanceTree = std::vector<std::vector<Node<Id, Distance>>>;
 
 template <concepts::Graph G, concepts::Numeric Distance>
-using WeightMap = std::map<typename G::Edge, Distance>;
+using WeightMap = std::map<Edge<G>, Distance>;
 
 /// @brief Implementation of johnson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -64,12 +64,12 @@ using WeightMap = std::map<typename G::Edge, Distance>;
 /// @return a map of maps containing all shortest paths
 template <
     concepts::Graph G,
-    std::invocable<typename G::Edge> Weight = std::function<
-        std::tuple_element_t<2, typename G::Edge>(const typename G::Edge &)>,
-    typename Distance = decltype(std::declval<Weight>()(typename G::Edge{}))>
-DistanceTree<GraphId<G>, Distance> visit(
+    std::invocable<Edge<G>> Weight = std::function<
+        std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+    typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+DistanceTree<Vertex<G>, Distance> visit(
     G &graph,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::johnson
 

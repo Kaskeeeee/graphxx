@@ -38,22 +38,22 @@
 
 namespace graphxx::algorithms::bellman_ford {
 
-template <concepts::Graph G, std::invocable<typename G::Edge> Weight,
+template <concepts::Graph G, std::invocable<Edge<G>> Weight,
           typename Distance>
-DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
-                                         Weight weight) {
-
+std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
+                                             Weight weight) {
+  using NodeType = Node<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  DistanceTree<GraphId<G>, Distance> distance_tree{
+  std::vector<NodeType> distance_tree{
       graph.num_vertices(),
-      Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>}};
+      NodeType{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>}};
 
   distance_tree[source].distance = 0;
 
   // Relax edges |nodes| - 1 times
-  for (GraphId<G> i = 0; i < graph.num_vertices() - 1; ++i) {
+  for (Vertex<G> i = 0; i < graph.num_vertices() - 1; ++i) {
     bool at_least_one_edge_relaxed = false;
-    for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
       auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
         auto edge_weight = weight(edge);
@@ -79,7 +79,7 @@ DistanceTree<GraphId<G>, Distance> visit(const G &graph, GraphId<G> source,
   // Detect if there are negative cycles
   // if value changes then we have a negative cycle in the graph and we cannot
   // find the shortest distances
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
       auto edge_source = graph.source(edge);

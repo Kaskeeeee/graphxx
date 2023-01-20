@@ -39,22 +39,23 @@
 namespace graphxx::algorithms::dfs {
 
 template <concepts::Graph G>
-DistanceTree<GraphId<G>> visit(const G &graph, GraphId<G> source) {
-  return visit(graph, source, [](GraphId<G>) {});
+std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source) {
+  return visit(graph, source, [](Vertex<G>) {});
 }
 
 template <concepts::Graph G>
-DistanceTree<GraphId<G>>
-visit(const G &graph, GraphId<G> source,
-      const std::function<void(GraphId<G>)> &callback) {
+std::vector<Node<Vertex<G>>>
+visit(const G &graph, Vertex<G> source,
+      const std::function<void(Vertex<G>)> &callback) {
 
-  DistanceTree<GraphId<G>> distance_tree;
+  using NodeType = Node<Vertex<G>>;
+  std::vector<NodeType> distance_tree;
 
-  for (GraphId<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
-    distance_tree.push_back(Node{.status = VertexStatus::READY,
-                                 .parent = INVALID_VERTEX<G>,
-                                 .discovery_time = -1,
-                                 .finishing_time = -1});
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(NodeType{.status = VertexStatus::READY,
+                                     .parent = INVALID_VERTEX<G>,
+                                     .discovery_time = -1,
+                                     .finishing_time = -1});
   }
 
   int time = 0;
@@ -65,16 +66,16 @@ visit(const G &graph, GraphId<G> source,
 }
 
 template <concepts::Graph G>
-void visit_rec(const G &graph, GraphId<G> vertex,
-               const std::function<void(GraphId<G>)> &callback, int &time,
-               DistanceTree<GraphId<G>> &distance_tree) {
+void visit_rec(const G &graph, Vertex<G> vertex,
+               const std::function<void(Vertex<G>)> &callback, int &time,
+               std::vector<Node<Vertex<G>>> &distance_tree) {
   callback(vertex);
 
   distance_tree[vertex].status = VertexStatus::WAITING;
   distance_tree[vertex].discovery_time = ++time;
 
   for (auto edge : graph[vertex]) {
-    GraphId<G> adjacent = graph.target(edge);
+    Vertex<G> adjacent = graph.target(edge);
 
     if (distance_tree[adjacent].status == VertexStatus::READY) {
       distance_tree[adjacent].parent = vertex;
