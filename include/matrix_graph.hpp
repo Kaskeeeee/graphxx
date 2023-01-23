@@ -40,10 +40,6 @@
 namespace graph {
 
 template <Directedness D> class AdjacencyMatrixGraph {
-protected:
-  using AdjacencyMap = std::unordered_map<Id, Id>;
-  using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
-  using EdgeMap = std::unordered_map<Id, Edge>;
 
 public:
   static constexpr Directedness DIRECTEDNESS = D;
@@ -64,6 +60,11 @@ public:
 
   Vertex get_vertex(const Id &id) const;
   Edge get_edge(const Id &id) const;
+
+protected:
+  using AdjacencyMap = std::unordered_map<Id, Id>;
+  using AdjacencyMatrix = std::unordered_map<Id, AdjacencyMap>;
+  using EdgeMap = std::unordered_map<Id, Edge>;
 
 private:
   AdjacencyMatrix _adj;

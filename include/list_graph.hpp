@@ -43,14 +43,6 @@ namespace graph {
 
 template <Directedness D> class AdjacencyListGraph {
 
-protected:
-  using EdgeList = std::list<Id>;
-  using AdjacencyList = std::unordered_map<Id, EdgeList>;
-  using EdgeWrapper =
-      std::conditional_t<D == Directedness::DIRECTED, std::array<Edge, 1>,
-                         std::array<Edge, 2>>;
-  using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
-
 public:
   static constexpr Directedness DIRECTEDNESS = D;
 
@@ -72,6 +64,14 @@ public:
 
   Vertex get_vertex(const Id &id) const;
   Edge get_edge(const Id &id) const;
+
+protected:
+  using EdgeList = std::list<Id>;
+  using AdjacencyList = std::unordered_map<Id, EdgeList>;
+  using EdgeWrapper =
+      std::conditional_t<D == Directedness::DIRECTED, std::array<Edge, 1>,
+                         std::array<Edge, 2>>;
+  using EdgeMap = std::unordered_map<Id, EdgeWrapper>;
 
 private:
   AdjacencyList _adj;
