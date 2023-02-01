@@ -39,40 +39,126 @@
 
 namespace graphxx {
 
+/// @brief Represents a graph implemented with an adjacency list.
+///        Vertices are represented by id that correspond to positions in a
+///        vector. Edges are tuple composed by source vertex, target vertex and
+///        a variable number of attributes.
+/// @tparam ...AttributesType Types of edges attributes. They can be a variable
+/// number.
+/// @tparam D Graph directedness
+/// @tparam IdType Numeric type representing vertices
 template <concepts::Identifier IdType = DefaultIdType,
           Directedness D = Directedness::DIRECTED, typename... AttributesType>
-class AdjacencyListGraph
-    : public std::vector<
-          std::list<std::tuple<IdType, IdType, AttributesType...>>> {
+class AdjacencyListGraph {
 public:
-  using Id = IdType;
-  using Edge = std::tuple<Id, Id, AttributesType...>;
+  using Vertex = IdType;
+  using Edge = std::tuple<Vertex, Vertex, AttributesType...>;
   using Attributes = std::tuple<AttributesType...>;
 
   using EdgeList = std::list<Edge>;
-  using Base = std::vector<EdgeList>;
+  using AdjacencyList = std::vector<EdgeList>;
 
+  /// @brief Indicates whether the graph is directed or undirected
   static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyListGraph();
   AdjacencyListGraph(const AdjacencyListGraph &graph);
 
+  /// @brief Adds a new vertex to the graph.
+  ///        The vertex id will be the index of the first free position in the
+  ///        adjacency list
   void add_vertex();
-  void add_vertex(Id);
-  void remove_vertex(Id);
 
-  void add_edge(Id, Id, Attributes = {});
-  void remove_edge(Id, Id);
+  /// @brief Adds a new vertex with specific id to the graph.
+  ///        Warning! This operation creates in adjacency list all the positions
+  ///        with index < vertex with empty edge list.
+  /// @param vertex Id of the vertex to insert.
+  void add_vertex(Vertex vertex);
 
-  void set_attributes(Id, Id, Attributes);
-  Attributes get_attributes(Id, Id);
+  /// @brief  Remove a vertex from the graph.
+  ///         Warning! This operation clear the edge list of the vertex and
+  ///         removes all the vertex related edges. The vertex position is still
+  ///         present in adjacency list.
+  /// @param vertex Id of the vertex to remove.
+  void remove_vertex(Vertex vertex);
+
+  /// @brief Add new edge to the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @param attributes Tuple containing edge attributes.
+  void add_edge(Vertex source, Vertex target, Attributes &attributes = {});
+
+  /// @brief Remove edge from the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  void remove_edge(Vertex source, Vertex target);
+
+  /// @brief Get edge tuple based on the vertices it connects.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return A tuple composed of source id, destination id and a variable
+  /// number of attributes.
+  const Edge &get_edge(Vertex source, Vertex target) const;
+
+  /// @brief Get edge source vertex.
+  /// @param edge The edge to extract the source from.
+  /// @return Id of the source vertex.
+  Vertex source(Edge &edge) const;
+
+  /// @brief Get edge target vertex.
+  /// @param edge The edge to extract the target from.
+  /// @return Id of the target vertex.
+  Vertex target(Edge &edge) const;
+
+  /// @brief Updates edge attributes tuple.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @param attributes Tuple containing new edge attributes.
+  void set_attributes(Vertex source, Vertex target, Attributes &attributes);
+
+  /// @brief Retrives edge attributes tuple.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return Edges attributes tuple.
+  Attributes get_attributes(Vertex source, Vertex target) const;
+
+  /// @brief Get number of edges attributes.
+  /// @return Number of edges attributes.
   size_t num_attributes() const;
 
+  /// @brief Get number of vertices in the graph.
+  /// @return Number of vertices.
   size_t num_vertices() const;
+
+  /// @brief Get number of edges in the graph.
+  /// @return Number of edges.
   size_t num_edges() const;
 
-  Id source(Edge) const;
-  Id target(Edge) const;
+  /// @brief 
+  /// @param vertex 
+  /// @return 
+  bool has_vertex(Vertex vertex) const;
+
+  /// @brief 
+  /// @param source 
+  /// @param target 
+  /// @return 
+  bool has_edge(Vertex source, Vertex target) const;
+
+  /// @brief Retrieves the adjacency list of a vertex.
+  /// @param vertex Vertex id.
+  /// @return Edge list of a vertex.
+  const EdgeList &operator[](Vertex vertex) const;
+
+  /// @brief Returns an iterator that points to the first element in the adjacency list.
+  AdjacencyList::iterator begin() { return _adj.begin(); }
+
+  /// @brief Returns an iterator that points one past the last element in the adjacency list.  
+  AdjacencyList::iterator end() { return _adj.end(); }
+
+private:
+  /// @brief The adjacency list.
+  AdjacencyList _adj;
 };
 
 } // namespace graphxx

@@ -48,7 +48,7 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
           [&](auto &&...attributes) {
             add_edge(source(edge), target(edge), attributes)
           },
-          elements_from_index<2>(edge));
+          get_elements_from_index<2>(edge));
     }
   }
 };
