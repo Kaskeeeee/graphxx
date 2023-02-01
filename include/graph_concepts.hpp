@@ -60,14 +60,17 @@ concept HasGraphBasicMethods =
              typename G::Edge edge) {
       g.add_vertex();
       g.add_vertex(vertex);
-      g.add_edge(vertex, vertex, attributes);
       g.remove_vertex(vertex);
+      g.add_edge(vertex, vertex, attributes);
       g.remove_edge(vertex, vertex);
-      //  g.set_attributes(id, id, attributes);
-      //  { g.get_attributes(id, id) } -> std::same_as<typename G::Attributes>;
-      //  { g.num_attributes() } -> std::same_as<size_t>;
+      { g.get_edge(vertex, vertex) } -> std::convertible_to<typename G::Edge>;
+      g.set_attributes(vertex, vertex, attributes);
+      { g.get_attributes(vertex, vertex) } -> std::same_as<typename G::Attributes>;
+      { g.num_attributes() } -> std::same_as<size_t>;
       { g.num_vertices() } -> std::same_as<size_t>;
       { g.num_edges() } -> std::same_as<size_t>;
+      { g.has_vertex(vertex) } -> std::same_as<bool>;
+      { g.has_edge(vertex, vertex) } -> std::same_as<bool>;
       { g.source(edge) } -> std::convertible_to<typename G::Vertex>;
       { g.target(edge) } -> std::convertible_to<typename G::Vertex>;
     };
