@@ -36,7 +36,6 @@
 
 #include <algorithm>
 #include <type_traits>
-#include <stdexcept>
 
 namespace graphxx {
 
@@ -66,7 +65,9 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex(Vertex vertex) {
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Vertex source, Vertex target, Attributes attrs) {
+void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Vertex source,
+                                                            Vertex target,
+                                                            Attributes attrs) {
   add_vertex(source);
   add_vertex(target);
 
@@ -86,37 +87,48 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Vertex source, Verte
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(Vertex vertex) {
+void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(
+    Vertex vertex) {
   if (!has_vertex(vertex))
     return;
 
   _adj[vertex].clear();
-  
+
   for (size_t i = 0; i < _adj.size(); i++) {
-    _adj[i].remove_if([&](auto&& edge) { return target(edge) == vertex; });
+    _adj[i].remove_if([&](auto &&edge) { return target(edge) == vertex; });
   }
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source, Vertex target) {
+void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source,
+                                                               Vertex target) {
   if (!has_edge(source, target))
     return;
 
-  _adj[source].remove_if([&](auto&& edge) { return target(edge) == target; });
-  
+  _adj[source].remove_if([&](auto &&edge) { return target(edge) == target; });
+
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    _adj[target].remove_if([&](auto&& edge) { return target(edge) == source; });
+    _adj[target].remove_if([&](auto &&edge) { return target(edge) == source; });
   }
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
     Vertex source, Vertex target, Attributes attrs) {
-      if (!has_edge(target, source))
-        return ;
+  if (!has_edge(target, source))
+    return;
 
-      auto find_iterator = std::ranges::find(_adj[source], [&](auto &&edge) { return target(edge) == target; });
-      set_elements_from_index<2>(*find_iterator, attrs);
+  auto find_iterator = std::ranges::find(
+      _adj[source], [&](auto &&edge) { return target(edge) == target; });
+  set_elements_from_index<2>(*find_iterator, attrs);
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::Attributes
+AdjacencyListGraph<Id, D, AttributesType...>::get_attributes(
+    Vertex source, Vertex target) const {
+  Edge &edge = get_edge(source, target);
+  return get_elements_from_index<2>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
@@ -125,12 +137,12 @@ size_t AdjacencyListGraph<Id, D, AttributesType...>::num_attributes() const {
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge& edge) const {
+Id AdjacencyListGraph<Id, D, AttributesType...>::source(Edge &edge) const {
   return std::get<0>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge& edge) const {
+Id AdjacencyListGraph<Id, D, AttributesType...>::target(Edge &edge) const {
   return std::get<1>(edge);
 }
 
@@ -149,32 +161,50 @@ size_t AdjacencyListGraph<Id, D, AttributesType...>::num_edges() const {
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-bool AdjacencyListGraph<Id, D, AttributesType...>::has_vertex(Vertex vertex) const {
+bool AdjacencyListGraph<Id, D, AttributesType...>::has_vertex(
+    Vertex vertex) const {
   return vertex < _adj.size();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-bool AdjacencyListGraph<Id, D, AttributesType...>::has_edge(Vertex source, Vertex target) const {
+bool AdjacencyListGraph<Id, D, AttributesType...>::has_edge(
+    Vertex source, Vertex target) const {
   if (!has_vertex(source) || !has_vertex(target))
     return false;
 
-  auto find_iterator = std::ranges::find(_adj[source], [&](auto &&edge) { return target(edge) == target; });
+  auto find_iterator = std::ranges::find(
+      _adj[source], [&](auto &&edge) { return target(edge) == target; });
   return find_iterator != _adj[source].end();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-const AdjacencyListGraph<Id, D, AttributesType...>::Edge& AdjacencyListGraph<Id, D, AttributesType...>::get_edge(Vertex source, Vertex target) const {
-    if (!has_edge(source, target))
-      throw std::out_of_range("edge not exists in graph");
+const AdjacencyListGraph<Id, D, AttributesType...>::Edge &
+AdjacencyListGraph<Id, D, AttributesType...>::get_edge(Vertex source,
+                                                       Vertex target) const {
+  if (!has_edge(source, target))
+    throw exceptions::NoSuchEdgeException();
 
-    auto find_iterator = std::ranges::find(_adj[source], [&](auto &&edge) { return target(edge) == target; });
-    return *find_iterator;
+  auto find_iterator = std::ranges::find(
+      _adj[source], [&](auto &&edge) { return target(edge) == target; });
+  return *find_iterator;
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-const AdjacencyListGraph<Id, D, AttributesType...>::EdgeList& AdjacencyListGraph<Id, D, AttributesType...>::operator[](Vertex vertex) const {
+const AdjacencyListGraph<Id, D, AttributesType...>::EdgeList &
+AdjacencyListGraph<Id, D, AttributesType...>::operator[](Vertex vertex) const {
   return _adj.at(vertex);
 }
 
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyList::iterator
+AdjacencyListGraph<Id, D, AttributesType...>::begin() {
+  return _adj.begin();
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyList::iterator
+AdjacencyListGraph<Id, D, AttributesType...>::end() {
+  return _adj.end();
+}
 
 } // namespace graphxx
