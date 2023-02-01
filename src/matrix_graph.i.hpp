@@ -44,99 +44,170 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::AdjacencyMatrixGraph(
     const AdjacencyMatrixGraph &graph) {
   for (auto &&vertex : graph) {
     for (auto &&edge : vertex) {
-      std::apply(
-          [&](auto &&...attributes) {
-            add_edge(source(edge), target(edge), attributes)
-          },
-          get_elements_from_index<2>(edge));
+      add_edge(source(edge), target(edge), get_elements_from_index<2>(edge));
     }
   }
 };
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
-void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
-  Base::emplace_back();
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex() {
+  _adj.emplace_back();
 };
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
-void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(Id id) {
-  for (auto i = Base::size(); i <= id; ++i) {
-    Base::emplace_back();
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_vertex(
+    Vertex vertex) {
+  for (auto i = _adj.size(); i <= vertex; ++i) {
+    _adj.emplace_back();
   }
 };
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::add_edge(
-    Id uid, Id vid, Attributes attrs) {
-  add_node(uid);
-  add_node(vid);
+    Vertex source, Vertex target, Attributes attributes) {
+  add_vertex(source);
+  add_vertex(target);
 
-  Base::operator[](uid).emplace(vid, std::forward_as_tuple(uid, vid, attrs...));
+  std::apply(
+      [&](auto &&...props) {
+        _adj[source].emplace(target,
+                             std::forward_as_tuple(source, target, props...));
+      },
+      attributes);
+
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    Base::operator[](vid).emplace(uid,
-                                  std::forward_as_tuple(vid, uid, attrs...));
+    std::apply(
+        [&](auto &&...props) {
+          _adj[target].emplace(source,
+                               std::forward_as_tuple(target, source, props...));
+        },
+        attributes);
   }
 }
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
-void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(Id id) {
-  if (id < Base::size()) {
-    Base::operator[](id).clear();
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(
+    Vertex vertex) {
+  if (!has_vertex(vertex)) {
+    return;
   }
 
-  for (size_t i = 0; i < Base::size(); i++) {
-    auto &inner = Base::operator[](i);
+  _adj[vertex].clear();
+
+  for (size_t i = 0; i < _adj.size(); i++) {
+    auto &inner = _adj[i];
     auto [start, end] = std::ranges::remove_if(
-        inner, [&](auto &&edge) { return target(edge) == id; });
+        inner, [&](auto &&edge) { return target(edge) == vertex; });
     inner.erase(start, end);
   }
 }
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
-void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(Id u,
-                                                                     Id v) {
-  if (u < Base::size() && v < Base::size()) {
-    auto &inner_u = Base::operator[](u);
-    auto [start_u, end_u] = std::ranges::remove_if(
-        inner_u, [&](auto &&edge) { return target(edge) == v; });
-    inner_u.erase(start_u, end_u);
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(
+    Vertex source, Vertex target) {
+  if (!has_edge(source, target)) {
+    return;
+  }
 
-    if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-      auto &inner_v = Base::operator[](v);
-      auto [start_v, end_v] = std::ranges::remove_if(
-          inner_v, [&](Edge &&edge) { return target(edge) == u; });
-      inner_v.erase(start_v, end_v);
-    }
+  auto &source_map = _adj[source];
+  auto [start_source_map, end_source_map] = std::ranges::remove_if(
+      source_map, [&](auto &&edge) { return target(edge) == target; });
+  source_map.erase(start_source_map, end_source_map);
+
+  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+    auto &target_map = _adj[target];
+    auto [start_target_map, end_target_map] = std::ranges::remove_if(
+        target_map, [&](Edge &&edge) { return target(edge) == source; });
+    target_map.erase(start_target_map, end_target_map);
   }
 }
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+const AdjacencyMatrixGraph<IdType, D, AttributesType...>::Edge &
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_edge(
+    Vertex source, Vertex target) const {
+  if (!has_edge(source, target)) {
+    throw exceptions::NoSuchEdgeException();
+  }
 
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-Id AdjacencyMatrixGraph<Id, D, AttributesType...>::source(Edge edge) const {
+  return _adj[source][target];
+}
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+void AdjacencyMatrixGraph<IdType, D, AttributesType...>::set_attributes(
+    Vertex source, Vertex target, Attributes attributes) {
+  if (!has_edge(target, source))
+    return;
+
+  set_elements_from_index<2>(_adj[source], attributes);
+}
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::Attributes
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_attributes(
+    Vertex source, Vertex target) const {
+  if (!has_edge(source, target)) {
+    throw exceptions::NoSuchEdgeException();
+  }
+
+  return get_elements_from_index<2>(get_edge(source, target));
+}
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::Vertex
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::source(Edge &edge) const {
   return std::get<0>(edge);
 }
 
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-Id AdjacencyMatrixGraph<Id, D, AttributesType...>::target(Edge edge) const {
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::Vertex
+AdjacencyMatrixGraph<IdType, D, AttributesType...>::target(Edge &edge) const {
   return std::get<1>(edge);
+}
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+bool AdjacencyMatrixGraph<IdType, D, AttributesType...>::has_vertex(
+    Vertex vertex) const {
+  return vertex < _adj.size();
+}
+
+template <concepts::Identifier IdType, Directedness D,
+          typename... AttributesType>
+bool AdjacencyMatrixGraph<IdType, D, AttributesType...>::has_edge(
+    Vertex source, Vertex target) const {
+  return has_vertex(source) && has_vertex(target) &&
+         _adj[source].contains(target);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_vertices() const {
-  return Base::size();
+  return _adj.size();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_edges() const {
   size_t count = 0;
-  for (size_t i = 0; i < Base::size(); i++) {
-    count += (*this)[i].size();
+  for (auto &[vertex, map] : _adj) {
+    count += map.size();
   }
   return count;
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+const AdjacencyMatrixGraph<Id, D, AttributesType...>::EdgeMap &
+AdjacencyMatrixGraph<Id, D, AttributesType...>::operator[](
+    Vertex vertex) const {
+  return _adj.at(vertex);
 }
 
 } // namespace graphxx
