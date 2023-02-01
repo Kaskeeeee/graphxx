@@ -14,7 +14,7 @@ auto get_elements_from_index(std::tuple<Elements...> t) {
 template <size_t StartingIndex, typename... Elements, typename... AttributesType>
 void set_elements_from_index(std::tuple<Elements...> &t, std::tuple<AttributesType...> &attributes) {
   [&]<size_t... Offsets>(std::index_sequence<Offsets...>) {
-    ((std::get<StartingIndex + Offsets>(t) = std::get<Offsets>(attributes)), ...)
+    ((std::get<StartingIndex + Offsets>(t) = std::get<Offsets>(attributes)), ...);
   }
   (std::make_index_sequence<sizeof...(Elements) - StartingIndex>());
 }

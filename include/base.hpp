@@ -42,7 +42,7 @@ using DefaultIdType = uint64_t;
 /// undirected graphs
 enum class Directedness { DIRECTED, UNDIRECTED };
 
-template <typename G> using Vertex = typename G::Id;
+template <typename G> using Vertex = typename G::Vertex;
 
 template <typename G> using Edge = typename G::Edge;
 

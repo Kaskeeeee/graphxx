@@ -47,7 +47,7 @@ concept IsRangeOfRanges = std::ranges::random_access_range<T> &&
 template <typename G>
 concept HasGraphBasicTraits =
     requires(G) {
-      typename G::Id;
+      typename G::Vertex;
       typename G::Attributes;
       typename G::Edge;
       requires G::DIRECTEDNESS == Directedness::DIRECTED ||
@@ -56,20 +56,20 @@ concept HasGraphBasicTraits =
 
 template <typename G>
 concept HasGraphBasicMethods =
-    requires(G g, typename G::Id id, typename G::Attributes attributes,
+    requires(G g, typename G::Vertex vertex, typename G::Attributes attributes,
              typename G::Edge edge) {
       g.add_vertex();
-      g.add_vertex(id);
-      g.add_edge(id, id, attributes);
-      g.remove_vertex(id);
-      g.remove_edge(id, id);
+      g.add_vertex(vertex);
+      g.add_edge(vertex, vertex, attributes);
+      g.remove_vertex(vertex);
+      g.remove_edge(vertex, vertex);
       //  g.set_attributes(id, id, attributes);
       //  { g.get_attributes(id, id) } -> std::same_as<typename G::Attributes>;
       //  { g.num_attributes() } -> std::same_as<size_t>;
       { g.num_vertices() } -> std::same_as<size_t>;
       { g.num_edges() } -> std::same_as<size_t>;
-      { g.source(edge) } -> std::convertible_to<typename G::Id>;
-      { g.target(edge) } -> std::convertible_to<typename G::Id>;
+      { g.source(edge) } -> std::convertible_to<typename G::Vertex>;
+      { g.target(edge) } -> std::convertible_to<typename G::Vertex>;
     };
 
 template <typename G>

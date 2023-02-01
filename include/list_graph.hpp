@@ -86,7 +86,7 @@ public:
   /// @param source Id of the source vertex.
   /// @param target Id of the target vertex.
   /// @param attributes Tuple containing edge attributes.
-  void add_edge(Vertex source, Vertex target, Attributes &attributes = {});
+  void add_edge(Vertex source, Vertex target, Attributes attributes = {});
 
   /// @brief Remove edge from the graph.
   /// @param source Id of the source vertex.
@@ -114,7 +114,7 @@ public:
   /// @param source Id of the source vertex.
   /// @param target Id of the target vertex.
   /// @param attributes Tuple containing new edge attributes.
-  void set_attributes(Vertex source, Vertex target, Attributes &attributes);
+  void set_attributes(Vertex source, Vertex target, Attributes attributes);
 
   /// @brief Retrives edge attributes tuple.
   /// @param source Id of the source vertex.
@@ -134,15 +134,15 @@ public:
   /// @return Number of edges.
   size_t num_edges() const;
 
-  /// @brief 
-  /// @param vertex 
-  /// @return 
+  /// @brief Checks if a vertex is present in the graph.
+  /// @param vertex Vertex id.
+  /// @return True if the vertex exists.
   bool has_vertex(Vertex vertex) const;
 
-  /// @brief 
-  /// @param source 
-  /// @param target 
-  /// @return 
+  /// @brief Checks if an edge is present in the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return True if the edge exists.
   bool has_edge(Vertex source, Vertex target) const;
 
   /// @brief Retrieves the adjacency list of a vertex.
