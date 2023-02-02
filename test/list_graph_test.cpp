@@ -142,6 +142,7 @@ TEST_CASE("build directed list graph with attributes",
 
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 10);
     REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 20);
+    REQUIRE(g.num_attributes() == 1);
   }
 
   SECTION("add edge with different types of attributes") {
@@ -153,6 +154,20 @@ TEST_CASE("build directed list graph with attributes",
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == "foo");
     REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 42);
     REQUIRE(std::get<2>(g.get_attributes(0, 1)) == 0.001f);
+    REQUIRE(g.num_attributes() == 3);
+  }
+
+  SECTION("update edge attributes") {
+    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int, float> g;
+    g.add_edge(0, 1, {42, 0.0f});
+    REQUIRE(g.num_attributes() == 2);
+    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
+    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.0f);
+
+    g.set_attributes(0, 1, {0, 0.42f});
+    REQUIRE(g.num_attributes() == 2);
+    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 0);
+    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.42f);
   }
 }
 
@@ -179,6 +194,31 @@ TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
     auto edge12 = *(++g[1].begin());
     REQUIRE(g.get_target(edge11) == 1);
     REQUIRE(g.get_target(edge12) == 2);
+  }
+
+  SECTION("check if vertex exists") {
+    REQUIRE(g.has_vertex(10) == true);
+    REQUIRE(g.has_vertex(11) == false);
+  }
+
+  SECTION("check if edge exists") {
+    REQUIRE(g.has_edge(0, 1) == true);
+    REQUIRE(g.has_edge(1, 0) == false);
+  }
+
+  SECTION("graph should be iterable") {
+    for (auto edgeList : g) {
+      for (auto edge : edgeList) {
+        REQUIRE(g.has_edge(g.get_source(edge), g.get_target(edge)) == true);
+      }
+    }
+  }
+
+  SECTION("adjacency list should be iterable") {
+    for (auto edge : g[0]) {
+      REQUIRE(g.get_source(edge) == 0);
+      REQUIRE(g.get_target(edge) == 1);
+    }
   }
 }
 

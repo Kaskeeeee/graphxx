@@ -47,7 +47,8 @@ AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
     const AdjacencyListGraph &graph) {
   for (auto &&vertex : graph) {
     for (auto &&edge : vertex) {
-      add_edge(get_source(edge), get_target(edge), get_elements_from_index<2>(edge));
+      add_edge(get_source(edge), get_target(edge),
+               get_elements_from_index<2>(edge));
     }
   }
 };
@@ -105,17 +106,19 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source,
   if (!has_edge(source, target))
     return;
 
-  _adj[source].remove_if([&](auto &&edge) { return get_target(edge) == target; });
+  _adj[source].remove_if(
+      [&](auto &&edge) { return get_target(edge) == target; });
 
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    _adj[target].remove_if([&](auto &&edge) { return get_target(edge) == target; });
+    _adj[target].remove_if(
+        [&](auto &&edge) { return get_target(edge) == target; });
   }
 };
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
     Vertex source, Vertex target, Attributes attrs) {
-  if (!has_edge(get_target, source))
+  if (!has_edge(source, target))
     return;
 
   auto find_iterator = std::ranges::find_if(
@@ -137,12 +140,14 @@ size_t AdjacencyListGraph<Id, D, AttributesType...>::num_attributes() const {
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyListGraph<Id, D, AttributesType...>::Vertex AdjacencyListGraph<Id, D, AttributesType...>::get_source(Edge &edge) const {
+AdjacencyListGraph<Id, D, AttributesType...>::Vertex
+AdjacencyListGraph<Id, D, AttributesType...>::get_source(Edge &edge) const {
   return std::get<0>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyListGraph<Id, D, AttributesType...>::Vertex AdjacencyListGraph<Id, D, AttributesType...>::get_target(Edge &edge) const {
+AdjacencyListGraph<Id, D, AttributesType...>::Vertex
+AdjacencyListGraph<Id, D, AttributesType...>::get_target(Edge &edge) const {
   return std::get<1>(edge);
 }
 
