@@ -39,31 +39,39 @@ namespace graphxx::algorithms::kruskal {
 // Search for the repserentative vertex of the cluster, which is that element in
 // the map with same key and value
 template <concepts::Identifier Id>
-Id find_representative(std::vector<Id> &cluster_map, Id id) {
-  while (id != cluster_map[id]) {
-    Id tmp = cluster_map[id];
-    cluster_map[id] = cluster_map[tmp];
-    id = cluster_map[tmp];
+Id find_representative(std::vector<std::tuple<Id, size_t>> &ranked_sets,
+                       Id id) {
+  Id root = std::get<0>(ranked_sets[id]);
+  Id tmp;
+  while (root != (tmp = std::get<0>(ranked_sets[root]))) {
+    root = tmp;
   }
-  return id;
+
+  while (root != id) {
+    id = std::get<0>(ranked_sets[id]);
+    std::get<0>(ranked_sets[id]) = root;
+  }
+
+  return root;
 }
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
 std::vector<Edge<G>> visit(const G &graph, Weight weight) {
 
-  std::vector<Edge<G>> distance_tree;
-  std::vector<Vertex<G>> cluster_map;
-  std::vector<int> rank;
+  size_t size = graph.num_vertices();
+
+  std::vector<Edge<G>> minimum_spanning_tree;
+  std::vector<std::tuple<Vertex<G>, size_t>> ranked_sets(size);
 
   using WeightedEdge = std::tuple<Distance, Edge<G>>;
   std::priority_queue<WeightedEdge, std::vector<WeightedEdge>,
                       std::greater<WeightedEdge>>
       queue;
 
-  // Initialize every vertex cluster with the vertex Id itself
-  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    cluster_map.emplace_back(vertex);
-    rank.push_back(0);
+  // Initialize every vertex set with the vertex Id itself
+  for (Vertex<G> vertex = 0; vertex < size; vertex++) {
+    std::get<0>(ranked_sets[vertex]) = vertex;
+    std::get<1>(ranked_sets[vertex]) = 0;
     for (auto &edge : graph[vertex]) {
       queue.push({weight(edge), edge});
     }
@@ -81,21 +89,28 @@ std::vector<Edge<G>> visit(const G &graph, Weight weight) {
     Vertex<G> source = graph.get_source(edge);
     Vertex<G> target = graph.get_target(edge);
 
-    if (find_representative(cluster_map, source) !=
-        find_representative(cluster_map, target)) {
-      distance_tree.push_back(edge);
+    Vertex<G> source_root = find_representative(ranked_sets, source);
+    Vertex<G> target_root = find_representative(ranked_sets, target);
 
-      if (rank[source] > rank[target]) {
-        cluster_map[target] = cluster_map[source];
-        rank[source] += rank[target];
+    if (source_root != target_root) {
+      size_t source_set_rank = std::get<1>(ranked_sets[source_root]);
+      size_t target_set_rank = std::get<1>(ranked_sets[target_root]);
+
+      if (source_set_rank < target_set_rank) {
+        std::get<0>(ranked_sets[source_root]) = target_root;
       } else {
-        cluster_map[source] = cluster_map[target];
-        rank[target] += rank[source];
+        std::get<0>(ranked_sets[target_root]) = source_root;
       }
+
+      if (source_set_rank == target_set_rank) {
+        std::get<1>(ranked_sets[source_root])++;
+      }
+
+      minimum_spanning_tree.push_back(edge);
     }
   }
 
-  return distance_tree;
+  return minimum_spanning_tree;
 };
 
 } // namespace graphxx::algorithms::kruskal
