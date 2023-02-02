@@ -31,11 +31,11 @@
 
 #include "algorithms/kruskal.hpp"
 #include "base.hpp"
+#include "generators/graph_generator.hpp"
 #include "io/graphml.hpp"
 #include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
 #include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
@@ -87,7 +87,8 @@ int main(int argc, char **argv) {
 
   for (auto v : g) {
     for (auto e : v) {
-      boost::add_edge(g.get_source(e), g.get_target(e), std::get<2>(e), boost_graph);
+      boost::add_edge(g.get_source(e), g.get_target(e), std::get<2>(e),
+                      boost_graph);
     }
   }
 

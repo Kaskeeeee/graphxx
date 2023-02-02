@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(Graphxx
         DESCRIPTION "C++ graph library"
-        HOMEPAGE_URL "https://github.com/Kaskeeeee/graphxx"
+        HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
         LANGUAGES CXX
 )
 
@@ -35,6 +35,10 @@ option(COVERAGE "Enable coverage output" OFF)
 # Compile with benchmark
 option(BENCHMARK "Enable benchmarking" OFF)
 
+# find clang-tidy
+# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+
+# -Wall -Wextra -Wpedantic
 set(COMPILER_FLAGS
         -Wall -Wextra -Wpedantic
         $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
@@ -74,15 +78,21 @@ set(INC_ALG
         ${PROJECT_SOURCE_DIR}/include/algorithms/ford_fulkerson.hpp
 )
 
+# include/generators
+set(INC_GEN
+        ${PROJECT_SOURCE_DIR}/include/generators/graph_generator.hpp
+)
+
 # include/utils
 set(INC_UTILS
-        ${PROJECT_SOURCE_DIR}/include/utils/graph_generator.hpp
         ${PROJECT_SOURCE_DIR}/include/utils/tuple_utils.hpp
 )
 
 # include/io
 set(INC_IO
         ${PROJECT_SOURCE_DIR}/include/io/graphviz.hpp
+        ${PROJECT_SOURCE_DIR}/include/io/graphml.hpp
+        ${PROJECT_SOURCE_DIR}/include/io/matrix_market.hpp
 )
 
 # src
@@ -108,11 +118,18 @@ set(SRC_ALG
 # src/io
 set(SRC_IO
         ${PROJECT_SOURCE_DIR}/src/io/graphviz.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/io/graphml.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/io/matrix_market.i.hpp
 )
 
-# include/utils
+# src/generators
+set(SRC_GEN
+        ${PROJECT_SOURCE_DIR}/src/generators/graph_generator.i.hpp
+)
+
+# src/utils
 set(SRC_UTILS
-        ${PROJECT_SOURCE_DIR}/src/utils/graph_generator.i.hpp
+        ${PROJECT_SOURCE_DIR}/src/utils/string_utils.cpp
 )
 
 # ###############################################################################
@@ -124,10 +141,12 @@ target_sources(graph
         PUBLIC ${INC}
         PUBLIC ${INC_ALG}
         PUBLIC ${INC_IO}
+        PUBLIC ${INC_GEN}
         PUBLIC ${INC_UTILS}
         PRIVATE ${SRC}
         PRIVATE ${SRC_ALG}
         PRIVATE ${SRC_IO}
+        PRIVATE ${SRC_GEN}
         PRIVATE ${SRC_UTILS}
 )
 
@@ -135,11 +154,14 @@ target_include_directories(graph
         PUBLIC ${PROJECT_SOURCE_DIR}/include
         PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
         PUBLIC ${PROJECT_SOURCE_DIR}/include/io
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/generators
         PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
-        PUBLIC ${PROJECT_SOURCE_DIR}/third_party/pugixml
+        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/pugixml
         PRIVATE ${PROJECT_SOURCE_DIR}/src
         PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
         PRIVATE ${PROJECT_SOURCE_DIR}/src/io
+        PRIVARE ${PROJECT_SOURCE_DIR}/src/generators
+        PRIVATE ${PROJECT_SOURCE_DIR}/src/utils
 )
 
 target_compile_options(graph
@@ -174,7 +196,7 @@ endif()
 # TIDY
 # ###############################################################################
 # add_custom_target(tidy
-# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json ${SRC_UTILS} #use -list-checks for reading checks used
+# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
 # )
 
 # ###############################################################################
@@ -201,10 +223,11 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # ###############################################################################
-# PREPARING TEST
+# TEST CODE
 # ###############################################################################
 add_executable(graph_test)
 
+# PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp

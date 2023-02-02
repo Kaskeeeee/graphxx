@@ -60,4 +60,4 @@ private:
 
 } // namespace graph
 
-#include "utils/graph_generator.i.hpp"
+#include "generators/graph_generator.i.hpp"

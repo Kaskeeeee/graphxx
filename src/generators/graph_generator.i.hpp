@@ -1,4 +1,4 @@
-#include "utils/graph_generator.hpp"
+#include "generators/graph_generator.hpp"
 
 #if 0
 

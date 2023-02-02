@@ -46,50 +46,25 @@ namespace graphxx::utils {
 /// the function returns string::npos.
 size_t find_first_of(const std::string &input,
                      const std::vector<std::string> &find, size_t &index_found,
-                     const size_t &pos = 0) {
-  size_t first_found = std::string::npos;
-  size_t current_found = std::string::npos;
-
-  const size_t size = find.size();
-  for (int64_t i = 0; i < size; ++i) {
-    current_found = input.find(find[i], pos);
-    if (current_found < first_found) {
-      first_found = current_found;
-      index_found = i;
-    }
-  }
-
-  return first_found;
-}
+                     const size_t &pos = 0);
 
 /// @brief  Removes whitespace from the end of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without trailing spaces.
-std::string trim_right(const std::string &str) {
-  int64_t pos = str.size() - 1;
-  for (; pos > 0 && std::isspace(str[pos], std::locale::classic()); --pos) {
-  };
-  return str.substr(0, pos + 1);
-}
+std::string trim_right(const std::string &str);
 
 /// @brief  Removes whitespace from the beginning of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without leading spaces.
-std::string trim_left(const std::string &str) {
-  size_t pos = 0;
-  for (; pos < str.size() && std::isspace(str[pos], std::locale::classic());
-       ++pos) {
-  };
-  return str.substr(pos);
-}
+std::string trim_left(const std::string &str);
 
 /// @brief  Removes whitespace from both ends of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without leading and trailing spaces.
-std::string trim(const std::string &str) { return trim_left(trim_right(str)); }
+std::string trim(const std::string &str);
 
 /// @brief Divides a string into a list of substrings by searching for the
 /// separator.
@@ -102,6 +77,9 @@ std::string trim(const std::string &str) { return trim_left(trim_right(str)); }
 std::vector<std::string> split(const std::string &str,
                                const std::string &separator,
                                const size_t offset = 0,
+<<<<<<< HEAD
+                               const size_t end = std::string::npos);
+=======
                                const size_t end = std::string::npos) {
   std::vector<std::string> tokens;
 
@@ -123,6 +101,7 @@ std::vector<std::string> split(const std::string &str,
 
   return tokens;
 }
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Divides a string into a list of substrings by searching for the
 /// separators.
@@ -135,6 +114,9 @@ std::vector<std::string> split(const std::string &str,
 std::vector<std::string> split(const std::string &str,
                                const std::vector<std::string> &separators,
                                const size_t offset = 0,
+<<<<<<< HEAD
+                               const size_t end = std::string::npos);
+=======
                                const size_t end = std::string::npos) {
   std::vector<std::string> tokens;
 
@@ -157,22 +139,17 @@ std::vector<std::string> split(const std::string &str,
 
   return tokens;
 }
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Converts a string to lowercase letters and returns a new string,
 /// without modifying the original string.
 /// @param str Input string.
 /// @return Input string converted to lowercase letters.
-std::string to_lower(const std::string &str) {
-  std::string out = str;
-  std::transform(out.begin(), out.end(), out.begin(), ::tolower);
-  return out;
-}
+std::string to_lower(const std::string &str);
 
 /// @brief Converts a string to lowercase letters.
 /// @param str String to convert.
-void to_lower(std::string &str) {
-  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-}
+void to_lower(std::string &str);
 
 /// @brief Finds whether a string contains a specified string.
 /// @param str String to search in.
@@ -181,6 +158,9 @@ void to_lower(std::string &str) {
 /// @return True if a string contains a specified string, otherwise it returns
 /// false.
 bool contains(const std::string &str, const std::string &find,
+<<<<<<< HEAD
+              bool case_sensitive = true);
+=======
               bool case_sensitive = true) {
   if (case_sensitive) {
     return str.find(find, 0) != std::string::npos;
@@ -188,6 +168,7 @@ bool contains(const std::string &str, const std::string &find,
     return to_lower(str).find(to_lower(find), 0) != std::string::npos;
   }
 }
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Search for a substring between two delimiters from an input string.
 /// @param input Input string.
@@ -199,6 +180,9 @@ bool contains(const std::string &str, const std::string &find,
 inline bool get_text_between_delimiters(const std::string &input, size_t &start,
                                         size_t &end,
                                         const std::string &open_delimiter,
+<<<<<<< HEAD
+                                        const std::string &close_delimiter);
+=======
                                         const std::string &close_delimiter) {
   const size_t min_open = input.find(open_delimiter, start);
 
@@ -241,6 +225,7 @@ inline bool get_text_between_delimiters(const std::string &input, size_t &start,
 
   return min_open != std::string::npos && max_close != std::string::npos;
 }
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 /// @brief Extracts a substring between two delimiters from an input string.
 /// @param input Input strint.
@@ -250,6 +235,9 @@ inline bool get_text_between_delimiters(const std::string &input, size_t &start,
 inline std::string
 get_text_between_delimiters(const std::string &input,
                             const std::string &open_delimiter,
+<<<<<<< HEAD
+                            const std::string &close_delimiter);
+=======
                             const std::string &close_delimiter) {
   size_t start = 0;
   size_t end = 0;
@@ -262,5 +250,6 @@ get_text_between_delimiters(const std::string &input,
 
   return std::string();
 }
+>>>>>>> a79300d156b6810e1ea739ab780638551a9d82d6
 
 } // namespace graphxx::utils
