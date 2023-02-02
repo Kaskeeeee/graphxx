@@ -32,6 +32,8 @@
 #include "catch.hpp"
 #include "list_graph.hpp"
 
+#include <string>
+
 namespace list_graph_test {
 
 using namespace graphxx;
@@ -61,7 +63,7 @@ TEST_CASE("build directed list graph", "[list_graph][directed][build]") {
       g.add_vertex(NUM_VERTICES);
 
       REQUIRE(g.num_vertices() == NUM_VERTICES + 1);
-      
+
       for (size_t i = 0; i <= NUM_VERTICES; i++)
         REQUIRE(g.has_vertex(i));
     }
@@ -130,12 +132,29 @@ TEST_CASE("build directed list graph", "[list_graph][directed][build]") {
   }
 }
 
-TEST_CASE("build directed list graph with attributes", "[list_graph][directed][build]") {
-    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int, float> g;
-    g.add_edge(0, 1, {0, 0.1});
-    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.1f);
-}
+TEST_CASE("build directed list graph with attributes",
+          "[list_graph][directed][build]") {
 
+  SECTION("add edge with a single attribute") {
+    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int> g;
+    g.add_edge(0, 1, {10});
+    g.add_edge(1, 0, {20});
+
+    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 10);
+    REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 20);
+  }
+
+  SECTION("add edge with different types of attributes") {
+    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, std::string, int,
+                       float>
+        g;
+
+    g.add_edge(0, 1, {"foo", 42, 0.001f});
+    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == "foo");
+    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 42);
+    REQUIRE(std::get<2>(g.get_attributes(0, 1)) == 0.001f);
+  }
+}
 
 TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
   AdjacencyListGraph<unsigned long, Directedness::DIRECTED> g;
@@ -156,7 +175,7 @@ TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
     REQUIRE(g.get_target(edge01) == 1);
 
     REQUIRE(g[1].size() == 2);
-    auto edge11 = *(++g[1].begin());
+    auto edge11 = *(g[1].begin());
     auto edge12 = *(++g[1].begin());
     REQUIRE(g.get_target(edge11) == 1);
     REQUIRE(g.get_target(edge12) == 2);

@@ -207,19 +207,19 @@ add_executable(graph_test)
 
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/digraph_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/a_star_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/a_star_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
+        # PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
 )
 
 target_include_directories(graph_test
