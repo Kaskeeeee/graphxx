@@ -28,13 +28,13 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
   }
 
   std::default_random_engine generator(_seed);
-  std::uniform_int_distribution<Id> distribution(0, num_vertices - 1);
+  std::uniform_int_distribution<Vertex<G>> distribution(0, num_vertices - 1);
 
-  std::unordered_map<Id, int> out_degree;
+  std::unordered_map<Vertex<G>, int> out_degree;
 
   for (int i = 0; i < num_edges; i++) {
-    auto source_id = distribution(generator);
-    auto target_id = distribution(generator);
+    Vertex<G> source_id = distribution(generator);
+    Vertex<G> target_id = distribution(generator);
 
     if (out_degree[source_id] == max_out_degree) {
       bool found = false;
@@ -62,16 +62,16 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
       }
     }
 
-    graph.add_edge(Vertex{source_id}, Vertex{target_id});
+    graph.add_edge(source_id, target_id);
     out_degree[source_id]++;
   }
 }
 
 template <concepts::Graph G, concepts::Numeric W>
-std::unordered_map<Id, W>
+std::unordered_map<Vertex<G>, W>
 GraphGenerator::generate_random_weights(const G &graph, W min_weight,
                                         W max_weight) {
-  std::unordered_map<Id, W> weights;
+  std::unordered_map<Vertex<G>, W> weights;
 
   if (min_weight > max_weight) {
     W tmp = min_weight;

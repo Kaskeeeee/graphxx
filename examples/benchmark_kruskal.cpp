@@ -36,6 +36,7 @@
 #include "io/graphviz.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <bits/stdc++.h>
 #include <boost/graph/adjacency_list.hpp>
@@ -47,18 +48,23 @@ int main(int argc, char **argv) {
   // Graphxx
   graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
                               double>
-      g{};
+      list_graph{};
+
+  graphxx::AdjacencyMatrixGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                                double>
+      matrix_graph{};
   if (argc <= 1) {
     // default file, if not specified
     std::fstream input_file("../data/cage4.mtx");
-    graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file, g);
+    graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+        input_file, list_graph);
   } else if (argc == 2) {
     // Check if the file is a regular file and is not empty
     if (std::filesystem::is_regular_file(argv[1])) {
       if (!std::filesystem::is_empty(argv[1])) {
         std::fstream input_file(argv[1]);
-        graphxx::io::matrix_market::deserialize<decltype(g), double>(input_file,
-                                                                     g);
+        graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+            input_file, list_graph);
       } else {
         // Throw exception file empty
         throw graphxx::exceptions::EmptyFileException();
@@ -72,8 +78,9 @@ int main(int argc, char **argv) {
     throw graphxx::exceptions::TooManyArgumentsException();
   }
 
-  ankerl::nanobench::Bench().run(
-      "kruskal graphxx", [&]() { graphxx::algorithms::kruskal::visit(g); });
+  ankerl::nanobench::Bench().run("kruskal graphxx", [&]() {
+    graphxx::algorithms::kruskal::visit(list_graph);
+  });
 
   // Boost
   using graph_t =
@@ -85,12 +92,19 @@ int main(int argc, char **argv) {
   graph_t boost_graph;
   std::vector<BoostEdge> spanning_tree;
 
-  for (auto v : g) {
+  for (auto v : list_graph) {
     for (auto e : v) {
-      boost::add_edge(g.get_source(e), g.get_target(e), std::get<2>(e),
-                      boost_graph);
+      boost::add_edge(list_graph.get_source(e), list_graph.get_target(e),
+                      std::get<2>(e), boost_graph);
+
+      matrix_graph.add_edge(list_graph.get_source(e), list_graph.get_target(e),
+                            {std::get<2>(e)});
     }
   }
+
+  ankerl::nanobench::Bench().run("kruskal matrix graphxx", [&]() {
+    graphxx::algorithms::kruskal::visit(matrix_graph);
+  });
 
   ankerl::nanobench::Bench().run("kruskal boost", [&]() {
     boost::kruskal_minimum_spanning_tree(boost_graph,
