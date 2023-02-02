@@ -31,6 +31,7 @@
 
 #pragma once
 
+#include "adaptors/map_list.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
 
@@ -42,15 +43,13 @@ namespace graphxx {
 
 template <concepts::Identifier IdType = DefaultIdType,
           Directedness D = Directedness::DIRECTED, typename... AttributesType>
-class AdjacencyMatrixGraph
-    : public std::vector<std::unordered_map<
-          IdType, std::tuple<IdType, IdType, AttributesType>>> {
+class AdjacencyMatrixGraph {
 public:
-  using Id = IdType;
-  using Edge = std::tuple<Id, Id, AttributesType...>;
+  using Vertex = IdType;
+  using Edge = std::tuple<Vertex, Vertex, AttributesType...>;
   using Attributes = std::tuple<AttributesType...>;
-  using InnerRage = std::unordered_map<Id, Edge>;
-  using Base = std::vector<InnerRage>;
+  using EdgeMap = MapList<Vertex, Edge>;
+  using AdjacencyMatrix = std::vector<EdgeMap>;
 
   static constexpr Directedness DIRECTEDNESS = D;
 
@@ -58,20 +57,55 @@ public:
   AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
 
   void add_vertex();
-  void add_vertex(Id);
-  void remove_vertex(Id);
+  void add_vertex(Vertex vertex);
+  void remove_vertex(Vertex vertex);
 
-  void add_edge(Id, Id, Attributes = {});
-  void remove_edge(Id, Id);
+  void add_edge(Vertex source, Vertex target, Attributes attributes = {});
+  void remove_edge(Vertex source, Vertex target);
 
-  void set_attributes(Id, Id, Attributes);
-  void get_attributes(Id, Id) const;
+  /// @brief Get edge tuple based on the vertices it connects.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return A tuple composed of source id, destination id and a variable
+  /// number of attributes.
+  const Edge &get_edge(Vertex source, Vertex target) const;
 
-  Id source(Edge) const;
-  Id target(Edge) const;
+  void set_attributes(Vertex source, Vertex target, Attributes attributes = {});
+  Attributes get_attributes(Vertex source, Vertex target) const;
+
+  Vertex source(Edge &edge) const;
+  Vertex target(Edge &edge) const;
+
+  /// @brief Get number of edges attributes.
+  /// @return Number of edges attributes.
+  size_t num_attributes() const;
 
   size_t num_vertices() const;
   size_t num_edges() const;
+
+  /// @brief
+  /// @param vertex
+  /// @return
+  bool has_vertex(Vertex vertex) const;
+
+  /// @brief
+  /// @param source
+  /// @param target
+  /// @return
+  bool has_edge(Vertex source, Vertex target) const;
+
+  const EdgeMap &operator[](Vertex vertex) const;
+
+  /// @brief Returns an iterator that points to the first element in the
+  /// adjacency list.
+  AdjacencyMatrix::iterator begin() { return _adj.begin(); }
+
+  /// @brief Returns an iterator that points one past the last element in the
+  /// adjacency list.
+  AdjacencyMatrix::iterator end() { return _adj.end(); }
+
+private:
+  AdjacencyMatrix _adj;
 };
 } // namespace graphxx
 

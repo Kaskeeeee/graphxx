@@ -1,51 +1,96 @@
 
-#include <unordered_map>
+#include <cstddef>  // std::ptrdiff_t
 #include <iterator> // std::bidirectional_iterator_tag
-#include <cstddef> // std::ptrdiff_t
+#include <unordered_map>
 
 namespace graphxx {
 
-template <typename Key, typename Value> class MapList : std::unordered_map<Key, Value> {
+template <typename Key, typename Value>
+class MapList : public std::unordered_map<Key, Value> {
+public:
+  using Base = std::unordered_map<Key, Value>;
 
-    public:
-        using Base = std::unordered_map<Key, Value>;
+  class iterator {
+  public:
+    using difference_type = int;
+    using value_type = Value;
+    using reference = Value &;
+    using pointer = Value *;
+    using iterator_category = std::bidirectional_iterator_tag;
 
-    struct Iterator {
+    iterator(){};
+    iterator(typename std::unordered_map<Key, Value>::iterator it) : _it{it} {}
 
-        using iterator_category = std::bidirectional_iterator_tag;
-        using difference_type = std::ptrdiff_t;
-        using value_type = Value;
-        using pointer = Value*;
-        using reference = Value&;
+    reference operator*() const { return _it->second; }
+    iterator &operator++() {
+      ++_it;
+      return *this;
+    }
+    iterator operator++(int) {
+      iterator i = *this;
+      ++_it;
+      return i;
+    }
+    iterator &operator--() {
+      --_it;
+      return *this;
+    }
+    iterator operator--(int) {
+      iterator i = *this;
+      --_it;
+      return i;
+    }
+    bool operator==(const iterator &other) const { return _it == other._it; }
+    bool operator!=(const iterator &other) const { return !(*this == other); }
 
-        Iterator(Base::iterator iterator) : _iterator(iterator) {}
+  private:
+    typename Base::iterator _it;
+  };
 
-        reference operator*() const { return _iterator->second ; }
-        pointer operator->() { return &(_iterator->second); }
+  class const_iterator {
+  public:
+    using difference_type = int;
+    using value_type = Value;
+    using reference = const Value &;
+    using pointer = const Value *;
+    using iterator_category = std::bidirectional_iterator_tag;
 
-        Iterator& operator++() { ++_iterator; return *this; }
-        Iterator operator++(int) { auto temp = *this; ++_iterator; return temp; }
+    const_iterator(typename Base::const_iterator it) : _it{it} {}
 
-        Iterator& operator--() { --_iterator; return *this; }
-        Iterator operator--(int) { auto temp = *this; --_iterator; return temp; }
-
-        friend bool operator==(const Iterator& lhs, const Iterator& rhs)
-        { return lhs._iterator == rhs._iterator; }
-
-        friend bool operator!=(const Iterator& lhs, const Iterator& rhs)
-        { return !(lhs == rhs); }
-
-        private:
-            Base::iterator _iterator;
-    };
-
-    Iterator begin() {
-        return Iterator(Base::begin());
+    reference operator*() const { return _it->second; }
+    const_iterator &operator++() {
+      ++_it;
+      return *this;
+    }
+    const_iterator operator++(int) {
+      const_iterator i = *this;
+      ++_it;
+      return i;
+    }
+    const_iterator &operator--() {
+      --_it;
+      return *this;
+    }
+    const_iterator operator--(int) {
+      const_iterator i = *this;
+      --_it;
+      return i;
+    }
+    bool operator==(const const_iterator &other) const {
+      return _it == other._it;
+    }
+    bool operator!=(const const_iterator &other) const {
+      return !(*this == other);
     }
 
-    Iterator end() {
-        return Iterator(Base::end());
-    }
+  private:
+    typename Base::const_iterator _it;
+  };
 
+  iterator begin() { return iterator(Base::begin()); }
+  iterator end() { return iterator(Base::end()); }
+  const_iterator begin() const { return const_iterator(Base::begin()); }
+  const_iterator end() const { return const_iterator(Base::end()); }
 };
+
 } // namespace graphxx
