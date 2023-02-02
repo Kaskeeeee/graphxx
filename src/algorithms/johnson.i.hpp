@@ -49,7 +49,7 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
   WeightMap<G, Distance> weight_map;
 
   auto get_weight = [&](Edge<G> e) {
-    return weight_map[{graph.source(e), graph.target(e)}];
+    return weight_map[{graph.get_source(e), graph.get_target(e)}];
   };
 
   // Add new edge from q to every other vertex
@@ -69,8 +69,8 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
   for (Vertex<G> vertex = 0; vertex < graph.size(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
-      weight_map[edge] += bf_tree[graph.source(edge)].distance -
-                          bf_tree[graph.target(edge)].distance;
+      weight_map[edge] += bf_tree[graph.get_source(edge)].distance -
+                          bf_tree[graph.get_target(edge)].distance;
     }
   }
 

@@ -78,8 +78,8 @@ std::vector<Edge<G>> visit(const G &graph, Weight weight) {
     Edge<G> edge = std::get<1>(queue.top());
     queue.pop();
 
-    Vertex<G> source = graph.source(edge);
-    Vertex<G> target = graph.target(edge);
+    Vertex<G> source = graph.get_source(edge);
+    Vertex<G> target = graph.get_target(edge);
 
     if (find_representative(cluster_map, source) !=
         find_representative(cluster_map, target)) {

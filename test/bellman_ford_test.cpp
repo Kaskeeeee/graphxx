@@ -64,14 +64,14 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   */
 
   auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.source(e), g.target(e)}];
+    return weight[{g.get_source(e), g.get_target(e)}];
   };
 
   SECTION("throws on negative cycle found") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -84,7 +84,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -101,7 +101,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -118,7 +118,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -137,7 +137,7 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 

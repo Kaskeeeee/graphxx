@@ -71,8 +71,8 @@ concept HasGraphBasicMethods =
       { g.num_edges() } -> std::same_as<size_t>;
       { g.has_vertex(vertex) } -> std::same_as<bool>;
       { g.has_edge(vertex, vertex) } -> std::same_as<bool>;
-      { g.source(edge) } -> std::convertible_to<typename G::Vertex>;
-      { g.target(edge) } -> std::convertible_to<typename G::Vertex>;
+      { g.get_source(edge) } -> std::convertible_to<typename G::Vertex>;
+      { g.get_target(edge) } -> std::convertible_to<typename G::Vertex>;
     };
 
 template <typename G>

@@ -78,7 +78,7 @@ TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
   weight[{c, d}] = 9;
 
   auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.source(e), g.target(e)}];
+    return weight[{g.get_source(e), g.get_target(e)}];
   };
 
   SECTION("find mimimum spanning tree") {

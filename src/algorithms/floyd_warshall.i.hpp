@@ -48,7 +48,7 @@ DistanceMatrix<Vertex<G>, Distance> visit(const G &graph, Weight weight) {
   for (auto &out_edge_list : graph) {
     matrix.emplace_back();
     for (auto &&edge : out_edge_list) {
-      Vertex<G> v = graph.target(edge);
+      Vertex<G> v = graph.get_target(edge);
       fill_vector(
           matrix[u], v,
           Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});

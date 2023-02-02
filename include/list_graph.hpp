@@ -103,12 +103,12 @@ public:
   /// @brief Get edge source vertex.
   /// @param edge The edge to extract the source from.
   /// @return Id of the source vertex.
-  Vertex source(Edge &edge) const;
+  Vertex get_source(Edge &edge) const;
 
   /// @brief Get edge target vertex.
   /// @param edge The edge to extract the target from.
   /// @return Id of the target vertex.
-  Vertex target(Edge &edge) const;
+  Vertex get_target(Edge &edge) const;
 
   /// @brief Updates edge attributes tuple.
   /// @param source Id of the source vertex.

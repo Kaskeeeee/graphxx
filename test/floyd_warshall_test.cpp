@@ -66,14 +66,14 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
   */
 
   auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.source(e), g.target(e)}];
+    return weight[{g.get_source(e), g.get_target(e)}];
   };
 
   SECTION("finds the shortest path length with all positive weights") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -98,7 +98,7 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -123,7 +123,7 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -150,7 +150,7 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -206,7 +206,7 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -232,7 +232,7 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
       auto out_edge_list = g[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 

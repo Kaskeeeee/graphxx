@@ -77,7 +77,7 @@ visit(const G &graph, Vertex<G> source, Vertex<G> target,
     }
 
     for (auto edge : graph[u]) {
-      auto v = graph.target(edge);
+      auto v = graph.get_target(edge);
       Distance edge_weight = weight(edge);
 
       if (edge_weight < 0) {

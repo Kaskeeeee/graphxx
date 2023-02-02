@@ -71,7 +71,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
   */
 
   auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.source(e), g.target(e)}];
+    return weight[{g.get_source(e), g.get_target(e)}];
   };
 
   auto get_heuristic = [&](typename Graph::Id v) {
@@ -83,7 +83,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -97,7 +97,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -118,7 +118,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -153,7 +153,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -176,7 +176,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 
@@ -196,7 +196,7 @@ TEST_CASE("A* shortest paths", "[a_star]") {
       auto out_edge_list = g[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
       }
     }
 

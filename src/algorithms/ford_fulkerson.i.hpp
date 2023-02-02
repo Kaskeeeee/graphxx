@@ -70,12 +70,12 @@ DistanceTree<G, Distance> bfs(const G &graph, const DG &digraph,
             "negative edge weight found");
       }
 
-      Vertex<G> adjacent = graph.target(out_edge);
+      Vertex<G> adjacent = graph.get_target(out_edge);
 
       Distance cf;
 
-      if (digraph.source(out_edge) != INVALID_VERTEX<G> &&
-          digraph.target(out_edge) != INVALID_VERTEX<G>) {
+      if (digraph.get_source(out_edge) != INVALID_VERTEX<G> &&
+          digraph.get_target(out_edge) != INVALID_VERTEX<G>) {
         cf = edge_capacity(out_edge) - edges_flow.at(out_edge);
       } else {
         cf = edge_capacity(out_edge) + edges_flow.at(out_edge);
@@ -123,8 +123,8 @@ FFpair<G, Distance> visit(const G &graph, Vertex<G> &source, Vertex<G> &sink,
     }
 
     for (Vertex<G> v = sink; v != source; v = tree[v].parent) {
-      if (graph.source(tree[v].edge) != INVALID_VERTEX<G> &&
-          graph.target(tree[v].edge) != INVALID_VERTEX<G>) {
+      if (graph.get_source(tree[v].edge) != INVALID_VERTEX<G> &&
+          graph.get_target(tree[v].edge) != INVALID_VERTEX<G>) {
         flow[tree[v].edge] += path_flow;
       } else {
         flow[tree[v].edge] -= path_flow;

@@ -48,7 +48,7 @@ void tarjan_rec(const G &graph, Vertex<G> v, TarjanTree &tarjan_tree,
   tarjan_tree[v].on_stack = true;
 
   for (auto edge : graph[v]) {
-    auto target = graph.target(edge);
+    auto target = graph.get_target(edge);
     if (tarjan_tree[target].index == -1) {
       tarjan_rec(graph, target, tarjan_tree, scc_vector, stack, index);
       tarjan_tree[v].low_link =

@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
   for (auto v : g) {
     for (auto e : v) {
-      boost::add_edge(g.source(e), g.target(e), boost_graph);
+      boost::add_edge(g.get_source(e), g.get_target(e), boost_graph);
     }
   }
 

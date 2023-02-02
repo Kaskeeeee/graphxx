@@ -87,7 +87,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
 
   for (auto vertex : graph) {
     for (auto edge : vertex) {
-      out << (graph.source(edge) + 1) << " " << (graph.target(edge) + 1)
+      out << (graph.get_source(edge) + 1) << " " << (graph.get_target(edge) + 1)
           << std::endl;
     }
   }

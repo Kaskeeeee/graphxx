@@ -66,7 +66,7 @@ std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
     queue.pop();
 
     for (auto edge : graph[u]) {
-      auto v = graph.target(edge);
+      auto v = graph.get_target(edge);
       Distance edge_weight = weight(edge);
 
       if (edge_weight < 0) {

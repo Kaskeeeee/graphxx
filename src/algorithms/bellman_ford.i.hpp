@@ -57,15 +57,15 @@ std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
       auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
         auto edge_weight = weight(edge);
-        auto source_distance = distance_tree[graph.source(edge)].distance;
-        auto target_distance = distance_tree[graph.target(edge)].distance;
-        auto edge_target = graph.target(edge);
+        auto source_distance = distance_tree[graph.get_source(edge)].distance;
+        auto target_distance = distance_tree[graph.get_target(edge)].distance;
+        auto edge_target = graph.get_target(edge);
 
         if (!sum_will_overflow(source_distance, edge_weight) &&
             source_distance != distance_upperbound &&
             source_distance + edge_weight < target_distance) {
           distance_tree[edge_target].distance = source_distance + edge_weight;
-          distance_tree[edge_target].parent = graph.source(edge);
+          distance_tree[edge_target].parent = graph.get_source(edge);
           at_least_one_edge_relaxed = true;
         }
       }
@@ -82,8 +82,8 @@ std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
   for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     auto out_edge_list = graph[vertex];
     for (auto edge : out_edge_list) {
-      auto edge_source = graph.source(edge);
-      auto edge_target = graph.target(edge);
+      auto edge_source = graph.get_source(edge);
+      auto edge_target = graph.get_target(edge);
 
       if (!sum_will_overflow(distance_tree[edge_source].distance,
                              weight(edge)) &&

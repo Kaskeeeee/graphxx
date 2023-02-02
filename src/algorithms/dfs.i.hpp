@@ -75,7 +75,7 @@ void visit_rec(const G &graph, Vertex<G> vertex,
   distance_tree[vertex].discovery_time = ++time;
 
   for (auto edge : graph[vertex]) {
-    Vertex<G> adjacent = graph.target(edge);
+    Vertex<G> adjacent = graph.get_target(edge);
 
     if (distance_tree[adjacent].status == VertexStatus::READY) {
       distance_tree[adjacent].parent = vertex;
