@@ -69,8 +69,14 @@ template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Vertex source,
                                                             Vertex target,
                                                             Attributes attrs) {
-  add_vertex(source);
-  add_vertex(target);
+  if (has_edge(source, target))
+    return;
+
+  if (!has_vertex(source))
+    add_vertex(source);
+
+  if (!has_vertex(target))
+    add_vertex(target);
 
   std::apply(
       [&](auto &&...props) {
@@ -79,11 +85,13 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(Vertex source,
       attrs);
 
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    std::apply(
-        [&](auto &&...props) {
-          _adj[target].emplace_back(target, source, props...);
-        },
-        attrs);
+    if (source != target) {
+      std::apply(
+          [&](auto &&...props) {
+            _adj[target].emplace_back(target, source, props...);
+          },
+          attrs);
+    }
   }
 };
 

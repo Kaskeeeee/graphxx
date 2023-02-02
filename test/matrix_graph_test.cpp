@@ -30,16 +30,16 @@
  */
 
 #include "catch.hpp"
-#include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <string>
 
-namespace list_graph_test {
+namespace matrix_graph_test {
 
 using namespace graphxx;
 
-TEST_CASE("build directed list graph", "[list_graph][directed][build]") {
-  AdjacencyListGraph<unsigned long, Directedness::DIRECTED> g;
+TEST_CASE("build directed matrix graph", "[matrix_graph][directed][build]") {
+  AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED> g;
 
   SECTION("empty graph has no vertices or edges") {
     REQUIRE(g.num_vertices() == 0);
@@ -68,7 +68,7 @@ TEST_CASE("build directed list graph", "[list_graph][directed][build]") {
         REQUIRE(g.has_vertex(i));
     }
 
-    SECTION("removing vertices does not change the adjacency list size") {
+    SECTION("removing vertices does not change the adjacency matrix size") {
       g.add_vertex(NUM_VERTICES);
       g.remove_vertex(NUM_VERTICES - 1);
       REQUIRE(g.num_vertices() == NUM_VERTICES + 1);
@@ -145,11 +145,11 @@ TEST_CASE("build directed list graph", "[list_graph][directed][build]") {
   }
 }
 
-TEST_CASE("build directed list graph with attributes",
-          "[list_graph][directed][build]") {
+TEST_CASE("build directed matrix graph with attributes",
+          "[matrix_graph][directed][build]") {
 
   SECTION("add edge with a single attribute") {
-    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int> g;
     g.add_edge(0, 1, {10});
     g.add_edge(1, 0, {20});
 
@@ -159,8 +159,8 @@ TEST_CASE("build directed list graph with attributes",
   }
 
   SECTION("add edge with different types of attributes") {
-    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, std::string, int,
-                       float>
+    AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, std::string,
+                         int, float>
         g;
 
     g.add_edge(0, 1, {"foo", 42, 0.001f});
@@ -171,7 +171,7 @@ TEST_CASE("build directed list graph with attributes",
   }
 
   SECTION("update edge attributes") {
-    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int, float> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int, float> g;
     g.add_edge(0, 1, {42, 0.0f});
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
@@ -184,7 +184,7 @@ TEST_CASE("build directed list graph with attributes",
   }
 
   SECTION("update non existing edge has no effect") {
-    AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int, float> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int, float> g;
     g.add_edge(0, 1, {42, 0.0f});
 
     g.set_attributes(1, 0, {0, 0.42f});
@@ -194,8 +194,8 @@ TEST_CASE("build directed list graph with attributes",
   }
 }
 
-TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
-  AdjacencyListGraph<unsigned long, Directedness::DIRECTED> g;
+TEST_CASE("manage directed matrix graph", "[matrix_graph][directed][manage]") {
+  AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED> g;
   g.add_vertex(10);
   g.add_edge(0, 1);
   g.add_edge(1, 1);
@@ -235,14 +235,14 @@ TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
   }
 
   SECTION("graph should be iterable") {
-    for (auto edgeList : g) {
-      for (auto edge : edgeList) {
+    for (auto edgematrix : g) {
+      for (auto edge : edgematrix) {
         REQUIRE(g.has_edge(g.get_source(edge), g.get_target(edge)) == true);
       }
     }
   }
 
-  SECTION("adjacency list should be iterable") {
+  SECTION("adjacency matrix should be iterable") {
     for (auto edge : g[0]) {
       REQUIRE(g.get_source(edge) == 0);
       REQUIRE(g.get_target(edge) == 1);
@@ -250,8 +250,9 @@ TEST_CASE("manage directed list graph", "[list_graph][directed][manage]") {
   }
 }
 
-TEST_CASE("build undirected list graph", "[list_graph][undirected][build]") {
-  AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED> g;
+TEST_CASE("build undirected matrix graph",
+          "[matrix_graph][undirected][build]") {
+  AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED> g;
 
   SECTION("empty graph has no vertices or edges") {
     REQUIRE(g.num_vertices() == 0);
@@ -280,7 +281,7 @@ TEST_CASE("build undirected list graph", "[list_graph][undirected][build]") {
         REQUIRE(g.has_vertex(i));
     }
 
-    SECTION("removing vertices does not change the adjacency list size") {
+    SECTION("removing vertices does not change the adjacency matrix size") {
       g.add_vertex(NUM_VERTICES);
       g.remove_vertex(NUM_VERTICES - 1);
       REQUIRE(g.num_vertices() == NUM_VERTICES + 1);
@@ -356,11 +357,11 @@ TEST_CASE("build undirected list graph", "[list_graph][undirected][build]") {
   }
 }
 
-TEST_CASE("build undirected list graph with attributes",
-          "[list_graph][undirected][build]") {
+TEST_CASE("build undirected matrix graph with attributes",
+          "[matrix_graph][undirected][build]") {
 
   SECTION("add edge with a single attribute") {
-    AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int> g;
     g.add_edge(0, 1, {10});
     g.add_edge(1, 2, {20});
 
@@ -371,8 +372,8 @@ TEST_CASE("build undirected list graph with attributes",
   }
 
   SECTION("add edge with different types of attributes") {
-    AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, std::string,
-                       int, float>
+    AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, std::string,
+                         int, float>
         g;
 
     g.add_edge(0, 1, {"foo", 42, 0.001f});
@@ -383,7 +384,7 @@ TEST_CASE("build undirected list graph with attributes",
   }
 
   SECTION("update edge attributes") {
-    AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
     g.add_edge(0, 1, {42, 0.0f});
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
@@ -396,7 +397,7 @@ TEST_CASE("build undirected list graph with attributes",
   }
 
   SECTION("update non existing edge has no effect") {
-    AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
+    AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
     g.add_edge(0, 1, {42, 0.0f});
 
     g.set_attributes(1, 0, {0, 0.42f});
@@ -406,8 +407,9 @@ TEST_CASE("build undirected list graph with attributes",
   }
 }
 
-TEST_CASE("manage undirected list graph", "[list_graph][undirected][manage]") {
-  AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED> g;
+TEST_CASE("manage undirected matrix graph",
+          "[matrix_graph][undirected][manage]") {
+  AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED> g;
   g.add_vertex(10);
   g.add_edge(0, 1);
   g.add_edge(1, 1);
@@ -450,14 +452,14 @@ TEST_CASE("manage undirected list graph", "[list_graph][undirected][manage]") {
   }
 
   SECTION("graph should be iterable") {
-    for (auto edgeList : g) {
-      for (auto edge : edgeList) {
+    for (auto edgematrix : g) {
+      for (auto edge : edgematrix) {
         REQUIRE(g.has_edge(g.get_source(edge), g.get_target(edge)) == true);
       }
     }
   }
 
-  SECTION("adjacency list should be iterable") {
+  SECTION("adjacency matrix should be iterable") {
     for (auto edge : g[0]) {
       REQUIRE(g.get_source(edge) == 0);
       REQUIRE(g.get_target(edge) == 1);
@@ -465,4 +467,4 @@ TEST_CASE("manage undirected list graph", "[list_graph][undirected][manage]") {
   }
 }
 
-} // namespace list_graph_test
+} // namespace matrix_graph_test
