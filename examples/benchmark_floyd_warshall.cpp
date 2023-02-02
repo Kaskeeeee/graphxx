@@ -29,7 +29,7 @@
  * @version v1.0
  */
 
-#include "algorithms/dijkstra.hpp"
+#include "algorithms/floyd_warshall.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "io/matrix_market.hpp"
@@ -39,10 +39,23 @@
 #include <bits/stdc++.h> //DA TENERE?
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/exterior_property.hpp>
+#include <boost/graph/floyd_warshall_shortest.hpp>
 #include <filesystem>
 #include <iostream>
 #include <nanobench.h>
+
+using graph_t =
+    boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                          boost::property<boost::vertex_distance_t, double>,
+                          boost::property<boost::edge_weight_t, double>>;
+typedef boost::property_map<graph_t, boost::edge_weight_t>::type WeightMap;
+
+// Declare a matrix type and its corresponding property map that
+// will contain the distances between each pair of vertices.
+typedef boost::exterior_vertex_property<graph_t, double> DistanceProperty;
+typedef DistanceProperty::matrix_type DistanceMatrix;
+typedef DistanceProperty::matrix_map_type DistanceMatrixMap;
 
 int main(int argc, char **argv) {
   // Graphxx
@@ -76,15 +89,12 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("dijkstra graphxx", [&]() {
-    graphxx::algorithms::dijkstra::visit(list_graph, 0);
+  ankerl::nanobench::Bench().run("floyd warshall graphxx", [&]() {
+    graphxx::algorithms::floyd_warshall::visit(list_graph);
   });
 
   // Boost
-  using graph_t =
-      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
-                            boost::property<boost::vertex_distance_t, double>,
-                            boost::property<boost::edge_weight_t, double>>;
+
   using BoostVertex = boost::graph_traits<graph_t>::vertex_descriptor;
 
   graph_t boost_graph;
@@ -98,18 +108,19 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("dijkstra matrix graphxx", [&]() {
-    graphxx::algorithms::dijkstra::visit(matrix_graph, 0);
+  ankerl::nanobench::Bench().run("floyd warshall matrix graphxx", [&]() {
+    graphxx::algorithms::floyd_warshall::visit(matrix_graph);
   });
 
-  BoostVertex start = boost::vertex(0, boost_graph);
+  WeightMap weight_pmap = boost::get(boost::edge_weight, boost_graph);
+  DistanceMatrix distances(num_vertices(boost_graph));
+  DistanceMatrixMap dm(distances, boost_graph);
 
   // boost::write_graphviz(std::cout, boost_graph);
 
-  ankerl::nanobench::Bench().run("dijkstra boost", [&]() {
-    boost::dijkstra_shortest_paths(
-        boost_graph, start,
-        boost::distance_map(get(boost::vertex_distance, boost_graph)));
+  ankerl::nanobench::Bench().run("floyd warshall boost", [&]() {
+    boost::floyd_warshall_all_pairs_shortest_paths(
+        boost_graph, dm, boost::weight_map(weight_pmap));
   });
 
   return 0;

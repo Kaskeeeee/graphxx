@@ -42,6 +42,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <filesystem>
+#include <iostream>
 #include <nanobench.h>
 
 int main(int argc, char **argv) {
@@ -58,7 +59,7 @@ int main(int argc, char **argv) {
     std::fstream input_file("../data/cage4.mtx");
     graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
         input_file, list_graph);
-  } else if (argc == 2) {
+  } else if (argc >= 2) {
     // Check if the file is a regular file and is not empty
     if (std::filesystem::is_regular_file(argv[1])) {
       if (!std::filesystem::is_empty(argv[1])) {
@@ -66,16 +67,13 @@ int main(int argc, char **argv) {
         graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
             input_file, list_graph);
       } else {
-        // Throw exception file empty
-        throw graphxx::exceptions::EmptyFileException();
+        std::cout << "An empty file was passed as input" << std::endl;
+        exit(1);
       }
     } else {
-      // Throw exception file not exists
-      throw graphxx::exceptions::NotFileException();
+      std::cout << "File '" << argv[1] << "' does not exists" << std::endl;
+      exit(1);
     }
-  } else {
-    // Throw exception too many args
-    throw graphxx::exceptions::TooManyArgumentsException();
   }
 
   ankerl::nanobench::Bench().run("kruskal graphxx", [&]() {

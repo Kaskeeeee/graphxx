@@ -94,12 +94,12 @@ public:
   /// @brief Get edge source vertex.
   /// @param edge The edge to extract the source from.
   /// @return Id of the source vertex.
-  Vertex get_source(Edge &edge) const;
+  Vertex get_source(const Edge &edge) const;
 
   /// @brief Get edge target vertex.
   /// @param edge The edge to extract the target from.
   /// @return Id of the target vertex.
-  Vertex get_target(Edge &edge) const;
+  Vertex get_target(const Edge &edge) const;
 
   /// @brief Updates edge attributes tuple.
   /// @param source Id of the source vertex.
@@ -148,6 +148,10 @@ public:
   /// @brief Returns an iterator that points one past the last element in the
   /// adjacency map.
   AdjacencyMatrix::iterator end();
+
+  AdjacencyMatrix::const_iterator begin() const;
+
+  AdjacencyMatrix::const_iterator end() const;
 
 private:
   AdjacencyMatrix _adj;

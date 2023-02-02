@@ -39,9 +39,6 @@ GraphException::GraphException(std::string message)
 
 const char *GraphException::what() const noexcept { return _message.c_str(); };
 
-OutOfIdsException::OutOfIdsException()
-    : GraphException("Out of IDs exception"){};
-
 NoSuchVertexException::NoSuchVertexException()
     : GraphException("Vertex is missing from graph exception"){};
 
@@ -68,14 +65,5 @@ BadGraphmlParseException::BadGraphmlParseException()
 
 BadMatrixMarketParseException::BadMatrixMarketParseException()
     : GraphException("Bad matrix market file syntax"){};
-
-TooManyArgumentsException::TooManyArgumentsException()
-    : GraphException("Too many arguments passed"){};
-
-NotFileException::NotFileException()
-    : GraphException("Path indicated is not a regular file"){};
-
-EmptyFileException::EmptyFileException()
-    : GraphException("File is empty"){};
 
 } // namespace graphxx::exceptions

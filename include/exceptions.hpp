@@ -47,11 +47,6 @@ protected:
   std::string _message;
 };
 
-/// @brief Exception thrown when all ids are used
-struct OutOfIdsException : GraphException {
-  OutOfIdsException();
-};
-
 /// @brief Exception thrown when trying to do some operations on vertices that
 /// don't exist
 struct NoSuchVertexException : GraphException {
@@ -87,18 +82,6 @@ struct BadGraphmlParseException : GraphException {
 
 struct BadMatrixMarketParseException : GraphException {
   BadMatrixMarketParseException();
-};
-
-struct TooManyArgumentsException : GraphException {
-  TooManyArgumentsException();
-};
-
-struct NotFileException : GraphException {
-  NotFileException();
-};
-
-struct EmptyFileException : GraphException {
-  EmptyFileException();
 };
 
 } // namespace graphxx::exceptions

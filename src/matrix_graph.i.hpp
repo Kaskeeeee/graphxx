@@ -170,7 +170,7 @@ template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::Vertex
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_source(
-    Edge &edge) const {
+    const Edge &edge) const {
   return std::get<0>(edge);
 }
 
@@ -178,7 +178,7 @@ template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::Vertex
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_target(
-    Edge &edge) const {
+    const Edge &edge) const {
   return std::get<1>(edge);
 }
 
@@ -228,6 +228,18 @@ template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::iterator
 AdjacencyMatrixGraph<Id, D, AttributesType...>::end() {
   return _adj.end();
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
+AdjacencyMatrixGraph<Id, D, AttributesType...>::begin() const {
+  return _adj.cbegin();
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
+AdjacencyMatrixGraph<Id, D, AttributesType...>::end() const {
+  return _adj.cend();
 }
 
 } // namespace graphxx

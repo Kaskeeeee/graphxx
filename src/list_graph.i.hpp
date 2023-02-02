@@ -141,13 +141,15 @@ size_t AdjacencyListGraph<Id, D, AttributesType...>::num_attributes() const {
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyListGraph<Id, D, AttributesType...>::Vertex
-AdjacencyListGraph<Id, D, AttributesType...>::get_source(Edge &edge) const {
+AdjacencyListGraph<Id, D, AttributesType...>::get_source(
+    const Edge &edge) const {
   return std::get<0>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyListGraph<Id, D, AttributesType...>::Vertex
-AdjacencyListGraph<Id, D, AttributesType...>::get_target(Edge &edge) const {
+AdjacencyListGraph<Id, D, AttributesType...>::get_target(
+    const Edge &edge) const {
   return std::get<1>(edge);
 }
 
@@ -210,6 +212,18 @@ template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyList::iterator
 AdjacencyListGraph<Id, D, AttributesType...>::end() {
   return _adj.end();
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyList::const_iterator
+AdjacencyListGraph<Id, D, AttributesType...>::begin() const {
+  return _adj.cbegin();
+}
+
+template <concepts::Identifier Id, Directedness D, typename... AttributesType>
+AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyList::const_iterator
+AdjacencyListGraph<Id, D, AttributesType...>::end() const {
+  return _adj.cend();
 }
 
 } // namespace graphxx

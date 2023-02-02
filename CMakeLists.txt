@@ -414,8 +414,26 @@ if(BENCHMARK)
                         PUBLIC ${Boost_LIBRARIES}
                         PRIVATE nanobench
                 )
+
+                # floyd_warshall
+                add_executable(benchmark_floyd_warshall)
+
+                target_sources(benchmark_floyd_warshall
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_floyd_warshall.cpp
+                )
+
+                target_include_directories(benchmark_floyd_warshall
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_floyd_warshall
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
                 install(
-                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford
+                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall
                         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
                 )
         endif()
