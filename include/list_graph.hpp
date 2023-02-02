@@ -150,10 +150,12 @@ public:
   /// @return Edge list of a vertex.
   const EdgeList &operator[](Vertex vertex) const;
 
-  /// @brief Returns an iterator that points to the first element in the adjacency list.
+  /// @brief Returns an iterator that points to the first element in the
+  /// adjacency list.
   AdjacencyList::iterator begin();
 
-  /// @brief Returns an iterator that points one past the last element in the adjacency list.  
+  /// @brief Returns an iterator that points one past the last element in the
+  /// adjacency list.
   AdjacencyList::iterator end();
 
 private:

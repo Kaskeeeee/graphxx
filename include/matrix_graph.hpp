@@ -51,16 +51,37 @@ public:
   using EdgeMap = MapList<Vertex, Edge>;
   using AdjacencyMatrix = std::vector<EdgeMap>;
 
+  /// @brief Indicates whether the graph is directed or undirected
   static constexpr Directedness DIRECTEDNESS = D;
 
   AdjacencyMatrixGraph();
   AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
 
+  /// @brief Adds a new vertex to the graph.
+  ///        The vertex id will be the index of the first free position in the
+  ///        adjacency list
   void add_vertex();
+
+  /// @brief Adds a new vertex with specific id to the graph.
+  ///        Warning! This operation creates in adjacency list all the positions
+  ///        with index < vertex with empty edge list.
+  /// @param vertex Id of the vertex to insert.
   void add_vertex(Vertex vertex);
+
+  /// @brief Add new edge to the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @param attributes Tuple containing edge attributes.
   void remove_vertex(Vertex vertex);
 
+  /// @brief Remove edge from the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
   void add_edge(Vertex source, Vertex target, Attributes attributes = {});
+
+  /// @brief Remove edge from the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
   void remove_edge(Vertex source, Vertex target);
 
   /// @brief Get edge tuple based on the vertices it connects.
@@ -70,39 +91,63 @@ public:
   /// number of attributes.
   const Edge &get_edge(Vertex source, Vertex target) const;
 
-  void set_attributes(Vertex source, Vertex target, Attributes attributes = {});
-  Attributes get_attributes(Vertex source, Vertex target) const;
+  /// @brief Get edge source vertex.
+  /// @param edge The edge to extract the source from.
+  /// @return Id of the source vertex.
+  Vertex get_source(Edge &edge) const;
 
-  Vertex source(Edge &edge) const;
-  Vertex target(Edge &edge) const;
+  /// @brief Get edge target vertex.
+  /// @param edge The edge to extract the target from.
+  /// @return Id of the target vertex.
+  Vertex get_target(Edge &edge) const;
+
+  /// @brief Updates edge attributes tuple.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @param attributes Tuple containing new edge attributes.
+  void set_attributes(Vertex source, Vertex target, Attributes attributes = {});
+
+  /// @brief Retrives edge attributes tuple.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return Edges attributes tuple.
+  Attributes get_attributes(Vertex source, Vertex target) const;
 
   /// @brief Get number of edges attributes.
   /// @return Number of edges attributes.
   size_t num_attributes() const;
 
+  /// @brief Get number of vertices in the graph.
+  /// @return Number of vertices.
   size_t num_vertices() const;
+
+  /// @brief Get number of edges in the graph.
+  /// @return Number of edges.
   size_t num_edges() const;
 
-  /// @brief
-  /// @param vertex
-  /// @return
+  /// @brief Checks if a vertex is present in the graph.
+  /// @param vertex Vertex id.
+  /// @return True if the vertex exists.
   bool has_vertex(Vertex vertex) const;
 
-  /// @brief
-  /// @param source
-  /// @param target
-  /// @return
+  /// @brief Checks if an edge is present in the graph.
+  /// @param source Id of the source vertex.
+  /// @param target Id of the target vertex.
+  /// @return True if the edge exists.
   bool has_edge(Vertex source, Vertex target) const;
 
+  /// @brief Retrieves the adjacency map of a vertex.
+  /// @param vertex Vertex id.
+  /// @return Edge list of a vertex.
   const EdgeMap &operator[](Vertex vertex) const;
 
   /// @brief Returns an iterator that points to the first element in the
-  /// adjacency list.
-  AdjacencyMatrix::iterator begin() { return _adj.begin(); }
+  /// adjacency map.
+  AdjacencyMatrix::iterator begin();
 
   /// @brief Returns an iterator that points one past the last element in the
-  /// adjacency list.
-  AdjacencyMatrix::iterator end() { return _adj.end(); }
+  /// adjacency map.
+  AdjacencyMatrix::iterator end();
 
 private:
   AdjacencyMatrix _adj;
