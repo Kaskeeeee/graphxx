@@ -45,27 +45,32 @@
 #include <iostream>
 #include <nanobench.h>
 
-using graph_t =
+using BoostGraph =
     boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
                           boost::property<boost::vertex_distance_t, double>,
                           boost::property<boost::edge_weight_t, double>>;
-typedef boost::property_map<graph_t, boost::edge_weight_t>::type WeightMap;
+using WeightMap = boost::property_map<BoostGraph, boost::edge_weight_t>::type;
+using DistanceProperty = boost::exterior_vertex_property<BoostGraph, double>;
+using DistanceMatrix = DistanceProperty::matrix_type;
+using DistanceMatrixMap = DistanceProperty::matrix_map_type;
+using BoostVertex = boost::graph_traits<BoostGraph>::vertex_descriptor;
 
-// Declare a matrix type and its corresponding property map that
-// will contain the distances between each pair of vertices.
-typedef boost::exterior_vertex_property<graph_t, double> DistanceProperty;
-typedef DistanceProperty::matrix_type DistanceMatrix;
-typedef DistanceProperty::matrix_map_type DistanceMatrixMap;
+using ListGraph =
+    graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                                double>;
+using MatrixGraph =
+    graphxx::AdjacencyMatrixGraph<unsigned long,
+                                  graphxx::Directedness::DIRECTED, double>;
 
 int main(int argc, char **argv) {
   // Graphxx
-  graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                              double>
-      list_graph{};
+  ListGraph list_graph{};
+  MatrixGraph matrix_graph{};
 
-  graphxx::AdjacencyMatrixGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                                double>
-      matrix_graph{};
+  // Boost
+  BoostGraph boost_graph;
+
+  ankerl::nanobench::Bench bench{};
 
   if (argc <= 1) {
     // default file, if not specified
@@ -89,16 +94,6 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("floyd warshall graphxx", [&]() {
-    graphxx::algorithms::floyd_warshall::visit(list_graph);
-  });
-
-  // Boost
-
-  using BoostVertex = boost::graph_traits<graph_t>::vertex_descriptor;
-
-  graph_t boost_graph;
-
   for (auto v : list_graph) {
     for (auto e : v) {
       boost::add_edge(list_graph.get_source(e), list_graph.get_target(e),
@@ -108,20 +103,19 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("floyd warshall matrix graphxx", [&]() {
-    graphxx::algorithms::floyd_warshall::visit(matrix_graph);
-  });
-
   WeightMap weight_pmap = boost::get(boost::edge_weight, boost_graph);
   DistanceMatrix distances(num_vertices(boost_graph));
   DistanceMatrixMap dm(distances, boost_graph);
 
-  // boost::write_graphviz(std::cout, boost_graph);
-
-  ankerl::nanobench::Bench().run("floyd warshall boost", [&]() {
-    boost::floyd_warshall_all_pairs_shortest_paths(
-        boost_graph, dm, boost::weight_map(weight_pmap));
-  });
+  bench
+      .run("floyd warshall graphxx",
+           [&]() { graphxx::algorithms::floyd_warshall::visit(list_graph); })
+      .run("floyd warshall matrix graphxx",
+           [&]() { graphxx::algorithms::floyd_warshall::visit(matrix_graph); })
+      .run("floyd warshall boost", [&]() {
+        boost::floyd_warshall_all_pairs_shortest_paths(
+            boost_graph, dm, boost::weight_map(weight_pmap));
+      });
 
   return 0;
 }

@@ -432,8 +432,25 @@ if(BENCHMARK)
                         PRIVATE nanobench
                 )
 
+                # johnson
+                add_executable(benchmark_johnson)
+
+                target_sources(benchmark_johnson
+                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_johnson.cpp
+                )
+
+                target_include_directories(benchmark_johnson
+                        PRIVATE ${PROJECT_SOURCE_DIR}/src
+                )
+
+                target_link_libraries(benchmark_johnson
+                        PUBLIC graph
+                        PUBLIC ${Boost_LIBRARIES}
+                        PRIVATE nanobench
+                )
+
                 install(
-                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall
+                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall benchmark_johnson
                         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
                 )
         endif()

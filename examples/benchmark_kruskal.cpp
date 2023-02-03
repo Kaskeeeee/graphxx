@@ -45,15 +45,30 @@
 #include <iostream>
 #include <nanobench.h>
 
+using BoostGraph =
+    boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                          boost::property<boost::vertex_distance_t, double>,
+                          boost::property<boost::edge_weight_t, double>>;
+using BoostEdge = boost::graph_traits<BoostGraph>::edge_descriptor;
+
+using ListGraph =
+    graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                                double>;
+using MatrixGraph =
+    graphxx::AdjacencyMatrixGraph<unsigned long,
+                                  graphxx::Directedness::DIRECTED, double>;
+
 int main(int argc, char **argv) {
   // Graphxx
-  graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                              double>
-      list_graph{};
+  ListGraph list_graph{};
+  MatrixGraph matrix_graph{};
 
-  graphxx::AdjacencyMatrixGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                                double>
-      matrix_graph{};
+  // Boost
+  BoostGraph boost_graph;
+  std::vector<BoostEdge> spanning_tree;
+
+  ankerl::nanobench::Bench bench{};
+
   if (argc <= 1) {
     // default file, if not specified
     std::fstream input_file("../data/cage4.mtx");
@@ -76,20 +91,6 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("kruskal graphxx", [&]() {
-    graphxx::algorithms::kruskal::visit(list_graph);
-  });
-
-  // Boost
-  using graph_t =
-      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
-                            boost::property<boost::vertex_distance_t, double>,
-                            boost::property<boost::edge_weight_t, double>>;
-  using BoostEdge = boost::graph_traits<graph_t>::edge_descriptor;
-
-  graph_t boost_graph;
-  std::vector<BoostEdge> spanning_tree;
-
   for (auto v : list_graph) {
     for (auto e : v) {
       boost::add_edge(list_graph.get_source(e), list_graph.get_target(e),
@@ -100,12 +101,13 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("kruskal matrix graphxx", [&]() {
-    graphxx::algorithms::kruskal::visit(matrix_graph);
-  });
-
-  ankerl::nanobench::Bench().run("kruskal boost", [&]() {
-    boost::kruskal_minimum_spanning_tree(boost_graph,
-                                         std::back_inserter(spanning_tree));
-  });
+  bench
+      .run("kruskal graphxx",
+           [&]() { graphxx::algorithms::kruskal::visit(list_graph); })
+      .run("kruskal matrix graphxx",
+           [&]() { graphxx::algorithms::kruskal::visit(matrix_graph); })
+      .run("kruskal boost", [&]() {
+        boost::kruskal_minimum_spanning_tree(boost_graph,
+                                             std::back_inserter(spanning_tree));
+      });
 }

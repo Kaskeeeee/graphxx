@@ -43,15 +43,28 @@
 #include <iostream>
 #include <nanobench.h>
 
+using BoostGraph =
+    boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
+                          boost::property<boost::vertex_distance_t, double>,
+                          boost::no_property>;
+using BoostVertex = boost::graph_traits<BoostGraph>::vertex_descriptor;
+
+using ListGraph =
+    graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
+                                double>;
+using MatrixGraph =
+    graphxx::AdjacencyMatrixGraph<unsigned long,
+                                  graphxx::Directedness::DIRECTED, double>;
+
 int main(int argc, char **argv) {
   // Graphxx
-  graphxx::AdjacencyListGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                              double>
-      list_graph{};
+  ListGraph list_graph{};
+  MatrixGraph matrix_graph{};
 
-  graphxx::AdjacencyMatrixGraph<unsigned long, graphxx::Directedness::DIRECTED,
-                                double>
-      matrix_graph{};
+  // Boost
+  BoostGraph boost_graph;
+
+  ankerl::nanobench::Bench bench{};
 
   if (argc <= 1) {
     // default file, if not specified
@@ -75,18 +88,6 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run(
-      "dfs graphxx", [&]() { graphxx::algorithms::dfs::visit(list_graph, 0); });
-
-  // Boost
-  using graph_t =
-      boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
-                            boost::property<boost::vertex_distance_t, double>,
-                            boost::no_property>;
-  using BoostVertex = boost::graph_traits<graph_t>::vertex_descriptor;
-
-  graph_t boost_graph;
-
   for (auto v : list_graph) {
     for (auto e : v) {
       boost::add_edge(list_graph.get_source(e), list_graph.get_target(e),
@@ -95,15 +96,13 @@ int main(int argc, char **argv) {
     }
   }
 
-  ankerl::nanobench::Bench().run("dfs matrix graphxx", [&]() {
-    graphxx::algorithms::dfs::visit(matrix_graph, 0);
-  });
-
-  BoostVertex start = boost::vertex(0, boost_graph);
-
-  // boost::write_graphviz(std::cout, boost_graph);
-
-  ankerl::nanobench::Bench().run("dfs boost", [&]() {
-    boost::depth_first_search(boost_graph, boost::root_vertex(start));
-  });
+  bench
+      .run("dfs graphxx",
+           [&]() { graphxx::algorithms::dfs::visit(list_graph, 0); })
+      .run("dfs matrix graphxx",
+           [&]() { graphxx::algorithms::dfs::visit(matrix_graph, 0); })
+      .run("dfs boost", [&]() {
+        boost::depth_first_search(
+            boost_graph, boost::root_vertex(boost::vertex(0, boost_graph)));
+      });
 }

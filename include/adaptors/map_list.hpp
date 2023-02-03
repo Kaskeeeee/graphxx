@@ -5,11 +5,16 @@
 
 namespace graphxx {
 
+/// @brief A map adapter which provides an iterator on the values instead
+///       of iterating on key value pairs.
+/// @tparam Key Type of the key
+/// @tparam Value Type of the value
 template <typename Key, typename Value>
 class MapList : public std::unordered_map<Key, Value> {
 public:
   using Base = std::unordered_map<Key, Value>;
 
+  /// @brief custom iterator that returns values instead of key value pairs
   class iterator {
   public:
     using difference_type = int;
@@ -19,7 +24,7 @@ public:
     using iterator_category = std::bidirectional_iterator_tag;
 
     iterator(){};
-    iterator(typename std::unordered_map<Key, Value>::iterator it) : _it{it} {}
+    iterator(typename Base::iterator it) : _it{it} {}
 
     reference operator*() const { return _it->second; }
     iterator &operator++() {

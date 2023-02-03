@@ -36,62 +36,62 @@
 
 namespace graphxx::algorithms::johnson {
 
-template <concepts::Graph G, std::invocable<Edge<G>> Weight,
-          typename Distance>
+template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
 DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
 
-  DistanceTree<Vertex<G>, Distance> map;
-
   // New vertex
-  Vertex<G> q = graph.num_vertices();
-  graph.add_vertex(q);
+  size_t size = graph.num_vertices();
+  Vertex<G> johnson_vertex = size;
+  graph.add_vertex(johnson_vertex);
 
-  WeightMap<G, Distance> weight_map;
+  DistanceTree<Vertex<G>, Distance> distances(size + 1);
+  WeightMap<G, Distance> weight_map(size + 1);
 
   auto get_weight = [&](Edge<G> e) {
-    return weight_map[{graph.get_source(e), graph.get_target(e)}];
+    return weight_map[graph.get_source(e)][graph.get_target(e)];
   };
 
-  // Add new edge from q to every other vertex
-  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    graph.add_edge(q, vertex);
-    auto out_edge_list = graph[vertex];
-    for (auto edge : out_edge_list) {
-      weight_map[edge] = weight(edge);
+  // Add new edge from johnson_vertex to every other vertex
+  for (Vertex<G> vertex = 0; vertex < johnson_vertex; vertex++) {
+    graph.add_edge(johnson_vertex, vertex);
+    for (auto &&edge : graph[vertex]) {
+      auto source = graph.get_source(edge);
+      auto target = graph.get_target(edge);
+      weight_map[source][target] = weight(edge);
     }
+  }
+
+  for (auto &&edge : graph[johnson_vertex]) {
+    auto source = graph.get_source(edge);
+    auto target = graph.get_target(edge);
+    weight_map[source][target] = 0;
   }
 
   // Run Bellman–Ford algorithm
-  auto bf_tree = bellman_ford::visit(graph, q, weight);
+  auto bf_tree = bellman_ford::visit(graph, johnson_vertex, weight);
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
-  for (Vertex<G> vertex = 0; vertex < graph.size(); vertex++) {
-    auto out_edge_list = graph[vertex];
-    for (auto edge : out_edge_list) {
-      weight_map[edge] += bf_tree[graph.get_source(edge)].distance -
-                          bf_tree[graph.get_target(edge)].distance;
+  for (Vertex<G> vertex = 0; vertex < size; vertex++) {
+    for (auto &&edge : graph[vertex]) {
+      Vertex<G> source = graph.get_source(edge);
+      Vertex<G> target = graph.get_target(edge);
+      weight_map[source][target] +=
+          bf_tree[source].distance - bf_tree[target].distance;
     }
   }
-
-  // Remove vertex q
-  graph.remove_vertex(q);
 
   // Run Dijkstra for every vertex
-  for (Vertex<G> vertex_source = 0; vertex_source < graph.num_vertices();
-       vertex_source++) {
-    auto d_tree = dijkstra::visit(graph, vertex_source, get_weight);
-    std::vector<Node<Vertex<G>, Distance>> temp;
-    for (Vertex<G> vertex_target = 0; vertex_target < graph.num_vertices();
-         vertex_target++) {
-      temp.push_back({.distance = d_tree[vertex_target].distance +
-                                  bf_tree[vertex_target].distance -
-                                  bf_tree[vertex_source].distance,
-                      .parent = d_tree[vertex_target].parent});
+  for (Vertex<G> source = 0; source < size; source++) {
+    auto d_tree = dijkstra::visit(graph, source, get_weight);
+    for (Vertex<G> target = 0; target < size; target++) {
+      distances[source].push_back({.distance = d_tree[target].distance +
+                                               bf_tree[target].distance -
+                                               bf_tree[source].distance,
+                                   .parent = d_tree[target].parent});
     }
-    map.push_back(temp);
   }
 
-  return map;
+  return distances;
 }
 } // namespace graphxx::algorithms::johnson
