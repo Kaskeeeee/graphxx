@@ -1,7 +1,5 @@
 #include "generators/graph_generator.hpp"
 
-#if 0
-
 #include <chrono>
 #include <random>
 #include <unordered_map>
@@ -97,6 +95,4 @@ unsigned int GraphGenerator::get_seed() {
   return std::chrono::system_clock::now().time_since_epoch().count();
 }
 
-} // namespace graph
-
-#endif
+} // namespace graphxx

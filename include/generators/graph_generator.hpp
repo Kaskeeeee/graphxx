@@ -48,8 +48,8 @@ public:
                              int max_out_degree = -1, bool self_edges = true);
 
   template <concepts::Graph G, concepts::Numeric W>
-  std::unordered_map<DefaultIdType, W> generate_random_weights(const G &graph,
-                                                    W min_weight, W max_weight);
+  std::unordered_map<Vertex<G>, W>
+  generate_random_weights(const G &graph, W min_weight, W max_weight);
 
 private:
   unsigned int _seed;
@@ -58,6 +58,6 @@ private:
   unsigned int get_seed();
 };
 
-} // namespace graph
+} // namespace graphxx
 
 #include "generators/graph_generator.i.hpp"
