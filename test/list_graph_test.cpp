@@ -388,21 +388,15 @@ TEST_CASE("build undirected list graph with attributes",
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
     REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.0f);
+    REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 42);
+    REQUIRE(std::get<1>(g.get_attributes(1, 0)) == 0.0f);
 
     g.set_attributes(0, 1, {0, 0.42f});
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 0);
     REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.42f);
-  }
-
-  SECTION("update non existing edge has no effect") {
-    AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
-    g.add_edge(0, 1, {42, 0.0f});
-
-    g.set_attributes(1, 0, {0, 0.42f});
-    REQUIRE(g.num_attributes() == 2);
-    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
-    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.0f);
+    REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 0);
+    REQUIRE(std::get<1>(g.get_attributes(1, 0)) == 0.42f);
   }
 }
 

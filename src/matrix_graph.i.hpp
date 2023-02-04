@@ -31,8 +31,10 @@
 
 #include "exceptions.hpp"
 #include "matrix_graph.hpp"
+#include "tuple_utils.hpp"
 
 #include <algorithm>
+#include <iostream>
 namespace graphxx {
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
@@ -101,9 +103,9 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_vertex(
 
   for (size_t i = 0; i < _adj.size(); i++) {
     auto &inner = _adj[i];
-    auto [start, end] = std::ranges::remove_if(
-        inner, [&](auto &&edge) { return get_target(edge) == vertex; });
-    inner.erase(start, end);
+    if (inner.contains(vertex)) {
+      inner.erase(vertex);
+    }
   }
 }
 
@@ -115,16 +117,14 @@ void AdjacencyMatrixGraph<IdType, D, AttributesType...>::remove_edge(
     return;
   }
 
-  auto &source_map = _adj[source];
-  auto [start_source_map, end_source_map] = std::ranges::remove_if(
-      source_map, [&](auto &&edge) { return get_target(edge) == target; });
-  source_map.erase(start_source_map, end_source_map);
+  if (_adj[source].contains(target)) {
+    _adj[source].erase(target);
+  }
 
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    auto &target_map = _adj[target];
-    auto [start_target_map, end_target_map] = std::ranges::remove_if(
-        target_map, [&](Edge &&edge) { return get_target(edge) == source; });
-    target_map.erase(start_target_map, end_target_map);
+    if (_adj[target].contains(source)) {
+      _adj[target].erase(source);
+    }
   }
 }
 template <concepts::Identifier IdType, Directedness D,
@@ -136,17 +136,20 @@ AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_edge(
     throw exceptions::NoSuchEdgeException();
   }
 
-  return _adj[source][target];
+  return _adj.at(source).at(target);
 }
 
 template <concepts::Identifier IdType, Directedness D,
           typename... AttributesType>
 void AdjacencyMatrixGraph<IdType, D, AttributesType...>::set_attributes(
     Vertex source, Vertex target, Attributes attributes) {
-  if (!has_edge(target, source))
+  if (!has_edge(source, target))
     return;
 
-  set_elements_from_index<2>(_adj[source], attributes);
+  set_elements_from_index<2>(_adj[source][target], attributes);
+  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+    set_elements_from_index<2>(_adj[target][source], attributes);
+  }
 }
 
 template <concepts::Identifier IdType, Directedness D,
@@ -154,10 +157,6 @@ template <concepts::Identifier IdType, Directedness D,
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::Attributes
 AdjacencyMatrixGraph<IdType, D, AttributesType...>::get_attributes(
     Vertex source, Vertex target) const {
-  if (!has_edge(source, target)) {
-    throw exceptions::NoSuchEdgeException();
-  }
-
   return get_elements_from_index<2>(get_edge(source, target));
 }
 
@@ -205,8 +204,8 @@ size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_vertices() const {
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_edges() const {
   size_t count = 0;
-  for (auto &[vertex, map] : _adj) {
-    count += map.size();
+  for (size_t i = 0; i < _adj.size(); i++) {
+    count += _adj[i].size();
   }
   return count;
 }

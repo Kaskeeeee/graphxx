@@ -132,6 +132,11 @@ void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
   auto find_iterator = std::ranges::find_if(
       _adj[source], [&](auto edge) { return get_target(edge) == target; });
   set_elements_from_index<2>(*find_iterator, attrs);
+  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+    auto inverse_find_iterator = std::ranges::find_if(
+        _adj[target], [&](auto edge) { return get_target(edge) == source; });
+    set_elements_from_index<2>(*inverse_find_iterator, attrs);
+  }
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>

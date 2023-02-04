@@ -213,10 +213,10 @@ TEST_CASE("manage directed matrix graph", "[matrix_graph][directed][manage]") {
     REQUIRE(g.get_target(edge01) == 1);
 
     REQUIRE(g[1].size() == 2);
-    auto edge11 = *(g[1].begin());
-    auto edge12 = *(++g[1].begin());
-    REQUIRE(g.get_target(edge11) == 1);
-    REQUIRE(g.get_target(edge12) == 2);
+    std::vector edges(g[1].begin(), g[1].end());
+    std::sort(edges.begin(), edges.end());
+    REQUIRE(g.get_target(edges[0]) == 1);
+    REQUIRE(g.get_target(edges[1]) == 2);
   }
 
   SECTION("check if vertex exists") {
@@ -389,21 +389,15 @@ TEST_CASE("build undirected matrix graph with attributes",
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
     REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.0f);
+    REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 42);
+    REQUIRE(std::get<1>(g.get_attributes(1, 0)) == 0.0f);
 
     g.set_attributes(0, 1, {0, 0.42f});
     REQUIRE(g.num_attributes() == 2);
     REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 0);
     REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.42f);
-  }
-
-  SECTION("update non existing edge has no effect") {
-    AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int, float> g;
-    g.add_edge(0, 1, {42, 0.0f});
-
-    g.set_attributes(1, 0, {0, 0.42f});
-    REQUIRE(g.num_attributes() == 2);
-    REQUIRE(std::get<0>(g.get_attributes(0, 1)) == 42);
-    REQUIRE(std::get<1>(g.get_attributes(0, 1)) == 0.0f);
+    REQUIRE(std::get<0>(g.get_attributes(1, 0)) == 0);
+    REQUIRE(std::get<1>(g.get_attributes(1, 0)) == 0.42f);
   }
 }
 
@@ -427,13 +421,11 @@ TEST_CASE("manage undirected matrix graph",
     REQUIRE(g.get_target(edge01) == 1);
 
     REQUIRE(g[1].size() == 3);
-    auto edgeIt = g[1].begin();
-    auto edge10 = *(edgeIt);
-    auto edge11 = *(++edgeIt);
-    auto edge12 = *(++edgeIt);
-    REQUIRE(g.get_target(edge10) == 0);
-    REQUIRE(g.get_target(edge11) == 1);
-    REQUIRE(g.get_target(edge12) == 2);
+    std::vector edges(g[1].begin(), g[1].end());
+    std::sort(edges.begin(), edges.end());
+    REQUIRE(g.get_target(edges[0]) == 0);
+    REQUIRE(g.get_target(edges[1]) == 1);
+    REQUIRE(g.get_target(edges[2]) == 2);
   }
 
   SECTION("check if vertex exists") {

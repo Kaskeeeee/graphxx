@@ -231,6 +231,8 @@ add_executable(graph_test)
 target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/utils_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/matrix_graph_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/a_star_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
