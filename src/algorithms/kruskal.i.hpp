@@ -64,27 +64,26 @@ std::vector<Edge<G>> visit(const G &graph, Weight weight) {
   std::vector<std::tuple<Vertex<G>, size_t>> ranked_sets(size);
 
   using WeightedEdge = std::tuple<Distance, Edge<G>>;
-  std::priority_queue<WeightedEdge, std::vector<WeightedEdge>,
-                      std::greater<WeightedEdge>>
-      queue;
+  std::vector<WeightedEdge> queue;
 
   // Initialize every vertex set with the vertex Id itself
   for (Vertex<G> vertex = 0; vertex < size; vertex++) {
     std::get<0>(ranked_sets[vertex]) = vertex;
     std::get<1>(ranked_sets[vertex]) = 0;
     for (auto &edge : graph[vertex]) {
-      queue.push({weight(edge), edge});
+      queue.push_back({weight(edge), edge});
     }
   }
 
-  // At every iteration, we want to add an edge to the tree, but we must check
-  // if adding the edge will create a cycle. To do so, we analyse if the
-  // vertices of the edge belong to different clusters. If yes, we can safely
-  // add it. Then, we update the representative vertex of the cluster of one of
-  // the two verteces
-  while (!queue.empty()) {
-    Edge<G> edge = std::get<1>(queue.top());
-    queue.pop();
+  std::sort(queue.begin(), queue.end());
+
+  // At every iteration, we want to add an edge to the tree, but we must
+  // check if adding the edge will create a cycle. To do so, we analyse if
+  // the vertices of the edge belong to different clusters. If yes, we can
+  // safely add it. Then, we update the representative vertex of the cluster
+  // of one of the two verteces
+  for (auto weighted_edge : queue) {
+    Edge<G> edge = std::get<1>(weighted_edge);
 
     Vertex<G> source = graph.get_source(edge);
     Vertex<G> target = graph.get_target(edge);
