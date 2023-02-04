@@ -314,4 +314,166 @@ TEST_CASE("Dijkstra shortest paths for matrix graph",
     REQUIRE(result[f].parent == c);
   }
 }
+
+TEST_CASE("Dijkstra shortest paths for undirected list graph",
+          "[dijkstra][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e, f };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(c, f); // 2->5
+  graph.add_edge(d, f); // 3->5
+  graph.add_edge(e, f); // 4->5
+
+  /*
+    A-->B
+    |   |
+    |   v
+    --->C-->D------v
+        --->E------v
+        ---------->F
+  */
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(dijkstra::visit(graph, a));
+  }
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(c, f, {1});
+
+    auto distances = dijkstra::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 1);
+    REQUIRE(distances[d].distance == 2);
+    REQUIRE(distances[e].distance == 2);
+    REQUIRE(distances[f].distance == 2);
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto result = dijkstra::visit(graph, a);
+
+    REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(result[b].parent == a);
+    REQUIRE(result[c].parent == a);
+    REQUIRE(result[d].parent == c);
+    REQUIRE(result[e].parent == c);
+    REQUIRE(result[f].parent == c);
+  }
+}
+
+TEST_CASE("Dijkstra shortest paths for undirected matrix graph",
+          "[dijkstra][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e, f };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(c, f); // 2->5
+  graph.add_edge(d, f); // 3->5
+  graph.add_edge(e, f); // 4->5
+
+  /*
+    A-->B
+    |   |
+    |   v
+    --->C-->D------v
+        --->E------v
+        ---------->F
+  */
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(dijkstra::visit(graph, a));
+  }
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(c, f, {1});
+
+    auto distances = dijkstra::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 1);
+    REQUIRE(distances[d].distance == 2);
+    REQUIRE(distances[e].distance == 2);
+    REQUIRE(distances[f].distance == 2);
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto result = dijkstra::visit(graph, a);
+
+    REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(result[b].parent == a);
+    REQUIRE(result[c].parent == a);
+    REQUIRE(result[d].parent == c);
+    REQUIRE(result[e].parent == c);
+    REQUIRE(result[f].parent == c);
+  }
+}
 } // namespace dijkstra_test

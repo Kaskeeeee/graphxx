@@ -237,7 +237,7 @@ target_sources(graph_test
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/bfs_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/dfs_test.cpp
-        # PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         # PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
