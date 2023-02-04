@@ -66,15 +66,13 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
 }
 
 template <concepts::Graph G, concepts::Numeric W>
-std::unordered_map<Vertex<G>, W>
+std::unordered_map<Edge<G>, W, xor_tuple_hash<Edge<G>>>
 GraphGenerator::generate_random_weights(const G &graph, W min_weight,
                                         W max_weight) {
-  std::unordered_map<Vertex<G>, W> weights;
+  std::unordered_map<Edge<G>, W, xor_tuple_hash<Edge<G>>> weights;
 
   if (min_weight > max_weight) {
-    W tmp = min_weight;
-    min_weight = max_weight;
-    max_weight = tmp;
+    std::swap(min_weight, max_weight);
   }
 
   if (!_fixed_seed) {
@@ -84,8 +82,10 @@ GraphGenerator::generate_random_weights(const G &graph, W min_weight,
   std::default_random_engine generator(_seed);
   std::uniform_int_distribution<W> distribution(min_weight, max_weight);
 
-  for (auto edge : graph.edges()) {
-    weights[edge.id] = distribution(generator);
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    for (auto edge : graph[vertex]) {
+      weights[edge] = distribution(generator);
+    }
   }
 
   return weights;

@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <tuple>
 
 namespace graphxx {
@@ -21,5 +22,14 @@ void set_elements_from_index(std::tuple<Elements...> &t,
   }
   (std::make_index_sequence<sizeof...(Elements) - StartingIndex>());
 }
+
+template <typename Tuple> struct xor_tuple_hash {
+  size_t operator()(const Tuple &k) const {
+    return [&]<size_t... Offsets>(std::index_sequence<Offsets...>) {
+      return (std::get<Offsets>(k) ^ ...);
+    }
+    (std::make_index_sequence<std::tuple_size_v<Tuple>>());
+  }
+};
 
 } // namespace graphxx

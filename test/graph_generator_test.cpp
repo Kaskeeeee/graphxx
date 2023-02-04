@@ -29,18 +29,17 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "base.hpp"
 #include "catch.hpp"
+#include "generators/graph_generator.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
 namespace graph_generator_test {
 using namespace graphxx;
 
 TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
-  AdjacencyListGraph<Directedness::DIRECTED> undirected_list_graph{};
+  AdjacencyListGraph<unsigned long, Directedness::DIRECTED>
+      undirected_list_graph{};
   GraphGenerator generator;
 
   const int TOTAL_VERTICES = 15;
@@ -50,36 +49,21 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     generator.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
                                     TOTAL_EDGES);
 
-    int num_vertices = 0;
-    for (auto vertex : undirected_list_graph.vertices()) {
-      num_vertices++;
-    }
-
-    REQUIRE(num_vertices == TOTAL_VERTICES);
+    REQUIRE(undirected_list_graph.num_vertices() == TOTAL_VERTICES);
   }
 
   SECTION("generates input limited edges") {
     generator.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
                                     TOTAL_EDGES);
 
-    int num_edges = 0;
-    for (auto edge : undirected_list_graph.edges()) {
-      num_edges++;
-    }
-
-    REQUIRE(num_edges == TOTAL_EDGES);
+    REQUIRE(undirected_list_graph.num_edges() == TOTAL_EDGES);
   }
 
   SECTION("early returns if exceeds max out degree") {
     generator.generate_random_graph(undirected_list_graph, TOTAL_VERTICES,
                                     TOTAL_EDGES, 1);
 
-    int num_edges = 0;
-    for (auto edge : undirected_list_graph.edges()) {
-      num_edges++;
-    }
-
-    REQUIRE(num_edges == TOTAL_VERTICES);
+    REQUIRE(undirected_list_graph.num_edges() == TOTAL_VERTICES);
   }
 
   SECTION("early returns if there is not other candidate for a new edge when "
@@ -87,19 +71,17 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     generator.generate_random_graph(undirected_list_graph, 1, TOTAL_EDGES, -1,
                                     false);
 
-    int num_edges = 0;
-    for (auto edge : undirected_list_graph.edges()) {
-      num_edges++;
-    }
-
-    REQUIRE(num_edges == 0);
+    REQUIRE(undirected_list_graph.num_edges() == 0);
   }
 
   SECTION("chooses another target id with no self edges mode") {
     generator.generate_random_graph(undirected_list_graph, 2, 100, -1, false);
 
-    for (auto edge : undirected_list_graph.edges()) {
-      REQUIRE(edge.u != edge.v);
+    for (auto edgelist : undirected_list_graph) {
+      for (auto edge : edgelist) {
+        REQUIRE(undirected_list_graph.get_source(edge) !=
+                undirected_list_graph.get_target(edge));
+      }
     }
   }
 
@@ -112,7 +94,7 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     auto weights = generator.generate_random_weights(undirected_list_graph,
                                                      MIN_WEIGHT, MAX_WEIGHT);
 
-    for (auto [id, weight] : weights) {
+    for (auto [edge, weight] : weights) {
       REQUIRE((weight >= MIN_WEIGHT && weight <= MAX_WEIGHT));
     }
   }
@@ -123,7 +105,7 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     auto weights = generator.generate_random_weights(undirected_list_graph,
                                                      MAX_WEIGHT, MIN_WEIGHT);
 
-    for (auto [id, weight] : weights) {
+    for (auto [edge, weight] : weights) {
       REQUIRE((weight >= MIN_WEIGHT && weight <= MAX_WEIGHT));
     }
   }
@@ -137,11 +119,9 @@ TEST_CASE("Graph generator tests", "[GRAPH_GEN]") {
     auto weights = fixed_seed_gen.generate_random_weights(
         undirected_list_graph, MAX_WEIGHT, MIN_WEIGHT);
 
-    for (auto [id, weight] : weights) {
+    for (auto [edge, weight] : weights) {
       REQUIRE((weight >= MIN_WEIGHT && weight <= MAX_WEIGHT));
     }
   }
 }
 } // namespace graph_generator_test
-
-#endif

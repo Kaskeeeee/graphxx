@@ -33,6 +33,7 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
+#include "tuple_utils.hpp"
 
 #include <unordered_map>
 
@@ -48,7 +49,7 @@ public:
                              int max_out_degree = -1, bool self_edges = true);
 
   template <concepts::Graph G, concepts::Numeric W>
-  std::unordered_map<Vertex<G>, W>
+  std::unordered_map<Edge<G>, W, xor_tuple_hash<Edge<G>>>
   generate_random_weights(const G &graph, W min_weight, W max_weight);
 
 private:

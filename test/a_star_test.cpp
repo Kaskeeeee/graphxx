@@ -70,13 +70,11 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     --->C-->D------^
   */
 
-  auto get_weight = [&](typename Graph::Edge e) {
+  auto get_weight = [&](Edge<Graph> e) {
     return weight[{g.get_source(e), g.get_target(e)}];
   };
 
-  auto get_heuristic = [&](typename Graph::Id v) {
-    return heuristic_weight[v];
-  };
+  auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
 
   SECTION("throws on negative edge found") {
     for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
