@@ -34,6 +34,7 @@
 #include "catch.hpp"
 #include "dfs.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <algorithm>
 
@@ -41,17 +42,18 @@ namespace dfs_test {
 using namespace graphxx;
 using namespace algorithms;
 
-TEST_CASE("DFS Tree correct visited order", "[DFS]") {
+TEST_CASE("DFS Tree correct visited order for list graphs",
+          "[DFS][list_graph]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+  Graph graph{};
 
   enum vertices { a, b, c, d, e };
 
-  g.add_edge(a, b); // 0->1
-  g.add_edge(a, c); // 0->2
-  g.add_edge(a, d); // 0->3
-  g.add_edge(b, c); // 1->2
-  g.add_edge(d, e); // 3->4
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
 
   /*
     A--->B--->C
@@ -62,15 +64,15 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
     }
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -80,7 +82,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -89,9 +91,9 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
     REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
   }
 
-  g.add_edge(a, a); // 0->0
-  g.add_edge(b, b); // 1->1
-  g.add_edge(c, b); // 2->1
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(b, b); // 1->1
+  graph.add_edge(c, b); // 2->1
 
   /*
     A--->B--->C
@@ -104,7 +106,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   */
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -114,7 +116,7 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(g, a);
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -127,9 +129,229 @@ TEST_CASE("DFS Tree correct visited order", "[DFS]") {
     std::vector<DefaultIdType> vertices;
 
     auto tree = graphxx::algorithms::dfs::visit(
-        g, a, [&](DefaultIdType v) { vertices.push_back(v); });
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
+    }
+  }
+}
+
+TEST_CASE("DFS Tree correct visited order for matrix graphs",
+          "[DFS][matrix_graph]") {
+  using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+
+  /*
+    A--->B--->C
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE((tree[c].parent == b || tree[c].parent == a));
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
+  }
+
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(b, b); // 1->1
+  graph.add_edge(c, b); // 2->1
+
+  /*
+    A--->B--->C
+    |   <->   |
+    |    <-----
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all parent node are correct, now with cycles") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE((tree[b].parent == a || tree[b].parent == c));
+    REQUIRE((tree[c].parent == b || tree[c].parent == a));
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::dfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
+    }
+  }
+}
+
+TEST_CASE("DFS Tree correct visited order for undirected list graphs",
+          "[DFS][list_graph][undirected]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+
+  /*
+    A--->B--->C
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == b);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::dfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
+    }
+  }
+}
+
+TEST_CASE("DFS Tree correct visited order for undirected matrix graphs",
+          "[DFS][matrix_graph][undirected]") {
+  using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+
+  /*
+    A--->B--->C
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE((tree[b].parent == a || tree[b].parent == c));
+    REQUIRE((tree[c].parent == b || tree[c].parent == a));
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if discovery and finishing time are correct") {
+    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+
+    REQUIRE(tree[a].discovery_time == 1);
+    REQUIRE(tree[a].finishing_time == 10);
+    REQUIRE(tree[d].discovery_time < tree[e].discovery_time);
+    REQUIRE(tree[d].finishing_time > tree[e].finishing_time);
+    REQUIRE(tree[e].discovery_time == tree[e].finishing_time - 1);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::dfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
               vertices.end());
     }

@@ -34,22 +34,24 @@
 #include "bfs.hpp"
 #include "catch.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 namespace bfs_test {
 using namespace graphxx;
 using namespace algorithms;
 
-TEST_CASE("BFS Tree correct visited order", "[BFS]") {
+TEST_CASE("BFS Tree correct visited order for list graphs",
+          "[BFS][list_graph]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+  Graph graph{};
 
   enum vertices { a, b, c, d, e };
 
-  g.add_edge(a, b); // 0->1
-  g.add_edge(a, c); // 0->2
-  g.add_edge(a, d); // 0->3
-  g.add_edge(b, c); // 1->2
-  g.add_edge(d, e); // 3->4
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
 
   /*
     A--->B--->C
@@ -60,15 +62,15 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
     }
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -78,7 +80,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -87,9 +89,9 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
     REQUIRE(tree[e].parent == d);
   }
 
-  g.add_edge(a, a); // 0->0
-  g.add_edge(b, b); // 1->1
-  g.add_edge(c, b); // 2->1
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(b, b); // 1->1
+  graph.add_edge(c, b); // 2->1
 
   /*
    <->
@@ -104,7 +106,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
 
   SECTION("check if all the distances from the source are correct, now with "
           "cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -114,7 +116,7 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
   }
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(g, a);
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -127,28 +129,219 @@ TEST_CASE("BFS Tree correct visited order", "[BFS]") {
     std::vector<DefaultIdType> vertices;
 
     auto tree = graphxx::algorithms::bfs::visit(
-        g, a, [&](DefaultIdType v) { vertices.push_back(v); });
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
               vertices.end());
     }
   }
+}
 
-  SECTION("work in undirected graph") {
-    using Graph = AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED>;
-    Graph g1{};
+TEST_CASE("BFS Tree correct visited order for matrix graphs",
+          "[BFS][matrix_graph]") {
+  using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED>;
+  Graph graph{};
 
-    g1.add_edge(a, b); // 0->1
-    g1.add_edge(a, c); // 0->2
-    g1.add_edge(a, d); // 0->3
-    g1.add_edge(b, c); // 1->2
-    g1.add_edge(d, e); // 3->4
+  enum vertices { a, b, c, d, e };
 
-    auto tree = graphxx::algorithms::bfs::visit(g1, c);
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
+  /*
+    A--->B--->C
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all the distances from the source are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].distance == 0);
+    REQUIRE(tree[b].distance == 1);
+    REQUIRE(tree[c].distance == 1);
+    REQUIRE(tree[d].distance == 1);
+    REQUIRE(tree[e].distance == 2);
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(b, b); // 1->1
+  graph.add_edge(c, b); // 2->1
+
+  /*
+   <->
+    A--->B--->C
+    |   <->   |
+    |    <-----
+    --------->
+    |
+    |
+    ---->D--->E
+  */
+
+  SECTION("check if all the distances from the source are correct, now with "
+          "cycles") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].distance == 0);
+    REQUIRE(tree[b].distance == 1);
+    REQUIRE(tree[c].distance == 1);
+    REQUIRE(tree[d].distance == 1);
+    REQUIRE(tree[e].distance == 2);
+  }
+
+  SECTION("check if all parent node are correct, now with cycles") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::bfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
+    }
+  }
+}
+
+TEST_CASE("BFS Tree correct visited order for undirected list graphs",
+          "[BFS][list_graph][undirected]") {
+
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, c);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all the distances from the source are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].distance == 0);
+    REQUIRE(tree[b].distance == 1);
+    REQUIRE(tree[c].distance == 1);
+    REQUIRE(tree[d].distance == 1);
+    REQUIRE(tree[e].distance == 2);
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::bfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
+    }
+  }
+}
+
+TEST_CASE("BFS Tree correct visited order for undirected matrix graphs",
+          "[BFS][matrix_graph][undirected]") {
+
+  using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+
+  SECTION("check if all nodes were processed") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, c);
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
+    }
+  }
+
+  SECTION("check if all the distances from the source are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].distance == 0);
+    REQUIRE(tree[b].distance == 1);
+    REQUIRE(tree[c].distance == 1);
+    REQUIRE(tree[d].distance == 1);
+    REQUIRE(tree[e].distance == 2);
+  }
+
+  SECTION("check if all parent node are correct") {
+    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+
+    REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(tree[b].parent == a);
+    REQUIRE(tree[c].parent == a);
+    REQUIRE(tree[d].parent == a);
+    REQUIRE(tree[e].parent == d);
+  }
+
+  SECTION("check if visit with function work properly") {
+    std::vector<DefaultIdType> vertices;
+
+    auto tree = graphxx::algorithms::bfs::visit(
+        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
+              vertices.end());
     }
   }
 }

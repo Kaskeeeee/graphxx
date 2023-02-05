@@ -33,6 +33,7 @@
 #include "bellman_ford.hpp"
 #include "catch.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <map>
 #include <tuple>
@@ -41,20 +42,19 @@ namespace bellman_ford_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
-  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+TEST_CASE("Bellman ford shortest paths for list graphs",
+          "[bellman-ford][list_graph]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
 
   enum vertices { a, b, c, d, e };
 
-  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
-
-  g.add_edge(a, b); // 0->1
-  g.add_edge(a, d); // 0->3
-  g.add_edge(b, c); // 1->2
-  g.add_edge(d, e); // 3->4
-  g.add_edge(e, c); // 4->2
-  g.add_edge(c, e); // 2->4
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, c); // 4->2
+  graph.add_edge(c, e); // 2->4
 
   /*
     A--->B--->C
@@ -63,32 +63,30 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
     ---->D--->E
   */
 
-  auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.get_source(e), g.get_target(e)}];
-  };
-
   SECTION("throws on negative cycle found") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{e, c}] = -10;
+    graph.set_attributes(e, c, {-10});
 
-    REQUIRE_THROWS(bellman_ford::visit(g, a, get_weight));
+    REQUIRE_THROWS(bellman_ford::visit(graph, a));
   }
 
   SECTION("find the shortest path length with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = bellman_ford::visit(g, a, get_weight);
+    auto distances = bellman_ford::visit(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -98,14 +96,15 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   }
 
   SECTION("finds the previous hop with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = bellman_ford::visit(g, a, get_weight);
+    auto distances = bellman_ford::visit(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -115,16 +114,17 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   }
 
   SECTION("find the shortest path length with one negative weight") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{d, e}] = -1;
+    graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(g, a, get_weight);
+    auto distances = bellman_ford::visit(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -134,20 +134,280 @@ TEST_CASE("Bellman ford shortest paths", "[bellman-ford]") {
   }
 
   SECTION("find the previous hop with one negative weight") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{d, e}] = -1;
+    graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(g, a, get_weight);
+    auto distances = bellman_ford::visit(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
     REQUIRE(distances[c].parent == e);
+    REQUIRE(distances[d].parent == a);
+    REQUIRE(distances[e].parent == d);
+  }
+}
+
+TEST_CASE("Bellman ford shortest paths for matrix graphs",
+          "[bellman-ford][matrix_graph]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, c); // 4->2
+  graph.add_edge(c, e); // 2->4
+
+  /*
+    A--->B--->C
+    |    |    ^|
+    |    v    |v
+    ---->D--->E
+  */
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(e, c, {-10});
+
+    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+  }
+
+  SECTION("find the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 2);
+    REQUIRE(distances[d].distance == 1);
+    REQUIRE(distances[e].distance == 2);
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b].parent == a);
+    REQUIRE(distances[c].parent == b);
+    REQUIRE(distances[d].parent == a);
+    REQUIRE(distances[e].parent == d);
+  }
+
+  SECTION("find the shortest path length with one negative weight") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(d, e, {-1});
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 1);
+    REQUIRE(distances[d].distance == 1);
+    REQUIRE(distances[e].distance == 0);
+  }
+
+  SECTION("find the previous hop with one negative weight") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(d, e, {-1});
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b].parent == a);
+    REQUIRE(distances[c].parent == e);
+    REQUIRE(distances[d].parent == a);
+    REQUIRE(distances[e].parent == d);
+  }
+}
+
+TEST_CASE("Bellman ford shortest paths for undirected list graphs",
+          "[bellman-ford][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, c); // 4->2
+  // graph.add_edge(c, e); // 2->4
+
+  /*
+    A--->B--->C
+    |    |    ^|
+    |    v    |v
+    ---->D--->E
+  */
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(e, c, {-10});
+
+    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+  }
+
+  SECTION("find the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 2);
+    REQUIRE(distances[d].distance == 1);
+    REQUIRE(distances[e].distance == 2);
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b].parent == a);
+    REQUIRE(distances[c].parent == b);
+    REQUIRE(distances[d].parent == a);
+    REQUIRE(distances[e].parent == d);
+  }
+}
+
+TEST_CASE("Bellman ford shortest paths for undirected matrix graphs",
+          "[bellman-ford][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e };
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, d); // 0->3
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, c); // 4->2
+  // graph.add_edge(c, e); // 2->4
+
+  /*
+    A--->B--->C
+    |    |    ^|
+    |    v    |v
+    ---->D--->E
+  */
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(e, c, {-10});
+
+    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+  }
+
+  SECTION("find the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].distance == 0);
+    REQUIRE(distances[b].distance == 1);
+    REQUIRE(distances[c].distance == 2);
+    REQUIRE(distances[d].distance == 1);
+    REQUIRE(distances[e].distance == 2);
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = bellman_ford::visit(graph, a);
+
+    REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b].parent == a);
+    REQUIRE(distances[c].parent == b);
     REQUIRE(distances[d].parent == a);
     REQUIRE(distances[e].parent == d);
   }

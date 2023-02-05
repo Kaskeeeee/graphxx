@@ -56,7 +56,7 @@ std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(const G &graph,
       matrix[u][v].distance = weight(edge);
       matrix[u][v].parent = u;
     }
-    matrix[u][u] = 0;
+    matrix[u][u].distance = 0;
     matrix[u][u].parent = INVALID_VERTEX<G>;
   }
 

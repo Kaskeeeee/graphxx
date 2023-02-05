@@ -80,7 +80,7 @@ template <concepts::Graph G,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
 FFpair<G, Distance> visit(
     const G &graph, Vertex<G> source, Vertex<G> sink,
-    Weight weight = [](const G::Edge &edge) { return std::get<2>(edge); });
+    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
 } // namespace graphxx::algorithms::ford_fulkerson
 

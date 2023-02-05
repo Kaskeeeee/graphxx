@@ -33,6 +33,7 @@
 #include "base.hpp"
 #include "catch.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <map>
 #include <tuple>
@@ -41,24 +42,23 @@ namespace a_star_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("A* shortest paths", "[a_star]") {
-  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+TEST_CASE("A* shortest paths for list graph", "[a_star][list_graph]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
 
   enum vertices { a, b, c, d, e, f, z };
 
-  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
   std::map<unsigned long, int> heuristic_weight;
 
-  g.add_edge(a, b); // 0->1
-  g.add_edge(a, c); // 0->2
-  g.add_edge(b, f); // 1->5
-  g.add_edge(b, e); // 1->4
-  g.add_edge(c, d); // 2->3
-  g.add_edge(c, e); // 2->4
-  g.add_edge(d, e); // 3->4
-  g.add_edge(e, z); // 4->6
-  g.add_edge(f, z); // 5->6
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, f); // 1->5
+  graph.add_edge(b, e); // 1->4
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, z); // 4->6
+  graph.add_edge(f, z); // 5->6
 
   /*
     A-->B-->F---------->Z
@@ -70,39 +70,37 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     --->C-->D------^
   */
 
-  auto get_weight = [&](Edge<Graph> e) {
-    return weight[{g.get_source(e), g.get_target(e)}];
-  };
-
   auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
 
   SECTION("throws on negative edge found") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, b}] = -1;
+    graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(a_star::visit(g, a, z, get_heuristic, get_weight));
+    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, c}] = 2;
-    weight[{b, f}] = 2;
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
 
-    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -112,15 +110,16 @@ TEST_CASE("A* shortest paths", "[a_star]") {
   }
 
   SECTION("finds the previous hop with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -129,9 +128,9 @@ TEST_CASE("A* shortest paths", "[a_star]") {
     REQUIRE(distances[3].parent == e);                     // z
   }
 
-  g.add_edge(a, a); // 0->0
-  g.add_edge(d, d); // 3->3
-  g.add_edge(e, c); // 4->2
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(d, d); // 3->3
+  graph.add_edge(e, c); // 4->2
 
   /*
    <->
@@ -147,20 +146,21 @@ TEST_CASE("A* shortest paths", "[a_star]") {
 
   SECTION("finds the shortest path length with all positive weights, now with "
           "cycles") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, c}] = 2;
-    weight[{b, f}] = 2;
-    weight[{d, d}] = 1;
-    weight[{e, c}] = 1;
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
+    graph.set_attributes(d, d, {1});
+    graph.set_attributes(e, c, {1});
 
-    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -170,15 +170,16 @@ TEST_CASE("A* shortest paths", "[a_star]") {
   }
 
   SECTION("finds the previous hop with all positive weights, now with cycles") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = a_star::visit(g, a, z, get_heuristic, get_weight);
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -188,20 +189,365 @@ TEST_CASE("A* shortest paths", "[a_star]") {
   }
 
   SECTION("algorithm failure") {
-    g.add_vertex(g.num_vertices());
+    graph.add_vertex(graph.num_vertices());
 
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       heuristic_weight[vertex] = 1;
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
     auto distances =
-        a_star::visit(g, a, g.num_vertices() - 1, get_heuristic, get_weight);
+        a_star::visit(graph, a, graph.num_vertices() - 1, get_heuristic);
 
     REQUIRE(distances.size() == 0);
+  }
+}
+
+TEST_CASE("A* shortest paths for matrix graph", "[a_star][matrix_graph]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e, f, z };
+
+  std::map<unsigned long, int> heuristic_weight;
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, f); // 1->5
+  graph.add_edge(b, e); // 1->4
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, z); // 4->6
+  graph.add_edge(f, z); // 5->6
+
+  /*
+    A-->B-->F---------->Z
+    |   |               ^
+    |   ---------->E----^
+    |              ^
+    |   -----------^
+    |   |          ^
+    --->C-->D------^
+  */
+
+  auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+  }
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].distance == 0); // a
+    REQUIRE(distances[1].distance == 1); // b
+    REQUIRE(distances[2].distance == 2); // e
+    REQUIRE(distances[3].distance == 3); // z
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
+  }
+
+  graph.add_edge(a, a); // 0->0
+  graph.add_edge(d, d); // 3->3
+  graph.add_edge(e, c); // 4->2
+
+  /*
+   <->
+    A-->B-->F---------->Z
+    |   |               ^
+    |   ---------->E|----^
+    |              ^|
+    |   -----------^|
+    |   |  <->     ^|
+    --->C-->D------^|
+        ^-----------|
+  */
+
+  SECTION("finds the shortest path length with all positive weights, now with "
+          "cycles") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
+    graph.set_attributes(d, d, {1});
+    graph.set_attributes(e, c, {1});
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].distance == 0); // a
+    REQUIRE(distances[1].distance == 1); // b
+    REQUIRE(distances[2].distance == 2); // e
+    REQUIRE(distances[3].distance == 3); // z
+  }
+
+  SECTION("finds the previous hop with all positive weights, now with cycles") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
+  }
+
+  SECTION("algorithm failure") {
+    graph.add_vertex(graph.num_vertices());
+
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances =
+        a_star::visit(graph, a, graph.num_vertices() - 1, get_heuristic);
+
+    REQUIRE(distances.size() == 0);
+  }
+}
+
+TEST_CASE("A* shortest paths for undirected list graph",
+          "[a_star][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e, f, z };
+
+  std::map<unsigned long, int> heuristic_weight;
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, f); // 1->5
+  graph.add_edge(b, e); // 1->4
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, z); // 4->6
+  graph.add_edge(f, z); // 5->6
+
+  /*
+    A-->B-->F---------->Z
+    |   |               ^
+    |   ---------->E----^
+    |              ^
+    |   -----------^
+    |   |          ^
+    --->C-->D------^
+  */
+
+  auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+  }
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].distance == 0); // a
+    REQUIRE(distances[1].distance == 1); // b
+    REQUIRE(distances[2].distance == 2); // e
+    REQUIRE(distances[3].distance == 3); // z
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
+  }
+}
+
+TEST_CASE("A* shortest paths for undirected matrix graph",
+          "[a_star][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d, e, f, z };
+
+  std::map<unsigned long, int> heuristic_weight;
+
+  graph.add_edge(a, b); // 0->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, f); // 1->5
+  graph.add_edge(b, e); // 1->4
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(c, e); // 2->4
+  graph.add_edge(d, e); // 3->4
+  graph.add_edge(e, z); // 4->6
+  graph.add_edge(f, z); // 5->6
+
+  /*
+    A-->B-->F---------->Z
+    |   |               ^
+    |   ---------->E----^
+    |              ^
+    |   -----------^
+    |   |          ^
+    --->C-->D------^
+  */
+
+  auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+  }
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {2});
+    graph.set_attributes(b, f, {2});
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].distance == 0); // a
+    REQUIRE(distances[1].distance == 1); // b
+    REQUIRE(distances[2].distance == 2); // e
+    REQUIRE(distances[3].distance == 3); // z
+  }
+
+  SECTION("finds the previous hop with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = a_star::visit(graph, a, z, get_heuristic);
+
+    REQUIRE(distances.size() == 4);
+    REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
+    REQUIRE(distances[1].parent == a);                     // b
+    REQUIRE(distances[2].parent == b);                     // e
+    REQUIRE(distances[3].parent == e);                     // z
   }
 }
 } // namespace a_star_test
