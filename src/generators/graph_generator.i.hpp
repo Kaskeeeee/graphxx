@@ -31,8 +31,13 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
   std::unordered_map<Vertex<G>, int> out_degree;
 
   for (int i = 0; i < num_edges; i++) {
-    Vertex<G> source_id = distribution(generator);
-    Vertex<G> target_id = distribution(generator);
+    Vertex<G> source_id = INVALID_VERTEX<G>;
+    Vertex<G> target_id = INVALID_VERTEX<G>;
+
+    do {
+      source_id = distribution(generator);
+      target_id = distribution(generator);
+    } while (graph.has_edge(source_id, target_id));
 
     if (out_degree[source_id] == max_out_degree) {
       bool found = false;
