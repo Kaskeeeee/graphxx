@@ -33,7 +33,6 @@
 #include "algorithms_base.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
-#include "list_graph.hpp"
 
 #include <limits>
 #include <queue>
@@ -61,7 +60,7 @@ DistanceTree<G, Distance> bfs(const G &graph, const DG &digraph,
   queue.push(source);
 
   while (!queue.empty()) {
-    Vertex vertex_id = queue.front();
+    Vertex<G> vertex_id = queue.front();
     queue.pop();
 
     for (auto out_edge : graph[vertex_id]) {

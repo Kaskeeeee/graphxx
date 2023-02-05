@@ -49,9 +49,6 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
   Id parent;
 };
 
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceMatrix = std::vector<std::vector<Node<Id, Distance>>>;
-
 /// @brief Implementantation of Floyd Warhsall algorithm for multi source
 ///        shortest paths
 /// @tparam G graph type
@@ -64,7 +61,7 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-DistanceMatrix<Vertex<G>, Distance> visit(
+std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(
     const G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 

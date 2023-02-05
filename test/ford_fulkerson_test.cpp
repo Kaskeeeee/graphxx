@@ -35,29 +35,26 @@
 #include "catch.hpp"
 #include "ford_fulkerson.hpp"
 #include "list_graph.hpp"
-
-#include <map>
-#include <tuple>
+#include "matrix_graph.hpp"
 
 namespace ford_fulkerson_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Ford Fulkerson maximum flow", "[ford_fulkerson]") {
-  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+TEST_CASE("Ford Fulkerson maximum flow for list graphs",
+          "[ford_fulkerson][list_graph]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
 
   enum vertices { s, a, b, c, d, t };
 
-  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
-
-  g.add_edge(s, a); // 0->1
-  g.add_edge(s, d); // 0->4
-  g.add_edge(a, b); // 1->2
-  g.add_edge(b, t); // 2->5
-  g.add_edge(c, t); // 3->5
-  g.add_edge(d, b); // 4->2
-  g.add_edge(d, c); // 4->3
+  graph.add_edge(s, a); // 0->1
+  graph.add_edge(s, d); // 0->4
+  graph.add_edge(a, b); // 1->2
+  graph.add_edge(b, t); // 2->5
+  graph.add_edge(c, t); // 3->5
+  graph.add_edge(d, b); // 4->2
+  graph.add_edge(d, c); // 4->3
 
   /*
     S----->A----->B-----v
@@ -65,51 +62,243 @@ TEST_CASE("Ford Fulkerson maximum flow", "[ford_fulkerson]") {
             ------>C----^
   */
 
-  auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.source(e), g.target(e)}];
-  };
-
   SECTION("throws on negative edge found") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, b}] = -1;
+    graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(ford_fulkerson::visit(g, s, t, get_weight));
+    REQUIRE_THROWS(ford_fulkerson::visit(graph, s, t));
   }
 
   SECTION("finds the maximum possible flow with simple weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.source(edge), g.target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto result = ford_fulkerson::visit(g, s, t, get_weight);
+    auto result = ford_fulkerson::visit(graph, s, t);
 
     REQUIRE(result.max_flow == 2);
   }
 
   SECTION("finds the maximum possible flow") {
-    weight[{s, a}] = 8;
-    weight[{s, d}] = 3;
-    weight[{a, b}] = 9;
-    weight[{b, t}] = 2;
-    weight[{c, t}] = 5;
-    weight[{d, b}] = 7;
-    weight[{d, c}] = 4;
+    graph.set_attributes(s, a, {8});
+    graph.set_attributes(s, d, {3});
+    graph.set_attributes(a, b, {9});
+    graph.set_attributes(b, t, {2});
+    graph.set_attributes(c, t, {5});
+    graph.set_attributes(d, b, {7});
+    graph.set_attributes(d, c, {4});
 
-    auto result = ford_fulkerson::visit(g, s, t, get_weight);
+    auto result = ford_fulkerson::visit(graph, s, t);
 
     REQUIRE(result.max_flow == 6);
   }
 }
 
+TEST_CASE("Ford Fulkerson maximum flow for list graphs",
+          "[ford_fulkerson][list_graph]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { s, a, b, c, d, t };
+
+  graph.add_edge(s, a); // 0->1
+  graph.add_edge(s, d); // 0->4
+  graph.add_edge(a, b); // 1->2
+  graph.add_edge(b, t); // 2->5
+  graph.add_edge(c, t); // 3->5
+  graph.add_edge(d, b); // 4->2
+  graph.add_edge(d, c); // 4->3
+
+  /*
+    S----->A----->B-----v
+     ----->D------^     T
+            ------>C----^
+  */
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(ford_fulkerson::visit(graph, s, t));
+  }
+
+  SECTION("finds the maximum possible flow with simple weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 2);
+  }
+
+  SECTION("finds the maximum possible flow") {
+    graph.set_attributes(s, a, {8});
+    graph.set_attributes(s, d, {3});
+    graph.set_attributes(a, b, {9});
+    graph.set_attributes(b, t, {2});
+    graph.set_attributes(c, t, {5});
+    graph.set_attributes(d, b, {7});
+    graph.set_attributes(d, c, {4});
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 6);
+  }
+}
+
+TEST_CASE("Ford Fulkerson maximum flow for undirected list graphs",
+          "[ford_fulkerson][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { s, a, b, c, d, t };
+
+  graph.add_edge(s, a); // 0->1
+  graph.add_edge(s, d); // 0->4
+  graph.add_edge(a, b); // 1->2
+  graph.add_edge(b, t); // 2->5
+  graph.add_edge(c, t); // 3->5
+  graph.add_edge(d, b); // 4->2
+  graph.add_edge(d, c); // 4->3
+
+  /*
+    S----->A----->B-----v
+     ----->D------^     T
+            ------>C----^
+  */
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(ford_fulkerson::visit(graph, s, t));
+  }
+
+  SECTION("finds the maximum possible flow with simple weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 2);
+  }
+
+  SECTION("finds the maximum possible flow") {
+    graph.set_attributes(s, a, {8});
+    graph.set_attributes(s, d, {3});
+    graph.set_attributes(a, b, {9});
+    graph.set_attributes(b, t, {2});
+    graph.set_attributes(c, t, {5});
+    graph.set_attributes(d, b, {7});
+    graph.set_attributes(d, c, {4});
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 6);
+  }
+}
+
+TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graphs",
+          "[ford_fulkerson][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { s, a, b, c, d, t };
+
+  graph.add_edge(s, a); // 0->1
+  graph.add_edge(s, d); // 0->4
+  graph.add_edge(a, b); // 1->2
+  graph.add_edge(b, t); // 2->5
+  graph.add_edge(c, t); // 3->5
+  graph.add_edge(d, b); // 4->2
+  graph.add_edge(d, c); // 4->3
+
+  /*
+    S----->A----->B-----v
+     ----->D------^     T
+            ------>C----^
+  */
+
+  SECTION("throws on negative edge found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, b, {-1});
+
+    REQUIRE_THROWS(ford_fulkerson::visit(graph, s, t));
+  }
+
+  SECTION("finds the maximum possible flow with simple weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 2);
+  }
+
+  SECTION("finds the maximum possible flow") {
+    graph.set_attributes(s, a, {8});
+    graph.set_attributes(s, d, {3});
+    graph.set_attributes(a, b, {9});
+    graph.set_attributes(b, t, {2});
+    graph.set_attributes(c, t, {5});
+    graph.set_attributes(d, b, {7});
+    graph.set_attributes(d, c, {4});
+
+    auto result = ford_fulkerson::visit(graph, s, t);
+
+    REQUIRE(result.max_flow == 6);
+  }
+}
 } // namespace ford_fulkerson_test
 
 #endif

@@ -33,6 +33,7 @@
 #include "catch.hpp"
 #include "floyd_warshall.hpp"
 #include "list_graph.hpp"
+#include "matrix_graph.hpp"
 
 #include <map>
 #include <tuple>
@@ -41,19 +42,18 @@ namespace floyd_warshall_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
-  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+TEST_CASE("Floyd Warshall shortest paths for list graphs",
+          "[floyd_warshall][list_graph]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
 
   enum vertices { a, b, c, d };
 
-  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
-
-  g.add_edge(a, c); // 0->2
-  g.add_edge(b, a); // 1->0
-  g.add_edge(b, c); // 1->2
-  g.add_edge(c, d); // 2->3
-  g.add_edge(d, b); // 3->1
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, a); // 1->0
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(d, b); // 3->1
 
   /*
     A------>C-------|
@@ -65,19 +65,16 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     D<--------------|
   */
 
-  auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.get_source(e), g.get_target(e)}];
-  };
-
   SECTION("finds the shortest path length with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -95,14 +92,15 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
   }
 
   SECTION("finds the parent nodes with all positive weights") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -120,16 +118,17 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
   }
 
   SECTION("find the shortest path length with one negative weight") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, c}] = -2;
+    graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -147,16 +146,17 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
   }
 
   SECTION("finds the parent nodes with one negative weight") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    weight[{a, c}] = -2;
+    graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -173,21 +173,22 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
     REQUIRE(distances[a][b].parent == d);
   }
 
-  /*
-    SECTION("throws on negative cycle found") {
-      for (auto edge : g.edges()) {
-        weights[edge] = 1;
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
-
-      weights[c_to_d] = -1;
-      weights[d_to_b] = -1;
-
-      REQUIRE_THROWS(floyd_warshall::visit(g, weights));
     }
-  */
 
-  g.add_edge(c, a); // 2->0
-  g.add_edge(d, d); // 3->3
+    graph.set_attributes(c, d, {-10});
+
+    REQUIRE_THROWS(floyd_warshall::visit(graph));
+  }
+
+  graph.add_edge(c, a); // 2->0
+  graph.add_edge(d, d); // 3->3
 
   /*
     <--------
@@ -203,14 +204,15 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
 
   SECTION("finds the shortest path length with all positive weights, now with "
           "cycles") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -229,14 +231,15 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
   }
 
   SECTION("finds the parent nodes with all positive weights, now with cycles") {
-    for (size_t vertex = 0; vertex < g.num_vertices(); vertex++) {
-      auto out_edge_list = g[vertex];
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
       for (auto edge : out_edge_list) {
-        weight[{g.get_source(edge), g.get_target(edge)}] = 1;
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
       }
     }
 
-    auto distances = floyd_warshall::visit(g, get_weight);
+    auto distances = floyd_warshall::visit(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -252,6 +255,405 @@ TEST_CASE("Floyd Warshall shortest paths", "[floyd_warshall]") {
 
     REQUIRE(distances[a][d].parent == c);
     REQUIRE(distances[a][b].parent == d);
+  }
+}
+
+TEST_CASE("Floyd Warshall shortest paths for matrix graphs",
+          "[floyd_warshall][matrix_graph]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, a); // 1->0
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(d, b); // 3->1
+
+  /*
+    A------>C-------|
+    ^       ^       |
+    |       |       |
+    B-------|       |
+    ^               |
+    |               |
+    D<--------------|
+  */
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].distance == 0);
+    REQUIRE(distances[b][b].distance == 0);
+    REQUIRE(distances[c][c].distance == 0);
+    REQUIRE(distances[d][d].distance == 0);
+
+    REQUIRE(distances[a][c].distance == 1);
+    REQUIRE(distances[b][a].distance == 1);
+    REQUIRE(distances[b][c].distance == 1);
+    REQUIRE(distances[c][d].distance == 1);
+    REQUIRE(distances[d][b].distance == 1);
+
+    REQUIRE(distances[a][d].distance == 2);
+    REQUIRE(distances[a][b].distance == 3);
+  }
+
+  SECTION("finds the parent nodes with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
+
+    REQUIRE(distances[a][c].parent == a);
+    REQUIRE(distances[b][a].parent == b);
+    REQUIRE((distances[b][c].parent == a || distances[b][c].parent == b));
+    REQUIRE(distances[c][d].parent == c);
+    REQUIRE(distances[d][b].parent == d);
+
+    REQUIRE(distances[a][d].parent == c);
+    REQUIRE(distances[a][b].parent == d);
+  }
+
+  SECTION("find the shortest path length with one negative weight") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {-2});
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].distance == 0);
+    REQUIRE(distances[b][b].distance == 0);
+    REQUIRE(distances[c][c].distance == 0);
+    REQUIRE(distances[d][d].distance == 0);
+
+    REQUIRE(distances[a][c].distance == -2);
+    REQUIRE(distances[b][a].distance == 1);
+    REQUIRE(distances[b][c].distance == -1);
+    REQUIRE(distances[c][d].distance == 1);
+    REQUIRE(distances[d][b].distance == 1);
+
+    REQUIRE(distances[a][d].distance == -1);
+    REQUIRE(distances[a][b].distance == 0);
+  }
+
+  SECTION("finds the parent nodes with one negative weight") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(a, c, {-2});
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
+
+    REQUIRE(distances[a][c].parent == a);
+    REQUIRE(distances[b][a].parent == b);
+    REQUIRE(distances[b][c].parent == a);
+    REQUIRE(distances[c][d].parent == c);
+    REQUIRE(distances[d][b].parent == d);
+
+    REQUIRE(distances[a][d].parent == c);
+    REQUIRE(distances[a][b].parent == d);
+  }
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(c, d, {-10});
+
+    REQUIRE_THROWS(floyd_warshall::visit(graph));
+  }
+
+  graph.add_edge(c, a); // 2->0
+  graph.add_edge(d, d); // 3->3
+
+  /*
+    <--------
+    A------>C-------|
+    ^       ^       |
+    |       |       |
+    B-------|       |
+    ^               |
+    |               |
+    D<--------------|
+   <->
+  */
+
+  SECTION("finds the shortest path length with all positive weights, now with "
+          "cycles") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].distance == 0);
+    REQUIRE(distances[b][b].distance == 0);
+    REQUIRE(distances[c][c].distance == 0);
+    REQUIRE(distances[d][d].distance == 0);
+
+    REQUIRE(distances[a][c].distance == 1);
+    REQUIRE(distances[b][a].distance == 1);
+    REQUIRE(distances[b][c].distance == 1);
+    REQUIRE(distances[c][a].distance == 1);
+    REQUIRE(distances[c][d].distance == 1);
+    REQUIRE(distances[d][b].distance == 1);
+
+    REQUIRE(distances[a][d].distance == 2);
+    REQUIRE(distances[a][b].distance == 3);
+  }
+
+  SECTION("finds the parent nodes with all positive weights, now with cycles") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
+
+    REQUIRE(distances[a][c].parent == a);
+    REQUIRE(distances[b][a].parent == b);
+    REQUIRE((distances[b][c].parent == b || distances[b][c].parent == a));
+    REQUIRE(distances[c][a].parent == c);
+    REQUIRE(distances[c][d].parent == c);
+    REQUIRE(distances[d][b].parent == d);
+
+    REQUIRE(distances[a][d].parent == c);
+    REQUIRE(distances[a][b].parent == d);
+  }
+}
+
+TEST_CASE("Floyd Warshall shortest paths for undirected list graphs",
+          "[floyd_warshall][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, a); // 1->0
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(d, b); // 3->1
+
+  /*
+    A------>C-------|
+    ^       ^       |
+    |       |       |
+    B-------|       |
+    ^               |
+    |               |
+    D<--------------|
+  */
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].distance == 0);
+    REQUIRE(distances[b][b].distance == 0);
+    REQUIRE(distances[c][c].distance == 0);
+    REQUIRE(distances[d][d].distance == 0);
+
+    REQUIRE(distances[a][c].distance == 1);
+    REQUIRE(distances[b][a].distance == 1);
+    REQUIRE(distances[b][c].distance == 1);
+    REQUIRE(distances[c][d].distance == 1);
+    REQUIRE(distances[d][b].distance == 1);
+
+    REQUIRE(distances[a][d].distance == 2);
+    REQUIRE(distances[a][b].distance == 1);
+  }
+
+  SECTION("finds the parent nodes with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
+
+    REQUIRE(distances[a][c].parent == a);
+    REQUIRE(distances[b][a].parent == b);
+    REQUIRE((distances[b][c].parent == a || distances[b][c].parent == b));
+    REQUIRE(distances[c][d].parent == c);
+    REQUIRE(distances[d][b].parent == d);
+
+    REQUIRE((distances[a][d].parent == c || distances[a][d].parent == b));
+    REQUIRE(distances[a][b].parent == a);
+  }
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(c, d, {-10});
+
+    REQUIRE_THROWS(floyd_warshall::visit(graph));
+  }
+}
+
+TEST_CASE("Floyd Warshall shortest paths for undirected matrix graphs",
+          "[floyd_warshall][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, c); // 0->2
+  graph.add_edge(b, a); // 1->0
+  graph.add_edge(b, c); // 1->2
+  graph.add_edge(c, d); // 2->3
+  graph.add_edge(d, b); // 3->1
+
+  /*
+    A------>C-------|
+    ^       ^       |
+    |       |       |
+    B-------|       |
+    ^               |
+    |               |
+    D<--------------|
+  */
+
+  SECTION("finds the shortest path length with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].distance == 0);
+    REQUIRE(distances[b][b].distance == 0);
+    REQUIRE(distances[c][c].distance == 0);
+    REQUIRE(distances[d][d].distance == 0);
+
+    REQUIRE(distances[a][c].distance == 1);
+    REQUIRE(distances[b][a].distance == 1);
+    REQUIRE(distances[b][c].distance == 1);
+    REQUIRE(distances[c][d].distance == 1);
+    REQUIRE(distances[d][b].distance == 1);
+
+    REQUIRE(distances[a][d].distance == 2);
+    REQUIRE(distances[a][b].distance == 1);
+  }
+
+  SECTION("finds the parent nodes with all positive weights") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    auto distances = floyd_warshall::visit(graph);
+
+    REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[c][c].parent == INVALID_VERTEX<Graph>);
+    REQUIRE(distances[d][d].parent == INVALID_VERTEX<Graph>);
+
+    REQUIRE(distances[a][c].parent == a);
+    REQUIRE(distances[b][a].parent == b);
+    REQUIRE((distances[b][c].parent == a || distances[b][c].parent == b));
+    REQUIRE(distances[c][d].parent == c);
+    REQUIRE(distances[d][b].parent == d);
+
+    REQUIRE((distances[a][d].parent == c || distances[a][d].parent == b));
+    REQUIRE(distances[a][b].parent == a);
+  }
+
+  SECTION("throws on negative cycle found") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {1});
+      }
+    }
+
+    graph.set_attributes(c, d, {-10});
+
+    REQUIRE_THROWS(floyd_warshall::visit(graph));
   }
 }
 } // namespace floyd_warshall_test
