@@ -50,23 +50,19 @@ std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(const G &graph,
                         num_vertices, Node{.distance = distance_upperbound,
                                            .parent = INVALID_VERTEX<G>}));
 
-  for (auto &edge_list : graph) {
-    for (auto &edge : edge_list) {
-      Vertex<G> source = graph.get_source(edge);
-      Vertex<G> target = graph.get_target(edge);
-      matrix[source][target].distance = weight(edge);
-      matrix[source][target].parent = source;
+  for (Vertex<G> u = 0; u < num_vertices; u++) {
+    for (auto &edge : graph[u]) {
+      Vertex<G> v = graph.get_target(edge);
+      matrix[u][v].distance = weight(edge);
+      matrix[u][v].parent = u;
     }
+    matrix[u][u] = 0;
+    matrix[u][u].parent = INVALID_VERTEX<G>;
   }
 
   for (Vertex<G> u = 0; u < num_vertices; u++) {
     for (Vertex<G> v = 0; v < num_vertices; v++) {
       for (Vertex<G> w = 0; w < num_vertices; w++) {
-        if (v == w) {
-          matrix[v][w].distance = 0;
-          matrix[v][w].parent = INVALID_VERTEX<G>;
-          continue;
-        }
         auto &v_to_u = matrix[v][u];
         auto &u_to_w = matrix[u][w];
         auto &v_to_w = matrix[v][w];
