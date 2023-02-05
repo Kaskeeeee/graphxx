@@ -69,6 +69,7 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
 
   // Run Bellman–Ford algorithm
   auto bf_tree = bellman_ford::visit(graph, johnson_vertex, weight);
+  graph.remove_vertex(johnson_vertex);
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
   // w(u,v) = w(u,v) + h(u) - h(v)
