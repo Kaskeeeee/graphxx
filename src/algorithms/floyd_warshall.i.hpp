@@ -31,6 +31,7 @@
 
 #include "algorithms/floyd_warshall.hpp"
 #include "base.hpp"
+#include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
@@ -39,31 +40,28 @@
 namespace graphxx::algorithms::floyd_warshall {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-DistanceMatrix<Vertex<G>, Distance> visit(const G &graph, Weight weight) {
+std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(const G &graph,
+                                                          Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
-  DistanceMatrix<Vertex<G>, Distance> matrix;
+  size_t num_vertices = graph.num_vertices();
 
-  Vertex<G> u = 0;
+  std::vector<std::vector<Node<Vertex<G>, Distance>>> matrix(
+      num_vertices, std::vector<Node<Vertex<G>, Distance>>(
+                        num_vertices, Node{.distance = distance_upperbound,
+                                           .parent = INVALID_VERTEX<G>}));
 
-  for (auto &out_edge_list : graph) {
-    matrix.emplace_back();
-    for (auto &&edge : out_edge_list) {
-      Vertex<G> v = graph.get_target(edge);
-      fill_vector(
-          matrix[u], v,
-          Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
-      matrix[u][v].distance = weight(edge);
-      matrix[u][v].parent = u;
+  for (auto &edge_list : graph) {
+    for (auto &edge : edge_list) {
+      Vertex<G> source = graph.get_source(edge);
+      Vertex<G> target = graph.get_target(edge);
+      matrix[source][target].distance = weight(edge);
+      matrix[source][target].parent = source;
     }
-    fill_vector(
-        matrix[u], graph.num_vertices(),
-        Node{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>});
-    u++;
   }
 
-  for (Vertex<G> u = 0; u < graph.num_vertices(); u++) {
-    for (Vertex<G> v = 0; v < graph.num_vertices(); v++) {
-      for (Vertex<G> w = 0; w < graph.num_vertices(); w++) {
+  for (Vertex<G> u = 0; u < num_vertices; u++) {
+    for (Vertex<G> v = 0; v < num_vertices; v++) {
+      for (Vertex<G> w = 0; w < num_vertices; w++) {
         if (v == w) {
           matrix[v][w].distance = 0;
           matrix[v][w].parent = INVALID_VERTEX<G>;
@@ -78,6 +76,13 @@ DistanceMatrix<Vertex<G>, Distance> visit(const G &graph, Weight weight) {
           v_to_w.parent = u_to_w.parent;
         }
       }
+    }
+  }
+
+  for (Vertex<G> v = 0; v < num_vertices; v++) {
+    if (matrix[v][v].distance < 0) {
+      throw exceptions::InvariantViolationException(
+          "negative weight cycle found");
     }
   }
 

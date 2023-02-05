@@ -51,16 +51,17 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
   Id parent;
 };
 
-/// @brief Implementation of a_star algorithm
-/// @tparam G graph type that is coherent with Graph concept
-/// @tparam C object that overloads operator[] to get the weight of a specific
-/// edge
-/// @tparam WeightType numeric weight type
-/// @param graph input graph
-/// @param source source vertex
-/// @param weight edges weights
-/// @param heuristic_weight heuristic distances for each vertex
-/// @return flatten tree as described for type Tree<WeightType>
+/// @brief Implementation of A* search algorithm
+/// @tparam Distance type of distance among the nodes
+/// @tparam G graph type
+/// @tparam Heuristic function used to get the heuristic weight of a node
+/// @tparam Weight function used to get weight of an edge
+/// @param graph that on which the algorithm will run
+/// @param source starting vertex
+/// @param target goal vertex
+/// @param heuristic_weight heuristic function
+/// @param weight weight function
+/// @return the best path from source to target
 template <concepts::Graph G, std::invocable<Vertex<G>> Heuristic,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
