@@ -149,8 +149,12 @@ public:
   /// adjacency map.
   AdjacencyMatrix::iterator end();
 
+  /// @brief Returns an iterator that points to the first element in the
+  /// adjacency map.
   AdjacencyMatrix::const_iterator begin() const;
 
+  /// @brief Returns an iterator that points one past the last element in the
+  /// adjacency map.
   AdjacencyMatrix::const_iterator end() const;
 
 private:

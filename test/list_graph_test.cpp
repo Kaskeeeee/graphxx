@@ -338,6 +338,18 @@ TEST_CASE("build undirected list graph", "[list_graph][undirected][build]") {
     }
   }
 
+  SECTION("remove edge in undirected graph") {
+    g.add_edge(1, 0);
+    REQUIRE(g.num_edges() == 2);
+    REQUIRE(g.has_edge(1, 0) == true);
+    REQUIRE(g.has_edge(0, 1) == true);
+
+    g.remove_edge(1, 0);
+    REQUIRE(g.num_edges() == 0);
+    REQUIRE(g.has_edge(1, 0) == false);
+    REQUIRE(g.has_edge(0, 1) == false);
+  }
+
   SECTION("check num vertices and num edges") {
     REQUIRE(g.num_vertices() == 0);
     REQUIRE(g.num_edges() == 0);

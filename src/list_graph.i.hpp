@@ -119,7 +119,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source,
 
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
     _adj[target].remove_if(
-        [&](auto &&edge) { return get_target(edge) == target; });
+        [&](auto &&edge) { return get_target(edge) == source; });
   }
 };
 
