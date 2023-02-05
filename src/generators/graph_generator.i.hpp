@@ -30,43 +30,58 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
 
   std::unordered_map<Vertex<G>, int> out_degree;
 
+  auto satisfy_conditions = [&](Vertex<G> source, Vertex<G> target) {
+    bool satisfied = true;
+
+    if (graph.has_edge(source, target))
+      satisfied = false;
+
+    if (!self_edges && source == target)
+      satisfied = false;
+
+    if (out_degree[source] >= max_out_degree)
+      satisfied = false;
+
+    if (G::DIRECTEDNESS == Directedness::UNDIRECTED &&
+        out_degree[target] >= max_out_degree)
+      satisfied = false;
+
+    return satisfied;
+  };
+
   for (int i = 0; i < num_edges; i++) {
-    Vertex<G> source_id = INVALID_VERTEX<G>;
-    Vertex<G> target_id = INVALID_VERTEX<G>;
 
-    do {
-      source_id = distribution(generator);
-      target_id = distribution(generator);
-    } while (graph.has_edge(source_id, target_id));
+    Vertex<G> source_id = distribution(generator);
+    Vertex<G> target_id = distribution(generator);
 
-    if (out_degree[source_id] == max_out_degree) {
-      bool found = false;
+    bool found = false;
 
-      for (int i = 0; i < num_vertices; i++) {
-        source_id = (source_id + 1) % num_vertices;
-        if (out_degree[source_id] < max_out_degree) {
+    for (int s = 0; s <= num_vertices; s++) {
+      for (int t = 0; t <= num_vertices; t++) {
+        target_id = (target_id + 1) % num_vertices;
+
+        if (satisfy_conditions(source_id, target_id)) {
           found = true;
           break;
         }
       }
 
-      if (!found) {
-        return;
-      }
+      if (found)
+        break;
+
+      source_id = (source_id + 1) % num_vertices;
     }
 
-    if (!self_edges) {
-      while (source_id == target_id) {
-        if (num_vertices <= 1) {
-          return;
-        }
-
-        target_id = distribution(generator);
-      }
+    if (!found) {
+      return;
     }
 
     graph.add_edge(source_id, target_id);
     out_degree[source_id]++;
+
+    if (G::DIRECTEDNESS == Directedness::UNDIRECTED && source_id != target_id) {
+      out_degree[target_id]++;
+    }
   }
 }
 
