@@ -33,6 +33,7 @@
 #include "algorithms/dijkstra.hpp"
 #include "algorithms/johnson.hpp"
 #include "base.hpp"
+#include "graph_concepts.hpp"
 
 namespace graphxx::algorithms::johnson {
 

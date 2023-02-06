@@ -30,7 +30,6 @@
  */
 
 #include "algorithms/dijkstra.hpp"
-#include "algorithms_base.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
@@ -42,8 +41,7 @@
 
 namespace graphxx::algorithms::dijkstra {
 
-template <concepts::Graph G, std::invocable<Edge<G>> Weight,
-          typename Distance>
+template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
 std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
                                              Weight weight) {
 

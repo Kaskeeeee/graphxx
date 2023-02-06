@@ -31,10 +31,8 @@
 
 #pragma once
 
-#include "algorithms_base.hpp"
 #include "base.hpp"
 #include "graph_concepts.hpp"
-#include "utils.hpp"
 
 #include <functional>
 #include <vector>
@@ -59,11 +57,10 @@ template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
 /// @param source source vertex
 /// @param weight edges weights
 /// @return flatten tree as described for type Tree<WeightType>
-template <
-    concepts::Graph G,
-    std::invocable<Edge<G>> Weight = std::function<
-        std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
-    typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+template <concepts::Graph G,
+          std::invocable<Edge<G>> Weight =
+              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
 std::vector<Node<Vertex<G>, Distance>> visit(
     const G &graph, Vertex<G> source,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });

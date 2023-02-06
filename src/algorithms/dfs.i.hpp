@@ -35,6 +35,7 @@
 #include "graph_concepts.hpp"
 
 #include <functional>
+#include <vector>
 
 namespace graphxx::algorithms::dfs {
 

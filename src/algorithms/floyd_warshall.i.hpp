@@ -36,6 +36,7 @@
 #include "utils.hpp"
 
 #include <limits>
+#include <vector>
 
 namespace graphxx::algorithms::floyd_warshall {
 

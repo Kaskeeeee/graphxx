@@ -33,10 +33,8 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
-#include "utils.hpp"
 
 #include <functional>
-#include <unordered_map>
 #include <vector>
 
 namespace graphxx::algorithms::kruskal {
@@ -49,11 +47,10 @@ namespace graphxx::algorithms::kruskal {
 /// @param graph input graph
 /// @param weight edges weights
 /// @return flatten tree as described for type Tree
-template <
-    concepts::Graph G,
-    std::invocable<Edge<G>> Weight = std::function<
-        std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
-    typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
+template <concepts::Graph G,
+          std::invocable<Edge<G>> Weight =
+              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
+          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
 std::vector<Edge<G>> visit(
     const G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });

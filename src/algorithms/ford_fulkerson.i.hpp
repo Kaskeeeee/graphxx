@@ -33,6 +33,7 @@
 #include "algorithms_base.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
+#include "graph_concepts.hpp"
 
 #include <limits>
 #include <queue>

@@ -33,13 +33,14 @@
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
+#include "utils.hpp"
 
 #include <limits>
+#include <vector>
 
 namespace graphxx::algorithms::bellman_ford {
 
-template <concepts::Graph G, std::invocable<Edge<G>> Weight,
-          typename Distance>
+template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
 std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
                                              Weight weight) {
   using NodeType = Node<Vertex<G>, Distance>;

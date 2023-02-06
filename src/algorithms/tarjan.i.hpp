@@ -34,6 +34,7 @@
 #include "graph_concepts.hpp"
 
 #include <algorithm>
+#include <vector>
 
 namespace graphxx::algorithms::tarjan {
 
