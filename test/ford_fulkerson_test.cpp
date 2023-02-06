@@ -41,8 +41,8 @@ namespace ford_fulkerson_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Ford Fulkerson maximum flow for list graphs",
-          "[ford_fulkerson][list_graph]") {
+TEST_CASE("Ford Fulkerson maximum flow for directed list graph",
+          "[ford_fulkerson][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -105,8 +105,8 @@ TEST_CASE("Ford Fulkerson maximum flow for list graphs",
   }
 }
 
-TEST_CASE("Ford Fulkerson maximum flow for list graphs",
-          "[ford_fulkerson][list_graph]") {
+TEST_CASE("Ford Fulkerson maximum flow for directed matrix graph",
+          "[ford_fulkerson][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -170,7 +170,7 @@ TEST_CASE("Ford Fulkerson maximum flow for list graphs",
   }
 }
 
-TEST_CASE("Ford Fulkerson maximum flow for undirected list graphs",
+TEST_CASE("Ford Fulkerson maximum flow for undirected list graph",
           "[ford_fulkerson][list_graph][undirected]") {
   using Graph =
       AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
@@ -187,9 +187,9 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected list graphs",
   graph.add_edge(d, c); // 4->3
 
   /*
-    S----->A----->B-----v
-     ----->D------^     T
-            ------>C----^
+    S------A------B------|
+     ------D------|      T
+            --------C----|
   */
 
   SECTION("throws on negative edge found") {
@@ -235,7 +235,7 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected list graphs",
   }
 }
 
-TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graphs",
+TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graph",
           "[ford_fulkerson][matrix_graph][undirected]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
@@ -252,9 +252,9 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graphs",
   graph.add_edge(d, c); // 4->3
 
   /*
-    S----->A----->B-----v
-     ----->D------^     T
-            ------>C----^
+    S------A------B------|
+     ------D------|      T
+            --------C----|
   */
 
   SECTION("throws on negative edge found") {

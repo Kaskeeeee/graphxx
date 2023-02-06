@@ -39,8 +39,8 @@ namespace graphxx::algorithms::tarjan {
 
 template <concepts::Graph G>
 void tarjan_rec(const G &graph, Vertex<G> v, TarjanTree &tarjan_tree,
-                SCCVector<Vertex<G>> &scc_vector,
-                StackVector<Vertex<G>> &stack, int &index) {
+                SCCVector<Vertex<G>> &scc_vector, StackVector<Vertex<G>> &stack,
+                int &index) {
   tarjan_tree[v].index = index;
   tarjan_tree[v].low_link = index;
   ++index;

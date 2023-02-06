@@ -36,13 +36,13 @@
 #include "matrix_graph.hpp"
 
 #include <map>
-#include <tuple>
 
 namespace a_star_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("A* shortest paths for list graph", "[a_star][list_graph]") {
+TEST_CASE("A* shortest paths for directed list graph",
+          "[a_star][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -207,7 +207,8 @@ TEST_CASE("A* shortest paths for list graph", "[a_star][list_graph]") {
   }
 }
 
-TEST_CASE("A* shortest paths for matrix graph", "[a_star][matrix_graph]") {
+TEST_CASE("A* shortest paths for directed matrix graph",
+          "[a_star][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -394,13 +395,13 @@ TEST_CASE("A* shortest paths for undirected list graph",
   graph.add_edge(f, z); // 5->6
 
   /*
-    A-->B-->F---------->Z
-    |   |               ^
-    |   ---------->E----^
-    |              ^
-    |   -----------^
-    |   |          ^
-    --->C-->D------^
+    A---B---F-----------Z
+    |   |               |
+    |   -----------E----|
+    |              |
+    |   -----------|
+    |   |          |
+    ----C---D------|
   */
 
   auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };
@@ -483,13 +484,13 @@ TEST_CASE("A* shortest paths for undirected matrix graph",
   graph.add_edge(f, z); // 5->6
 
   /*
-    A-->B-->F---------->Z
-    |   |               ^
-    |   ---------->E----^
-    |              ^
-    |   -----------^
-    |   |          ^
-    --->C-->D------^
+    A---B---F-----------Z
+    |   |               |
+    |   -----------E----|
+    |              |
+    |   -----------|
+    |   |          |
+    ----C---D------|
   */
 
   auto get_heuristic = [&](Vertex<Graph> v) { return heuristic_weight[v]; };

@@ -35,13 +35,12 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
-#include <tuple>
-
 namespace dijkstra_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Dijkstra shortest paths for list graph", "[dijkstra][list_graph]") {
+TEST_CASE("Dijkstra shortest paths for directed list graph",
+          "[dijkstra][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -177,8 +176,8 @@ TEST_CASE("Dijkstra shortest paths for list graph", "[dijkstra][list_graph]") {
   }
 }
 
-TEST_CASE("Dijkstra shortest paths for matrix graph",
-          "[dijkstra][matrix_graph]") {
+TEST_CASE("Dijkstra shortest paths for directed matrix graph",
+          "[dijkstra][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -333,12 +332,12 @@ TEST_CASE("Dijkstra shortest paths for undirected list graph",
   graph.add_edge(e, f); // 4->5
 
   /*
-    A-->B
+    A---B
     |   |
-    |   v
-    --->C-->D------v
-        --->E------v
-        ---------->F
+    |   |
+    ----C---D------|
+        ----E------|
+        -----------F
   */
 
   SECTION("throws on negative edge found") {
@@ -414,12 +413,12 @@ TEST_CASE("Dijkstra shortest paths for undirected matrix graph",
   graph.add_edge(e, f); // 4->5
 
   /*
-    A-->B
+    A---B
     |   |
-    |   v
-    --->C-->D------v
-        --->E------v
-        ---------->F
+    |   |
+    ----C---D------|
+        ----E------|
+        -----------F
   */
 
   SECTION("throws on negative edge found") {

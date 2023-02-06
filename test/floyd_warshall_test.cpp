@@ -35,15 +35,12 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
-#include <map>
-#include <tuple>
-
 namespace floyd_warshall_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Floyd Warshall shortest paths for list graphs",
-          "[floyd_warshall][list_graph]") {
+TEST_CASE("Floyd Warshall shortest paths for directed list graph",
+          "[floyd_warshall][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -258,8 +255,8 @@ TEST_CASE("Floyd Warshall shortest paths for list graphs",
   }
 }
 
-TEST_CASE("Floyd Warshall shortest paths for matrix graphs",
-          "[floyd_warshall][matrix_graph]") {
+TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
+          "[floyd_warshall][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -475,7 +472,7 @@ TEST_CASE("Floyd Warshall shortest paths for matrix graphs",
   }
 }
 
-TEST_CASE("Floyd Warshall shortest paths for undirected list graphs",
+TEST_CASE("Floyd Warshall shortest paths for undirected list graph",
           "[floyd_warshall][list_graph][undirected]") {
   using Graph =
       AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
@@ -490,13 +487,13 @@ TEST_CASE("Floyd Warshall shortest paths for undirected list graphs",
   graph.add_edge(d, b); // 3->1
 
   /*
-    A------>C-------|
-    ^       ^       |
+    A-------C-------|
+    |       |       |
     |       |       |
     B-------|       |
-    ^               |
     |               |
-    D<--------------|
+    |               |
+    D---------------|
   */
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -566,7 +563,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected list graphs",
   }
 }
 
-TEST_CASE("Floyd Warshall shortest paths for undirected matrix graphs",
+TEST_CASE("Floyd Warshall shortest paths for undirected matrix graph",
           "[floyd_warshall][matrix_graph][undirected]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
@@ -581,13 +578,13 @@ TEST_CASE("Floyd Warshall shortest paths for undirected matrix graphs",
   graph.add_edge(d, b); // 3->1
 
   /*
-    A------>C-------|
-    ^       ^       |
+    A-------C-------|
+    |       |       |
     |       |       |
     B-------|       |
-    ^               |
     |               |
-    D<--------------|
+    |               |
+    D---------------|
   */
 
   SECTION("finds the shortest path length with all positive weights") {

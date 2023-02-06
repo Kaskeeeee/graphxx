@@ -33,32 +33,166 @@
 #include "catch.hpp"
 #include "kruskal.hpp"
 #include "list_graph.hpp"
-
-#include <map>
-#include <tuple>
+#include "matrix_graph.hpp"
 
 namespace kruskal_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
-  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
-  Graph g{};
+TEST_CASE("Kruskal minimum spanning tree for directed list graph",
+          "[kruskal][list_graph][directed]") {
+  using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
 
   enum vertices { a, b, c, d };
 
-  std::map<std::tuple<unsigned long, unsigned long>, int> weight;
+  graph.add_edge(a, b);
+  graph.add_edge(a, c);
+  graph.add_edge(a, d);
+  graph.add_edge(b, a);
+  graph.add_edge(b, c);
+  graph.add_edge(c, a);
+  graph.add_edge(c, d);
+  graph.add_edge(d, a);
 
-  g.add_edge(a, b);
-  g.add_edge(a, c);
-  g.add_edge(a, d);
-  g.add_edge(b, a);
-  g.add_edge(c, a);
-  g.add_edge(d, a);
+  /*
+     A       B       C       D
+     |-------^
+     |---------------^
+     |-----------------------^
+     ^-------|-------^
+     ^---------------|-------^
+     ^-----------------------|
+ */
 
-  g.add_edge(b, c);
+  graph.set_attributes(a, b, {2});
+  graph.set_attributes(a, c, {1});
+  graph.set_attributes(a, d, {4});
+  graph.set_attributes(b, a, {2});
+  graph.set_attributes(c, a, {1});
+  graph.set_attributes(d, a, {4});
+  graph.set_attributes(b, c, {3});
+  graph.set_attributes(c, d, {9});
 
-  g.add_edge(c, d);
+  SECTION("find mimimum spanning tree") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(vector.size() == 3);
+  }
+
+  SECTION("check if edges founded are correct") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(((graph.get_source(vector[0]) == a &&
+              graph.get_target(vector[0]) == c) ||
+             (graph.get_source(vector[0]) == c &&
+              graph.get_target(vector[0]) == a)));
+    REQUIRE(((graph.get_source(vector[1]) == a &&
+              graph.get_target(vector[1]) == b) ||
+             (graph.get_source(vector[1]) == b &&
+              graph.get_target(vector[1]) == a)));
+    REQUIRE(((graph.get_source(vector[2]) == a &&
+              graph.get_target(vector[2]) == d) ||
+             (graph.get_source(vector[2]) == d &&
+              graph.get_target(vector[2]) == a)));
+  }
+
+  SECTION("check if no spanning tree in worst case") {
+    Graph graph2{};
+
+    graph2.add_edge(a, a);
+    graph.set_attributes(a, a, {1});
+
+    auto vector = kruskal::visit(graph2);
+
+    REQUIRE(vector.size() == 0);
+  }
+}
+
+TEST_CASE("Kruskal minimum spanning tree for directed matrix graph",
+          "[kruskal][matrix_graph][directed]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, b);
+  graph.add_edge(a, c);
+  graph.add_edge(a, d);
+  graph.add_edge(b, a);
+  graph.add_edge(b, c);
+  graph.add_edge(c, a);
+  graph.add_edge(c, d);
+  graph.add_edge(d, a);
+
+  /*
+     A       B       C       D
+     |-------^
+     |---------------^
+     |-----------------------^
+     ^-------|-------^
+     ^---------------|-------^
+     ^-----------------------|
+ */
+
+  graph.set_attributes(a, b, {2});
+  graph.set_attributes(a, c, {1});
+  graph.set_attributes(a, d, {4});
+  graph.set_attributes(b, a, {2});
+  graph.set_attributes(c, a, {1});
+  graph.set_attributes(d, a, {4});
+  graph.set_attributes(b, c, {3});
+  graph.set_attributes(c, d, {9});
+
+  SECTION("find mimimum spanning tree") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(vector.size() == 3);
+  }
+
+  SECTION("check if edges founded are correct") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(((graph.get_source(vector[0]) == a &&
+              graph.get_target(vector[0]) == c) ||
+             (graph.get_source(vector[0]) == c &&
+              graph.get_target(vector[0]) == a)));
+    REQUIRE(((graph.get_source(vector[1]) == a &&
+              graph.get_target(vector[1]) == b) ||
+             (graph.get_source(vector[1]) == b &&
+              graph.get_target(vector[1]) == a)));
+    REQUIRE(((graph.get_source(vector[2]) == a &&
+              graph.get_target(vector[2]) == d) ||
+             (graph.get_source(vector[2]) == d &&
+              graph.get_target(vector[2]) == a)));
+  }
+
+  SECTION("check if no spanning tree in worst case") {
+    Graph graph2{};
+
+    graph2.add_edge(a, a);
+    graph.set_attributes(a, a, {1});
+
+    auto vector = kruskal::visit(graph2);
+
+    REQUIRE(vector.size() == 0);
+  }
+}
+
+TEST_CASE("Kruskal minimum spanning tree for undirected list graphs",
+          "[kruskal][list_graph][undirected]") {
+  using Graph =
+      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, b);
+  graph.add_edge(a, c);
+  graph.add_edge(a, d);
+  graph.add_edge(b, c);
+  graph.add_edge(c, d);
 
   /*
       A       B       C       D
@@ -68,23 +202,107 @@ TEST_CASE("Kruskal minimum spanning tree", "[kruskal]") {
       |-----------------------|
   */
 
-  weight[{a, b}] = 2;
-  weight[{a, c}] = 1;
-  weight[{a, d}] = 4;
-  weight[{b, a}] = 2;
-  weight[{d, a}] = 1;
-  weight[{d, a}] = 4;
-  weight[{b, c}] = 3;
-  weight[{c, d}] = 9;
-
-  auto get_weight = [&](typename Graph::Edge e) {
-    return weight[{g.get_source(e), g.get_target(e)}];
-  };
+  graph.set_attributes(a, b, {2});
+  graph.set_attributes(a, c, {1});
+  graph.set_attributes(a, d, {4});
+  graph.set_attributes(b, c, {3});
+  graph.set_attributes(c, d, {9});
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(g, get_weight);
+    auto vector = kruskal::visit(graph);
 
     REQUIRE(vector.size() == 3);
+  }
+
+  SECTION("check if edges founded are correct") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(((graph.get_source(vector[0]) == a &&
+              graph.get_target(vector[0]) == c) ||
+             (graph.get_source(vector[0]) == c &&
+              graph.get_target(vector[0]) == a)));
+    REQUIRE(((graph.get_source(vector[1]) == a &&
+              graph.get_target(vector[1]) == b) ||
+             (graph.get_source(vector[1]) == b &&
+              graph.get_target(vector[1]) == a)));
+    REQUIRE(((graph.get_source(vector[2]) == a &&
+              graph.get_target(vector[2]) == d) ||
+             (graph.get_source(vector[2]) == d &&
+              graph.get_target(vector[2]) == a)));
+  }
+
+  SECTION("check if no spanning tree in worst case") {
+    Graph graph2{};
+
+    graph2.add_edge(a, a);
+    graph.set_attributes(a, a, {1});
+
+    auto vector = kruskal::visit(graph2);
+
+    REQUIRE(vector.size() == 0);
+  }
+}
+
+TEST_CASE("Kruskal minimum spanning tree for undirected matrix graph",
+          "[kruskal][matrix_graph][undirected]") {
+  using Graph =
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
+  Graph graph{};
+
+  enum vertices { a, b, c, d };
+
+  graph.add_edge(a, b);
+  graph.add_edge(a, c);
+  graph.add_edge(a, d);
+  graph.add_edge(b, c);
+  graph.add_edge(c, d);
+
+  /*
+      A       B       C       D
+      |-------|
+              |-------|
+      |---------------|-------|
+      |-----------------------|
+  */
+
+  graph.set_attributes(a, b, {2});
+  graph.set_attributes(a, c, {1});
+  graph.set_attributes(a, d, {4});
+  graph.set_attributes(b, c, {3});
+  graph.set_attributes(c, d, {9});
+
+  SECTION("find mimimum spanning tree") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(vector.size() == 3);
+  }
+
+  SECTION("check if edges founded are correct") {
+    auto vector = kruskal::visit(graph);
+
+    REQUIRE(((graph.get_source(vector[0]) == a &&
+              graph.get_target(vector[0]) == c) ||
+             (graph.get_source(vector[0]) == c &&
+              graph.get_target(vector[0]) == a)));
+    REQUIRE(((graph.get_source(vector[1]) == a &&
+              graph.get_target(vector[1]) == b) ||
+             (graph.get_source(vector[1]) == b &&
+              graph.get_target(vector[1]) == a)));
+    REQUIRE(((graph.get_source(vector[2]) == a &&
+              graph.get_target(vector[2]) == d) ||
+             (graph.get_source(vector[2]) == d &&
+              graph.get_target(vector[2]) == a)));
+  }
+
+  SECTION("check if no spanning tree in worst case") {
+    Graph graph2{};
+
+    graph2.add_edge(a, a);
+    graph.set_attributes(a, a, {1});
+
+    auto vector = kruskal::visit(graph2);
+
+    REQUIRE(vector.size() == 0);
   }
 }
 } // namespace kruskal_test

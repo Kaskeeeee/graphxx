@@ -29,7 +29,6 @@
  * @version v1.0
  */
 
-#include "algorithms/algorithms_base.hpp"
 #include "base.hpp"
 #include "bfs.hpp"
 #include "catch.hpp"
@@ -40,8 +39,8 @@ namespace bfs_test {
 using namespace graphxx;
 using namespace algorithms;
 
-TEST_CASE("BFS Tree correct visited order for list graphs",
-          "[BFS][list_graph]") {
+TEST_CASE("BFS Tree correct visited order for directed list graph",
+          "[BFS][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
   Graph graph{};
 
@@ -138,8 +137,8 @@ TEST_CASE("BFS Tree correct visited order for list graphs",
   }
 }
 
-TEST_CASE("BFS Tree correct visited order for matrix graphs",
-          "[BFS][matrix_graph]") {
+TEST_CASE("BFS Tree correct visited order for directed matrix graph",
+          "[BFS][matrix_graph][directed]") {
   using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED>;
   Graph graph{};
 
@@ -236,7 +235,7 @@ TEST_CASE("BFS Tree correct visited order for matrix graphs",
   }
 }
 
-TEST_CASE("BFS Tree correct visited order for undirected list graphs",
+TEST_CASE("BFS Tree correct visited order for undirected list graph",
           "[BFS][list_graph][undirected]") {
 
   using Graph = AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED>;
@@ -249,6 +248,14 @@ TEST_CASE("BFS Tree correct visited order for undirected list graphs",
   graph.add_edge(a, d); // 0->3
   graph.add_edge(b, c); // 1->2
   graph.add_edge(d, e); // 3->4
+
+  /*
+    A----B----C
+    ----------|
+    |
+    |
+    -----D----E
+  */
 
   SECTION("check if all nodes were processed") {
     auto tree = graphxx::algorithms::bfs::visit(graph, c);
@@ -291,7 +298,7 @@ TEST_CASE("BFS Tree correct visited order for undirected list graphs",
   }
 }
 
-TEST_CASE("BFS Tree correct visited order for undirected matrix graphs",
+TEST_CASE("BFS Tree correct visited order for undirected matrix graph",
           "[BFS][matrix_graph][undirected]") {
 
   using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED>;
@@ -304,6 +311,14 @@ TEST_CASE("BFS Tree correct visited order for undirected matrix graphs",
   graph.add_edge(a, d); // 0->3
   graph.add_edge(b, c); // 1->2
   graph.add_edge(d, e); // 3->4
+
+  /*
+    A----B----C
+    ----------|
+    |
+    |
+    -----D----E
+  */
 
   SECTION("check if all nodes were processed") {
     auto tree = graphxx::algorithms::bfs::visit(graph, c);

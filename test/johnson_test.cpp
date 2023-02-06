@@ -35,14 +35,12 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
-#include <map>
-#include <tuple>
-
 namespace johnson_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Johnson shortest paths for list graphs", "[johnson][list_graph]") {
+TEST_CASE("Johnson shortest paths for directed list graph",
+          "[johnson][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -173,8 +171,6 @@ TEST_CASE("Johnson shortest paths for list graphs", "[johnson][list_graph]") {
 
   graph.add_edge(c, a); // 2->0
   graph.add_edge(d, d); // 3->3
-  graph.add_edge(c, a); // 2->0
-  graph.add_edge(d, d); // 3->3
 
   /*
     <--------
@@ -244,8 +240,8 @@ TEST_CASE("Johnson shortest paths for list graphs", "[johnson][list_graph]") {
   }
 }
 
-TEST_CASE("Johnson shortest paths for matrix graphs",
-          "[johnson][matrix_graph]") {
+TEST_CASE("Johnson shortest paths for directed matrix graph",
+          "[johnson][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -377,8 +373,6 @@ TEST_CASE("Johnson shortest paths for matrix graphs",
 
   graph.add_edge(c, a); // 2->0
   graph.add_edge(d, d); // 3->3
-  graph.add_edge(c, a); // 2->0
-  graph.add_edge(d, d); // 3->3
 
   /*
     <--------
@@ -448,7 +442,7 @@ TEST_CASE("Johnson shortest paths for matrix graphs",
   }
 }
 
-TEST_CASE("Johnson shortest paths for undirected list graphs",
+TEST_CASE("Johnson shortest paths for undirected list graph",
           "[johnson][list_graph][undirected]") {
   using Graph =
       AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
@@ -463,13 +457,13 @@ TEST_CASE("Johnson shortest paths for undirected list graphs",
   graph.add_edge(d, b); // 3->1
 
   /*
-    A------>C-------|
-    ^       ^       |
+    A-------C-------|
+    |       |       |
     |       |       |
     B-------|       |
-    ^               |
     |               |
-    D<--------------|
+    |               |
+    D---------------|
   */
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -525,10 +519,10 @@ TEST_CASE("Johnson shortest paths for undirected list graphs",
   }
 }
 
-TEST_CASE("Johnson shortest paths for undirected matrix graphs",
+TEST_CASE("Johnson shortest paths for undirected matrix graph",
           "[johnson][matrix_graph][undirected]") {
   using Graph =
-      AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
+      AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
   Graph graph{};
 
   enum vertices { a, b, c, d };
@@ -540,13 +534,13 @@ TEST_CASE("Johnson shortest paths for undirected matrix graphs",
   graph.add_edge(d, b); // 3->1
 
   /*
-    A------>C-------|
-    ^       ^       |
+    A-------C-------|
+    |       |       |
     |       |       |
     B-------|       |
-    ^               |
     |               |
-    D<--------------|
+    |               |
+    D---------------|
   */
 
   SECTION("finds the shortest path length with all positive weights") {

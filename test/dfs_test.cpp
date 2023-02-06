@@ -29,7 +29,6 @@
  * @version v1.0
  */
 
-#include "algorithms/algorithms_base.hpp"
 #include "base.hpp"
 #include "catch.hpp"
 #include "dfs.hpp"
@@ -42,8 +41,8 @@ namespace dfs_test {
 using namespace graphxx;
 using namespace algorithms;
 
-TEST_CASE("DFS Tree correct visited order for list graphs",
-          "[DFS][list_graph]") {
+TEST_CASE("DFS Tree correct visited order for directed list graph",
+          "[DFS][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
   Graph graph{};
 
@@ -96,6 +95,7 @@ TEST_CASE("DFS Tree correct visited order for list graphs",
   graph.add_edge(c, b); // 2->1
 
   /*
+   <->
     A--->B--->C
     |   <->   |
     |    <-----
@@ -138,8 +138,8 @@ TEST_CASE("DFS Tree correct visited order for list graphs",
   }
 }
 
-TEST_CASE("DFS Tree correct visited order for matrix graphs",
-          "[DFS][matrix_graph]") {
+TEST_CASE("DFS Tree correct visited order for directed matrix graph",
+          "[DFS][matrix_graph][directed]") {
   using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED>;
   Graph graph{};
 
@@ -192,6 +192,7 @@ TEST_CASE("DFS Tree correct visited order for matrix graphs",
   graph.add_edge(c, b); // 2->1
 
   /*
+   <->
     A--->B--->C
     |   <->   |
     |    <-----
@@ -234,7 +235,7 @@ TEST_CASE("DFS Tree correct visited order for matrix graphs",
   }
 }
 
-TEST_CASE("DFS Tree correct visited order for undirected list graphs",
+TEST_CASE("DFS Tree correct visited order for undirected list graph",
           "[DFS][list_graph][undirected]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED>;
   Graph graph{};
@@ -248,11 +249,11 @@ TEST_CASE("DFS Tree correct visited order for undirected list graphs",
   graph.add_edge(d, e); // 3->4
 
   /*
-    A--->B--->C
-    --------->
+    A----B----C
+    ----------|
     |
     |
-    ---->D--->E
+    -----D----E
   */
 
   SECTION("check if all nodes were processed") {
@@ -296,7 +297,7 @@ TEST_CASE("DFS Tree correct visited order for undirected list graphs",
   }
 }
 
-TEST_CASE("DFS Tree correct visited order for undirected matrix graphs",
+TEST_CASE("DFS Tree correct visited order for undirected matrix graph",
           "[DFS][matrix_graph][undirected]") {
   using Graph = AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED>;
   Graph graph{};
@@ -310,11 +311,11 @@ TEST_CASE("DFS Tree correct visited order for undirected matrix graphs",
   graph.add_edge(d, e); // 3->4
 
   /*
-    A--->B--->C
-    --------->
+    A----B----C
+    ----------|
     |
     |
-    ---->D--->E
+    -----D----E
   */
 
   SECTION("check if all nodes were processed") {

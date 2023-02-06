@@ -35,15 +35,12 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
-#include <map>
-#include <tuple>
-
 namespace bellman_ford_test {
 using namespace graphxx;
 using namespace graphxx::algorithms;
 
-TEST_CASE("Bellman ford shortest paths for list graphs",
-          "[bellman-ford][list_graph]") {
+TEST_CASE("Bellman ford shortest paths for directed list graph",
+          "[bellman_ford][list_graph][directed]") {
   using Graph = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
 
@@ -58,8 +55,8 @@ TEST_CASE("Bellman ford shortest paths for list graphs",
 
   /*
     A--->B--->C
-    |    |    ^|
-    |    v    |v
+    |         ^|
+    |         |v
     ---->D--->E
   */
 
@@ -154,8 +151,8 @@ TEST_CASE("Bellman ford shortest paths for list graphs",
   }
 }
 
-TEST_CASE("Bellman ford shortest paths for matrix graphs",
-          "[bellman-ford][matrix_graph]") {
+TEST_CASE("Bellman ford shortest paths for directed matrix graph",
+          "[bellman_ford][matrix_graph][directed]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
   Graph graph{};
@@ -171,8 +168,8 @@ TEST_CASE("Bellman ford shortest paths for matrix graphs",
 
   /*
     A--->B--->C
-    |    |    ^|
-    |    v    |v
+    |         ^|
+    |         |v
     ---->D--->E
   */
 
@@ -267,8 +264,8 @@ TEST_CASE("Bellman ford shortest paths for matrix graphs",
   }
 }
 
-TEST_CASE("Bellman ford shortest paths for undirected list graphs",
-          "[bellman-ford][list_graph][undirected]") {
+TEST_CASE("Bellman ford shortest paths for undirected list graph",
+          "[bellman_ford][list_graph][undirected]") {
   using Graph =
       AdjacencyListGraph<unsigned long, Directedness::UNDIRECTED, int>;
   Graph graph{};
@@ -280,13 +277,12 @@ TEST_CASE("Bellman ford shortest paths for undirected list graphs",
   graph.add_edge(b, c); // 1->2
   graph.add_edge(d, e); // 3->4
   graph.add_edge(e, c); // 4->2
-  // graph.add_edge(c, e); // 2->4
 
   /*
-    A--->B--->C
-    |    |    ^|
-    |    v    |v
-    ---->D--->E
+    A----B----C
+    |         |
+    |         |
+    -----D----E
   */
 
   SECTION("throws on negative cycle found") {
@@ -340,8 +336,8 @@ TEST_CASE("Bellman ford shortest paths for undirected list graphs",
   }
 }
 
-TEST_CASE("Bellman ford shortest paths for undirected matrix graphs",
-          "[bellman-ford][matrix_graph][undirected]") {
+TEST_CASE("Bellman ford shortest paths for undirected matrix graph",
+          "[bellman_ford][matrix_graph][undirected]") {
   using Graph =
       AdjacencyMatrixGraph<unsigned long, Directedness::UNDIRECTED, int>;
   Graph graph{};
@@ -353,13 +349,12 @@ TEST_CASE("Bellman ford shortest paths for undirected matrix graphs",
   graph.add_edge(b, c); // 1->2
   graph.add_edge(d, e); // 3->4
   graph.add_edge(e, c); // 4->2
-  // graph.add_edge(c, e); // 2->4
 
   /*
-    A--->B--->C
-    |    |    ^|
-    |    v    |v
-    ---->D--->E
+    A----B----C
+    |         |
+    |         |
+    -----D----E
   */
 
   SECTION("throws on negative cycle found") {
