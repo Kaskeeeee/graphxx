@@ -51,18 +51,6 @@ template <concepts::Graph G, concepts::Numeric Distance> struct Node {
 template <concepts::Graph G, concepts::Numeric Distance>
 using DistanceTree = std::vector<Node<G, Distance>>;
 
-/// @brief
-/// @tparam WeightType
-template <concepts::Graph G, concepts::Numeric Distance>
-using FlowMap = std::map<Edge<G>, Distance>;
-
-/// @brief
-/// @tparam WeightType
-template <concepts::Graph G, concepts::Numeric Distance> struct FFpair {
-  FlowMap<G, Distance> flow;
-  Distance max_flow;
-};
-
 /// @brief Implementation of ford_fulkerson algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @tparam C object that overloads operator[] to get the weight of a specific
@@ -73,13 +61,9 @@ template <concepts::Graph G, concepts::Numeric Distance> struct FFpair {
 /// @param sink sink vertex
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
-template <concepts::Graph G,
-          std::invocable<Edge<G>> Weight =
-              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
-          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-FFpair<G, Distance> visit(
-    const G &graph, Vertex<G> source, Vertex<G> sink,
-    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
+template <concepts::Graph G, concepts::Numeric Flow = int>
+Flow visit(const G &graph, Vertex<G> source, Vertex<G> sink,
+           std::vector<std::vector<Flow>> &capacity);
 
 } // namespace graphxx::algorithms::ford_fulkerson
 
