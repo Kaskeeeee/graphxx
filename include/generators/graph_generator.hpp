@@ -33,7 +33,7 @@
 
 #include "base.hpp"           // Edge
 #include "graph_concepts.hpp" // Graph
-#include "tuple_utils.hpp"    // xor_tuple_hash
+#include "tuple_utils.hpp"    // XorTupleHash
 
 #include <unordered_map> // std::unordered_map
 
@@ -42,14 +42,14 @@ namespace graphxx {
 class GraphGenerator {
 public:
   GraphGenerator();
-  GraphGenerator(unsigned int seed);
+  explicit GraphGenerator(unsigned int seed);
 
   template <concepts::Graph G>
   void generate_random_graph(G &graph, int num_vertices, int num_edges,
                              int max_out_degree = -1, bool self_edges = true);
 
   template <concepts::Graph G, concepts::Numeric W>
-  std::unordered_map<Edge<G>, W, xor_tuple_hash<Edge<G>>>
+  std::unordered_map<Edge<G>, W, XorTupleHash<Edge<G>>>
   generate_random_weights(const G &graph, W min_weight, W max_weight);
 
 private:

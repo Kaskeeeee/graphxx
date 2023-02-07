@@ -51,9 +51,9 @@ template <concepts::Identifier Id> struct DfsNode {
   /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
   /// @brief Counter indicating when the vertex is discovered
-  size_t discovery_time;
+  int32_t discovery_time;
   /// @brief Counter indicating when the processing of the vertex is finished
-  size_t finishing_time;
+  int32_t finishing_time;
 };
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first

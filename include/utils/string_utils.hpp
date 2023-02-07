@@ -31,6 +31,7 @@
 
 #pragma once
 
+#include <locale> // std::locale
 #include <string> // std::string
 #include <vector> // std::vector
 
@@ -67,7 +68,7 @@ inline size_t find_first_of(const std::string &input,
 /// @param str Input string.
 /// @return New string without trailing spaces.
 inline std::string trim_right(const std::string &str) {
-  int64_t pos = str.size() - 1;
+  size_t pos = str.size() - 1;
   for (; pos > 0 && std::isspace(str[pos], std::locale::classic()); --pos) {
   };
   return str.substr(0, pos + 1);
@@ -185,9 +186,9 @@ inline bool contains(const std::string &str, const std::string &find,
                      bool case_sensitive = true) {
   if (case_sensitive) {
     return str.find(find, 0) != std::string::npos;
-  } else {
-    return to_lower(str).find(to_lower(find), 0) != std::string::npos;
   }
+
+  return to_lower(str).find(to_lower(find), 0) != std::string::npos;
 }
 
 /// @brief Search for a substring between two delimiters from an input string.
@@ -261,7 +262,7 @@ get_text_between_delimiters(const std::string &input,
                         end - start - open_delimiter.size());
   }
 
-  return std::string();
+  return {};
 }
 
 } // namespace graphxx::utils

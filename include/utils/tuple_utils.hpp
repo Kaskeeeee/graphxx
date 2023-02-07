@@ -24,7 +24,7 @@ void set_elements_from_index(std::tuple<Elements...> &t,
   (std::make_index_sequence<sizeof...(Elements) - StartingIndex>());
 }
 
-template <typename Tuple> struct xor_tuple_hash {
+template <typename Tuple> struct XorTupleHash {
   size_t operator()(const Tuple &k) const {
     return [&]<size_t... Offsets>(std::index_sequence<Offsets...>) {
       return (std::get<Offsets>(k) ^ ...);

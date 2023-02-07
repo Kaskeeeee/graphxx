@@ -35,7 +35,7 @@
 #include "base.hpp"              // DefaultIdType
 #include "graph_concepts.hpp"    // concepts::Identifier
 
-#include <tuple> // std::tuple
+#include <tuple>  // std::tuple
 #include <vector> // std::vector
 
 namespace graphxx {
@@ -114,15 +114,15 @@ public:
 
   /// @brief Get number of edges attributes.
   /// @return Number of edges attributes.
-  size_t num_attributes() const;
+  [[nodiscard]] constexpr size_t num_attributes() const;
 
   /// @brief Get number of vertices in the graph.
   /// @return Number of vertices.
-  size_t num_vertices() const;
+  [[nodiscard]] size_t num_vertices() const;
 
   /// @brief Get number of edges in the graph.
   /// @return Number of edges.
-  size_t num_edges() const;
+  [[nodiscard]] size_t num_edges() const;
 
   /// @brief Checks if a vertex is present in the graph.
   /// @param vertex Vertex id.
@@ -142,19 +142,19 @@ public:
 
   /// @brief Returns an iterator that points to the first element in the
   /// adjacency map.
-  AdjacencyMatrix::iterator begin();
+  typename AdjacencyMatrix::iterator begin();
 
   /// @brief Returns an iterator that points one past the last element in the
   /// adjacency map.
-  AdjacencyMatrix::iterator end();
+  typename AdjacencyMatrix::iterator end();
 
   /// @brief Returns an iterator that points to the first element in the
   /// adjacency map.
-  AdjacencyMatrix::const_iterator begin() const;
+  typename AdjacencyMatrix::const_iterator begin() const;
 
   /// @brief Returns an iterator that points one past the last element in the
   /// adjacency map.
-  AdjacencyMatrix::const_iterator end() const;
+  typename AdjacencyMatrix::const_iterator end() const;
 
 private:
   AdjacencyMatrix _adj;

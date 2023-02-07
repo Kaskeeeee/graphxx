@@ -121,7 +121,7 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::remove_edge(
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-const AdjacencyMatrixGraph<Id, D, AttributesType...>::Edge &
+const typename AdjacencyMatrixGraph<Id, D, AttributesType...>::Edge &
 AdjacencyMatrixGraph<Id, D, AttributesType...>::get_edge(Vertex source,
                                                          Vertex target) const {
   if (!has_edge(source, target)) {
@@ -144,26 +144,27 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::set_attributes(
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::Attributes
+typename AdjacencyMatrixGraph<Id, D, AttributesType...>::Attributes
 AdjacencyMatrixGraph<Id, D, AttributesType...>::get_attributes(
     Vertex source, Vertex target) const {
   return get_elements_from_index<2>(get_edge(source, target));
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_attributes() const {
+constexpr size_t
+AdjacencyMatrixGraph<Id, D, AttributesType...>::num_attributes() const {
   return sizeof...(AttributesType);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::Vertex
+typename AdjacencyMatrixGraph<Id, D, AttributesType...>::Vertex
 AdjacencyMatrixGraph<Id, D, AttributesType...>::get_source(
     const Edge &edge) const {
   return std::get<0>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::Vertex
+typename AdjacencyMatrixGraph<Id, D, AttributesType...>::Vertex
 AdjacencyMatrixGraph<Id, D, AttributesType...>::get_target(
     const Edge &edge) const {
   return std::get<1>(edge);
@@ -197,32 +198,36 @@ size_t AdjacencyMatrixGraph<Id, D, AttributesType...>::num_edges() const {
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-const AdjacencyMatrixGraph<Id, D, AttributesType...>::EdgeMap &
+const typename AdjacencyMatrixGraph<Id, D, AttributesType...>::EdgeMap &
 AdjacencyMatrixGraph<Id, D, AttributesType...>::operator[](
     Vertex vertex) const {
   return _adj.at(vertex);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::iterator
+typename AdjacencyMatrixGraph<Id, D,
+                              AttributesType...>::AdjacencyMatrix::iterator
 AdjacencyMatrixGraph<Id, D, AttributesType...>::begin() {
   return _adj.begin();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::iterator
+typename AdjacencyMatrixGraph<Id, D,
+                              AttributesType...>::AdjacencyMatrix::iterator
 AdjacencyMatrixGraph<Id, D, AttributesType...>::end() {
   return _adj.end();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
+typename AdjacencyMatrixGraph<
+    Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
 AdjacencyMatrixGraph<Id, D, AttributesType...>::begin() const {
   return _adj.cbegin();
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
+typename AdjacencyMatrixGraph<
+    Id, D, AttributesType...>::AdjacencyMatrix::const_iterator
 AdjacencyMatrixGraph<Id, D, AttributesType...>::end() const {
   return _adj.cend();
 }

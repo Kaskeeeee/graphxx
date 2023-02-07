@@ -40,8 +40,8 @@ namespace graphxx::algorithms {
 
 /// @brief Stucture of the node, containing informations about
 struct TarjanNode {
-  size_t index;
-  size_t low_link;
+  int32_t index;
+  int32_t low_link;
   bool on_stack;
 };
 

@@ -120,7 +120,7 @@ TEST_CASE(
   }
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     xor_tuple_hash<Edge<G>>>
+                     XorTupleHash<Edge<G>>>
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
@@ -187,7 +187,7 @@ TEST_CASE(
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     xor_tuple_hash<Edge<G>>>
+                     XorTupleHash<Edge<G>>>
       edge_properties;
 
   SECTION("parse simple graph file") {

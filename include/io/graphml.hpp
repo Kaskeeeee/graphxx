@@ -42,14 +42,14 @@ namespace graphxx::io {
 
 using GraphMLProperties = std::unordered_map<std::string, std::string>;
 
-const std::string XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-const std::string GRAPHML_ROOT_OPEN =
+constexpr std::string XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+constexpr std::string GRAPHML_ROOT_OPEN =
     "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" "
     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
     "xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns "
     "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">";
 
-const std::string GRAPHML_ROOT_CLOSE = "</graphml>";
+constexpr std::string GRAPHML_ROOT_CLOSE = "</graphml>";
 
 /**
  * @brief  Write a graph object into an output stream in the GraphML format.
@@ -112,7 +112,7 @@ template <concepts::Graph G>
 void graphml_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphMLProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphMLProperties, xor_tuple_hash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphMLProperties, XorTupleHash<Edge<G>>>
         &edge_properties);
 
 } // namespace graphxx::io

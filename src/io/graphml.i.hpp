@@ -52,7 +52,7 @@ void graphml_serialize(
     std::function<GraphMLProperties(Vertex<G>, Vertex<G>)>
         get_edge_properties) {
 
-  out << XML_HEADER << std::endl;
+  out << kXmlHeader << std::endl;
   out << GRAPHML_ROOT_OPEN << std::endl;
 
   int key_count = 0;
@@ -170,7 +170,7 @@ template <concepts::Graph G>
 void graphml_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphMLProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphMLProperties, xor_tuple_hash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphMLProperties, XorTupleHash<Edge<G>>>
         &edge_properties) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load(in);

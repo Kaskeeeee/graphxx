@@ -35,6 +35,7 @@
 #include "graph_concepts.hpp"
 
 #include <fstream>
+#include <functional>
 
 namespace graphxx::io {
 

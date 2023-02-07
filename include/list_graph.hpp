@@ -125,15 +125,15 @@ public:
 
   /// @brief Get number of edges attributes.
   /// @return Number of edges attributes.
-  size_t num_attributes() const;
+  [[nodiscard]] constexpr size_t num_attributes() const;
 
   /// @brief Get number of vertices in the graph.
   /// @return Number of vertices.
-  size_t num_vertices() const;
+  [[nodiscard]] size_t num_vertices() const;
 
   /// @brief Get number of edges in the graph.
   /// @return Number of edges.
-  size_t num_edges() const;
+  [[nodiscard]] size_t num_edges() const;
 
   /// @brief Checks if a vertex is present in the graph.
   /// @param vertex Vertex id.
@@ -153,19 +153,19 @@ public:
 
   /// @brief Returns an iterator that points to the first element in the
   /// adjacency list.
-  AdjacencyList::iterator begin();
+  typename AdjacencyList::iterator begin();
 
   /// @brief Returns an iterator that points one past the last element in the
   /// adjacency list.
-  AdjacencyList::iterator end();
+  typename AdjacencyList::iterator end();
 
   /// @brief Returns an iterator that points to the first element in the
   /// adjacency list.
-  AdjacencyList::const_iterator begin() const;
+  typename AdjacencyList::const_iterator begin() const;
 
   /// @brief Returns an iterator that points one past the last element in the
   /// adjacency list.
-  AdjacencyList::const_iterator end() const;
+  typename AdjacencyList::const_iterator end() const;
 
 private:
   /// @brief The adjacency list.

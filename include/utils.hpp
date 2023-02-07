@@ -34,6 +34,7 @@
 #include "graph_concepts.hpp" // concepts::Numeric
 
 #include <limits>      // std::numeric_limits::max()
+#include <numeric>     // std::iota
 #include <type_traits> // std::decay_t
 #include <utility>     // std::declval
 #include <vector>      // std::vector
@@ -74,8 +75,8 @@ template <concepts::Graph G>
 std::vector<std::pair<Vertex<G>, Vertex<G>>> get_sorted_edges(const G &graph) {
   std::vector<std::pair<Vertex<G>, Vertex<G>>> edges;
 
-  for (auto &outEdges : graph) {
-    for (auto &edge : outEdges) {
+  for (auto &out_edges : graph) {
+    for (auto &edge : out_edges) {
       edges.emplace_back(graph.get_source(edge), graph.get_target(edge));
     }
   }

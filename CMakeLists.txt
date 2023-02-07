@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(Graphxx
         DESCRIPTION "C++ graph library"
-        HOMEPAGE_URL "https://github.com/Kaskeeeee/graph"
+        HOMEPAGE_URL "https://github.com/Kaskeeeee/graphxx"
         LANGUAGES CXX
 )
 
@@ -17,167 +17,113 @@ message("                 | |                     ")
 message("                 |_|                     ")
 message("")
 
+# ###############################################################################
+# CONFIGURATION OPTION
+# ###############################################################################
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Generates a file containing the exact compiler calls for all translation units of the project in machine (needed for clang-tidy)
-# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-# find clang-tidy
-# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+# Generates a file containing the exact compiler calls for all translation units 
+# of the project in machine (needed for clang-tidy)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Undefined behavior checking at runtime
-OPTION(UBSAN "Undefined behaviour sanitizer option" OFF)
+# Compile with sanitizer checking
+option(SANITIZE "Enable sanitizer option" OFF)
 
 # Compile with coverage support
 option(COVERAGE "Enable coverage output" OFF)
 
 # Compile with benchmark
-option(BENCHMARK "Enable benchmarking" OFF)
+option(BUILD_BENCH "Enable benchmarking" OFF)
 
-# find clang-tidy
-# find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+# Compile with examples
+option(BUILD_EXAMPLES "Enable examples" OFF)
 
-# -Wall -Wextra -Wpedantic
-set(COMPILER_FLAGS
-        -Wall -Wextra -Wpedantic
-        $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
-        $<$<BOOL:${COVERAGE}>:--coverage>
-)
-
-set(LINKER_FLAGS
-        $<$<BOOL:${UBSAN}>:-fsanitize=undefined -fno-omit-frame-pointer>
-        $<$<BOOL:${COVERAGE}>:--coverage>
-)
+# Compile with examples
+option(BUILD_TEST "Enable tests" OFF)
 
 # ###############################################################################
-# VARIABLES
+# COMPILER FLAGS
 # ###############################################################################
 
-# include
-set(INC
-        ${PROJECT_SOURCE_DIR}/include/base.hpp
-        ${PROJECT_SOURCE_DIR}/include/graph_concepts.hpp
-        ${PROJECT_SOURCE_DIR}/include/list_graph.hpp
-        ${PROJECT_SOURCE_DIR}/include/matrix_graph.hpp
-        ${PROJECT_SOURCE_DIR}/include/exceptions.hpp
-        ${PROJECT_SOURCE_DIR}/include/utils.hpp
-)
+include(CheckCXXCompilerFlag)
 
-# include/algorithms
-set(INC_ALG
-        ${PROJECT_SOURCE_DIR}/include/algorithms/algorithms_base.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/bfs.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/dfs.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/bellman_ford.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/tarjan.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/dijkstra.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/kruskal.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/a_star.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/johnson.hpp
-        ${PROJECT_SOURCE_DIR}/include/algorithms/ford_fulkerson.hpp
-)
-
-# include/generators
-set(INC_GEN
-        ${PROJECT_SOURCE_DIR}/include/generators/graph_generator.hpp
-)
-
-# include/utils
-set(INC_UTILS
-        ${PROJECT_SOURCE_DIR}/include/utils/tuple_utils.hpp
-)
-
-# include/io
-set(INC_IO
-        ${PROJECT_SOURCE_DIR}/include/io/graphviz.hpp
-        ${PROJECT_SOURCE_DIR}/include/io/graphml.hpp
-        ${PROJECT_SOURCE_DIR}/include/io/matrix_market.hpp
-)
-
-# src
-set(SRC
-        ${PROJECT_SOURCE_DIR}/src/list_graph.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/matrix_graph.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/exceptions.cpp
-)
-
-# src/algorithms
-set(SRC_ALG
-        ${PROJECT_SOURCE_DIR}/src/algorithms/bfs.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/dfs.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/bellman_ford.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/tarjan.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/dijkstra.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/kruskal.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/a_star.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/johnson.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/algorithms/ford_fulkerson.i.hpp
-)
-
-# src/io
-set(SRC_IO
-        ${PROJECT_SOURCE_DIR}/src/io/graphviz.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/io/graphml.i.hpp
-        ${PROJECT_SOURCE_DIR}/src/io/matrix_market.i.hpp
-)
-
-# src/generators
-set(SRC_GEN
-        ${PROJECT_SOURCE_DIR}/src/generators/graph_generator.i.hpp
-)
-
-# src/utils
-set(SRC_UTILS
-        ${PROJECT_SOURCE_DIR}/src/utils/string_utils.cpp
-)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    add_compile_options("-Weverything")
+    add_compile_options("-Wno-c++98-compat")
+    add_compile_options("-Wno-c++98-compat-pedantic")
+    add_compile_options("-Wno-padded")
+    add_compile_options("-Wno-undefined-func-template")
+    add_compile_options("-Wno-documentation-unknown-command")
+    add_compile_options("-Wno-global-constructors")
+    add_compile_options("-Wno-exit-time-destructors")
+    add_compile_options("-Wno-sign-conversion")
+    add_compile_options("-Wno-weak-vtables")
+    add_compile_options("-Wno-weak-template-vtables")
+    add_compile_options("-Wno-documentation")
+elseif (CMAKE_COMPILER_IS_GNUCXX)
+    add_compile_options("-Wall")
+    add_compile_options("-Wextra")
+    add_compile_options("-Wpedantic")
+endif()
 
 # ###############################################################################
-# LIBRARY
+# BUILD TYPE
 # ###############################################################################
-add_library(graph OBJECT)
 
-target_sources(graph
-        PUBLIC ${INC}
-        PUBLIC ${INC_ALG}
-        PUBLIC ${INC_IO}
-        PUBLIC ${INC_GEN}
-        PUBLIC ${INC_UTILS}
-        PRIVATE ${SRC}
-        PRIVATE ${SRC_ALG}
-        PRIVATE ${SRC_IO}
-        PRIVATE ${SRC_GEN}
-        PRIVATE ${SRC_UTILS}
-)
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "No build type selected, default to Release")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (default Release)" FORCE)
+endif()
 
-target_include_directories(graph
-        PUBLIC ${PROJECT_SOURCE_DIR}/include
-        PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
-        PUBLIC ${PROJECT_SOURCE_DIR}/include/io
-        PUBLIC ${PROJECT_SOURCE_DIR}/include/generators
-        PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
-        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/pugixml
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
-        PRIVATE ${PROJECT_SOURCE_DIR}/src/algorithms
-        PRIVATE ${PROJECT_SOURCE_DIR}/src/io
-        PRIVARE ${PROJECT_SOURCE_DIR}/src/generators
-        PRIVATE ${PROJECT_SOURCE_DIR}/src/utils
-)
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_options("-O3")
+    add_compile_options("-DNDEBUG")
 
-target_compile_options(graph
-        PRIVATE ${COMPILER_FLAGS}
-)
+elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if (CMAKE_COMPILER_IS_GNUCXX)
+        add_compile_options("-ggdb3")
+    elseif (CMAKE_CXX_COMPILER_ID EQUAL "Clang")
+        add_compile_options("-ggdb")
+    else()
+        add_compile_options("-g")
+    endif()
+endif()
 
-target_link_options(graph
-        PRIVATE ${LINKER_FLAGS}
-)
+# ###############################################################################
+# SANITIZE
+# ###############################################################################
 
-# set_target_properties(graph PROPERTIES LINKER_LANGUAGE CXX)
+if(SANITIZE)
+        add_compile_options("-O1")
+        add_compile_options("-g")
+        add_compile_options("-fno-omit-frame-pointer")
+        add_compile_options("-fno-optimize-sibling-calls")
+
+        add_compile_options("-fsanitize=address")
+        add_compile_options("-fsanitize=leak")
+        add_compile_options("-fsanitize=undefined")
+
+        if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+            add_compile_options("-fsanitize=memory")
+            add_compile_options("-fsanitize=integer")
+            add_compile_options("-fsanitize=nullability")
+        endif()
+
+        set(LINKER_FLAGS ${LINKER_FLAGS} -fsanitize=undefined -fno-omit-frame-pointer)
+endif()
+
 
 # ###############################################################################
 # COVERAGE
 # ###############################################################################
+
 if(COVERAGE)
+        add_compile_options("--coverage")
+        set(LINKER_FLAGS ${LINKER_FLAGS} --coverage)
+
         # GET GCC MAJOR VERSION
         string(REGEX REPLACE "\\..*" "" GCC_MAJOR ${CMAKE_CXX_COMPILER_VERSION})
 
@@ -193,17 +139,53 @@ if(COVERAGE)
 endif()
 
 # ###############################################################################
-# TIDY
+# LIBRARY
 # ###############################################################################
-# add_custom_target(tidy
-# COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy -p=${CMAKE_BINARY_DIR}/compile_commands.json graph ${INC} ${SRC_ALG} ${SRC_IO} ${INC_IO} ${INC} ${INC_ALG} ${SRC} ${SRC_ALG} ${INC_ALG} use -list-checks for reading checks used
-# )
+add_library(graphxx OBJECT)
+
+target_include_directories(graphxx
+        PUBLIC ${PROJECT_SOURCE_DIR}/include
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/algorithms
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/io
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/generators
+        PUBLIC ${PROJECT_SOURCE_DIR}/include/utils
+        PUBLIC ${PROJECT_SOURCE_DIR}/third_party/pugixml
+        PUBLIC ${PROJECT_SOURCE_DIR}/src
+        PUBLIC ${PROJECT_SOURCE_DIR}/src/algorithms
+        PUBLIC ${PROJECT_SOURCE_DIR}/src/io
+        PUBLIC ${PROJECT_SOURCE_DIR}/src/generators
+        PUBLIC ${PROJECT_SOURCE_DIR}/src/utils
+)
+
+file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*.i.hpp)
+
+target_sources(graphxx PRIVATE ${SRCS})
+
+target_compile_options(graphxx
+        PRIVATE ${COMPILER_FLAGS}
+)
+
+target_link_options(graphxx
+        PRIVATE ${LINKER_FLAGS}
+)
+
+# ###############################################################################
+# LINTER
+# ###############################################################################
+
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+if (CLANG_TIDY_EXE)
+    add_custom_target(tidy
+                      COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy
+                      ${PROJECT_SOURCE_DIR}/include/**/*.hpp
+    )
+endif()
 
 # ###############################################################################
 # DOCUMENTATION
 # ###############################################################################
-find_package(Doxygen)
 
+find_package(Doxygen)
 if(DOXYGEN_FOUND)
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
         set(DOXYGEN_PROJECT_BRIEF ${PROJECT_DESCRIPTION})
@@ -220,15 +202,28 @@ if(DOXYGEN_FOUND)
                 ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src/algorithms ${PROJECT_SOURCE_DIR}/include/algorithms
                 COMMENT "Generating API documentation with Doxygen"
         )
-endif(DOXYGEN_FOUND)
+endif()
 
 # ###############################################################################
-# TEST CODE
+# STATISTICS
 # ###############################################################################
-add_executable(graph_test)
 
-# PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
-target_sources(graph_test
+find_program(CLOC_FOUND cloc)
+if (CLOC_FOUND)
+    add_custom_target(stats
+                      COMMAND cloc ${PROJECT_SOURCE_DIR}/src
+                                   ${PROJECT_SOURCE_DIR}/include
+    )
+endif()
+
+# ###############################################################################
+# PREPARING TEST
+# ###############################################################################
+
+if (BUILD_TEST)
+    add_executable(graphxx_test)
+
+    target_sources(graphxx_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/utils_test.cpp
@@ -241,243 +236,260 @@ target_sources(graph_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
-)
+        PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
+    )
 
-target_include_directories(graph_test
-        PRIVATE ${PROJECT_SOURCE_DIR}/src
-)
-
-target_include_directories(graph_test SYSTEM
+    target_include_directories(graphxx_test SYSTEM
         PUBLIC ${PROJECT_SOURCE_DIR}/third_party/catch2
-)
+    )
 
-target_link_libraries(graph_test
-        PUBLIC graph
-)
+    target_link_libraries(graphxx_test
+        PUBLIC graphxx
+    )
 
-target_compile_options(graph_test
+    target_compile_options(graphxx_test
         PRIVATE -Wno-unused-but-set-variable
         PRIVATE ${COMPILER_FLAGS}
-)
+    )
 
-target_link_options(graph_test
-        PRIVATE ${LINKER_FLAGS}
-)
+    target_link_options(graphxx_test
+            PRIVATE ${LINKER_FLAGS}
+    )
 
-install(
-        TARGETS graph_test
-        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-)
+    install(
+            TARGETS graphxx_test
+            RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+    )
+
+endif()
+
 
 # ###############################################################################
 # TESTS
 # ###############################################################################
-enable_testing()
 
-add_test(NAME digraphTest
-        COMMAND graph_test
-)
+if (BUILD_TEST)
 
-# add_test(NAME valgrindTest
-# COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
-# --track-origins=yes
-# ${CMAKE_BINARY_DIR}/graph_test
-# )
+    enable_testing()
+
+    add_test(NAME all_tests
+            COMMAND graphxx_test
+    )
+
+    find_program(VALGRIND_FOUND valgrind)
+    if (VALGRIND_FOUND)
+    add_test(NAME valgrindTest
+            COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes
+            --track-origins=yes
+            ${CMAKE_BINARY_DIR}/graphxx_test
+    )
+    endif()
+
+endif()
+
 
 # ###############################################################################
 # EXAMPLES
 # ###############################################################################
 
-# graphviz example
-# add_executable(graphviz_example)
-# target_sources(graphviz_example
-# PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
-# )
-#
-# target_include_directories(graphviz_example
-# PRIVATE ${PROJECT_SOURCE_DIR}/src
-# )
-#
-# target_link_libraries(graphviz_example
-# PUBLIC graph
-# )
-#
-# install(
-# TARGETS graphviz_example
-# RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-# )
-if(BENCHMARK)
-        # Fetch nanobench for benchmarking
-        include(FetchContent)
-        FetchContent_Declare(
-                nanobench
-                GIT_REPOSITORY https://github.com/martinus/nanobench.git
-                GIT_TAG v4.1.0
-                GIT_SHALLOW TRUE
-        )
-        FetchContent_MakeAvailable(nanobench)
+if (BUILD_EXAMPLES)
+    add_executable(graphviz_example)
+    target_sources(graphviz_example
+            PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
+    )
 
-        # Boost flags
-        set(Boost_USE_STATIC_LIBS OFF)
-        set(Boost_USE_MULTITHREADED ON)
-        set(Boost_USE_STATIC_RUNTIME OFF)
+    target_link_libraries(graphviz_example
+            PUBLIC graph
+    )
 
-        # Find Boost
-        find_package(Boost 1.71.0 COMPONENTS graph)
+    install(
+            TARGETS graphviz_example
+            RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+    )
 
-        if(Boost_FOUND)
-                include_directories(${Boost_INCLUDE_DIRS})
+endif()
 
-                # dijkstra
-                add_executable(benchmark_dijkstra)
+# ###############################################################################
+# BENCHMARK
+# ###############################################################################
 
-                target_sources(benchmark_dijkstra
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dijkstra.cpp
-                )
+if(BUILD_BENCHMARK)
+    # Fetch nanobench for benchmarking
+    include(FetchContent)
+    FetchContent_Declare(
+            nanobench
+            GIT_REPOSITORY https://github.com/martinus/nanobench.git
+            GIT_TAG v4.1.0
+            GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(nanobench)
 
-                target_include_directories(benchmark_dijkstra
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+    # Boost flags
+    set(Boost_USE_STATIC_LIBS OFF)
+    set(Boost_USE_MULTITHREADED ON)
+    set(Boost_USE_STATIC_RUNTIME OFF)
 
-                target_link_libraries(benchmark_dijkstra
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+    # Find Boost
+    find_package(Boost 1.71.0 COMPONENTS graph)
 
-                # kruskal
-                add_executable(benchmark_krsukal)
+    if(Boost_FOUND)
+            include_directories(${Boost_INCLUDE_DIRS})
 
-                target_sources(benchmark_krsukal
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
-                )
+            # dijkstra
+            add_executable(benchmark_dijkstra)
 
-                target_include_directories(benchmark_krsukal
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_dijkstra
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dijkstra.cpp
+            )
 
-                target_link_libraries(benchmark_krsukal
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_dijkstra
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                # bfs
-                add_executable(benchmark_bfs)
+            target_link_libraries(benchmark_dijkstra
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
 
-                target_sources(benchmark_bfs
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
-                )
+            # kruskal
+            add_executable(benchmark_krsukal)
 
-                target_include_directories(benchmark_bfs
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_krsukal
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
+            )
 
-                target_link_libraries(benchmark_bfs
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_krsukal
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                # dfs
-                add_executable(benchmark_dfs)
+            target_link_libraries(benchmark_krsukal
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
 
-                target_sources(benchmark_dfs
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
-                )
+            # bfs
+            add_executable(benchmark_bfs)
 
-                target_include_directories(benchmark_dfs
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_bfs
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
+            )
 
-                target_link_libraries(benchmark_dfs
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_bfs
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                # bellman_ford
-                add_executable(benchmark_bellman_ford)
+            target_link_libraries(benchmark_bfs
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
 
-                target_sources(benchmark_bellman_ford
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
-                )
+            # dfs
+            add_executable(benchmark_dfs)
 
-                target_include_directories(benchmark_bellman_ford
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_dfs
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
+            )
 
-                target_link_libraries(benchmark_bellman_ford
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_dfs
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                # floyd_warshall
-                add_executable(benchmark_floyd_warshall)
+            target_link_libraries(benchmark_dfs
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
 
-                target_sources(benchmark_floyd_warshall
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_floyd_warshall.cpp
-                )
+            # bellman_ford
+            add_executable(benchmark_bellman_ford)
 
-                target_include_directories(benchmark_floyd_warshall
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_bellman_ford
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
+            )
 
-                target_link_libraries(benchmark_floyd_warshall
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_bellman_ford
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                # johnson
-                add_executable(benchmark_johnson)
+            target_link_libraries(benchmark_bellman_ford
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
 
-                target_sources(benchmark_johnson
-                        PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_johnson.cpp
-                )
+            # floyd_warshall
+            add_executable(benchmark_floyd_warshall)
 
-                target_include_directories(benchmark_johnson
-                        PRIVATE ${PROJECT_SOURCE_DIR}/src
-                )
+            target_sources(benchmark_floyd_warshall
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_floyd_warshall.cpp
+            )
 
-                target_link_libraries(benchmark_johnson
-                        PUBLIC graph
-                        PUBLIC ${Boost_LIBRARIES}
-                        PRIVATE nanobench
-                )
+            target_include_directories(benchmark_floyd_warshall
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
 
-                install(
-                        TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall benchmark_johnson
-                        RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
-                )
-        endif()
+            target_link_libraries(benchmark_floyd_warshall
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
+
+            # johnson
+            add_executable(benchmark_johnson)
+
+            target_sources(benchmark_johnson
+                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_johnson.cpp
+            )
+
+            target_include_directories(benchmark_johnson
+                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+            )
+
+            target_link_libraries(benchmark_johnson
+                    PUBLIC graph
+                    PUBLIC ${Boost_LIBRARIES}
+                    PRIVATE nanobench
+            )
+
+            install(
+                    TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall benchmark_johnson
+                    RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
+            )
+    endif()
 endif()
 
 # ###############################################################################
 # CLEAN
 # ###############################################################################
-add_custom_target(clean_all
+
+add_custom_target(clean-all
+        COMMAND ${CMAKE_COMMAND} -E echo "Cleaning build..."
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/build/*
         COMMAND ${CMAKE_COMMAND} -E echo "Cleaning doc..."
-        COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/doc
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/doc/*
         COMMAND ${CMAKE_COMMAND} -E echo "Cleaning bin..."
-        COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/bin
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${PROJECT_SOURCE_DIR}/bin/*
         COMMAND ${CMAKE_COMMAND} -E echo "Done!"
 )
+
 
 # COMMANDS FOR BUILDING THE PROJECT:
 # mkdir build
 # cd build
-# cmake -D<variable to modify> ..
+# cmake -D<variable to modify>=<value> ..
 # cmake --build .
 
 # OTHER COMMANDS:
 # <generator> test              execute tests
 # <generator> install           install executables
-# <generator> clean_all         delete /doc and /bin
+# <generator> clean-all         delete generated files
 # <generator> coverage          generate code coverage
-# <genereator> doc              generate documentation
+# <generator> doc              generate documentation
+# <generator> tidy             run linter
+# <generator> stats            run cloc

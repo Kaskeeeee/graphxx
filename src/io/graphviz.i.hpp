@@ -172,7 +172,7 @@ template <concepts::Graph G>
 void graphviz_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphvizProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphvizProperties, xor_tuple_hash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphvizProperties, XorTupleHash<Edge<G>>>
         &edge_properties) {
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 

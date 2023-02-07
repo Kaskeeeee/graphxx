@@ -15,7 +15,7 @@ public:
   using Base = std::unordered_map<Key, Value>;
 
   /// @brief custom iterator that returns values instead of key value pairs
-  class iterator {
+  class Iterator {
   public:
     using difference_type = int;
     using value_type = Value;
@@ -23,36 +23,36 @@ public:
     using pointer = Value *;
     using iterator_category = std::bidirectional_iterator_tag;
 
-    iterator(){};
-    iterator(typename Base::iterator it) : _it{it} {}
+    Iterator() = default;
+    Iterator(typename Base::iterator it) : _it{it} {}
 
     reference operator*() const { return _it->second; }
-    iterator &operator++() {
+    Iterator &operator++() {
       ++_it;
       return *this;
     }
-    iterator operator++(int) {
-      iterator i = *this;
+    Iterator operator++(int) {
+      Iterator i = *this;
       ++_it;
       return i;
     }
-    iterator &operator--() {
+    Iterator &operator--() {
       --_it;
       return *this;
     }
-    iterator operator--(int) {
-      iterator i = *this;
+    Iterator operator--(int) {
+      Iterator i = *this;
       --_it;
       return i;
     }
-    bool operator==(const iterator &other) const { return _it == other._it; }
-    bool operator!=(const iterator &other) const { return !(*this == other); }
+    bool operator==(const Iterator &other) const { return _it == other._it; }
+    bool operator!=(const Iterator &other) const { return !(*this == other); }
 
   private:
     typename Base::iterator _it;
   };
 
-  class const_iterator {
+  class ConstIterator {
   public:
     using difference_type = int;
     using value_type = Value;
@@ -60,31 +60,32 @@ public:
     using pointer = const Value *;
     using iterator_category = std::bidirectional_iterator_tag;
 
-    const_iterator(typename Base::const_iterator it) : _it{it} {}
+    ConstIterator() = default;
+    ConstIterator(typename Base::const_iterator it) : _it{it} {}
 
     reference operator*() const { return _it->second; }
-    const_iterator &operator++() {
+    ConstIterator &operator++() {
       ++_it;
       return *this;
     }
-    const_iterator operator++(int) {
-      const_iterator i = *this;
+    ConstIterator operator++(int) {
+      ConstIterator i = *this;
       ++_it;
       return i;
     }
-    const_iterator &operator--() {
+    ConstIterator &operator--() {
       --_it;
       return *this;
     }
-    const_iterator operator--(int) {
-      const_iterator i = *this;
+    ConstIterator operator--(int) {
+      ConstIterator i = *this;
       --_it;
       return i;
     }
-    bool operator==(const const_iterator &other) const {
+    bool operator==(const ConstIterator &other) const {
       return _it == other._it;
     }
-    bool operator!=(const const_iterator &other) const {
+    bool operator!=(const ConstIterator &other) const {
       return !(*this == other);
     }
 
@@ -92,10 +93,10 @@ public:
     typename Base::const_iterator _it;
   };
 
-  iterator begin() { return iterator(Base::begin()); }
-  iterator end() { return iterator(Base::end()); }
-  const_iterator begin() const { return const_iterator(Base::begin()); }
-  const_iterator end() const { return const_iterator(Base::end()); }
+  Iterator begin() { return Iterator(Base::begin()); }
+  Iterator end() { return Iterator(Base::end()); }
+  ConstIterator begin() const { return ConstIterator(Base::begin()); }
+  ConstIterator end() const { return ConstIterator(Base::end()); }
 };
 
 } // namespace graphxx
