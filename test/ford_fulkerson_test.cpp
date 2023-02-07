@@ -75,7 +75,7 @@ TEST_CASE("Ford Fulkerson maximum flow for directed list graph",
       }
     }
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 2);
   }
@@ -91,7 +91,7 @@ TEST_CASE("Ford Fulkerson maximum flow for directed list graph",
     capacities[d][a] = 3;
     capacities[d][c] = 2;
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 10);
   }
@@ -132,7 +132,7 @@ TEST_CASE("Ford Fulkerson maximum flow for directed matrix graph",
       }
     }
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 2);
   }
@@ -148,7 +148,7 @@ TEST_CASE("Ford Fulkerson maximum flow for directed matrix graph",
     capacities[d][a] = 3;
     capacities[d][c] = 2;
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 10);
   }
@@ -189,7 +189,7 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected list graph",
       }
     }
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 2);
   }
@@ -205,7 +205,7 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected list graph",
     capacities[d][a] = 3;
     capacities[d][c] = 2;
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 10);
   }
@@ -246,7 +246,7 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graph",
       }
     }
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 2);
   }
@@ -262,7 +262,7 @@ TEST_CASE("Ford Fulkerson maximum flow for undirected matrix graph",
     capacities[d][a] = 3;
     capacities[d][c] = 2;
 
-    auto result = ford_fulkerson::visit(graph, s, t, capacities);
+    auto result = ford_fulkerson(graph, s, t, capacities);
 
     REQUIRE(result == 10);
   }
