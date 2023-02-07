@@ -103,9 +103,9 @@ int main(int argc, char **argv) {
 
   bench
       .run("kruskal graphxx",
-           [&]() { graphxx::algorithms::kruskal::visit(list_graph); })
+           [&]() { graphxx::algorithms::kruskal(list_graph); })
       .run("kruskal matrix graphxx",
-           [&]() { graphxx::algorithms::kruskal::visit(matrix_graph); })
+           [&]() { graphxx::algorithms::kruskal(matrix_graph); })
       .run("kruskal boost", [&]() {
         boost::kruskal_minimum_spanning_tree(boost_graph,
                                              std::back_inserter(spanning_tree));

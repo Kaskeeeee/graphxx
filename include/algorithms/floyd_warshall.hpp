@@ -31,17 +31,21 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
+#include <concepts>   // std::invocable
+#include <functional> // std::function
+#include <tuple>      // std::tuple_element_t
+#include <utility>    // std::declval
 
-namespace graphxx::algorithms::floyd_warshall {
+namespace graphxx::algorithms {
 
 /// @brief Node containing informations about its distance and
 ///        and the previous node on the shortest path from a given source
 /// @tparam WeightType
-template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+template <concepts::Identifier Id, concepts::Numeric Distance>
+struct FloydWarshallNode {
   Distance distance;
   Id parent;
 };
@@ -58,10 +62,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(
+std::vector<std::vector<FloydWarshallNode<Vertex<G>, Distance>>> floyd_warshall(
     const G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::floyd_warshall
+} // namespace graphxx::algorithms
 
 #include "algorithms/floyd_warshall.i.hpp"

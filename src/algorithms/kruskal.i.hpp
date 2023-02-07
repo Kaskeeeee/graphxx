@@ -36,8 +36,9 @@
 #include <queue>
 #include <vector>
 
-namespace graphxx::algorithms::kruskal {
+namespace graphxx::algorithms {
 
+namespace detail::kruskal {
 // Search for the repserentative vertex of the cluster, which is that element in
 // the map with same key and value
 template <concepts::Identifier Id>
@@ -56,9 +57,10 @@ Id find_representative(std::vector<std::tuple<Id, size_t>> &ranked_sets,
 
   return root;
 }
+} // namespace detail::kruskal
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<Edge<G>> visit(const G &graph, Weight weight) {
+std::vector<Edge<G>> kruskal(const G &graph, Weight weight) {
 
   size_t size = graph.num_vertices();
 
@@ -90,8 +92,10 @@ std::vector<Edge<G>> visit(const G &graph, Weight weight) {
     Vertex<G> source = graph.get_source(edge);
     Vertex<G> target = graph.get_target(edge);
 
-    Vertex<G> source_root = find_representative(ranked_sets, source);
-    Vertex<G> target_root = find_representative(ranked_sets, target);
+    Vertex<G> source_root =
+        detail::kruskal::find_representative(ranked_sets, source);
+    Vertex<G> target_root =
+        detail::kruskal::find_representative(ranked_sets, target);
 
     if (source_root != target_root) {
       size_t source_set_rank = std::get<1>(ranked_sets[source_root]);
@@ -114,4 +118,4 @@ std::vector<Edge<G>> visit(const G &graph, Weight weight) {
   return minimum_spanning_tree;
 };
 
-} // namespace graphxx::algorithms::kruskal
+} // namespace graphxx::algorithms

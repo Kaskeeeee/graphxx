@@ -35,17 +35,19 @@
 #include "base.hpp"
 #include "graph_concepts.hpp"
 
-namespace graphxx::algorithms::johnson {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
+std::vector<std::vector<JohnsonNode<Vertex<G>, Distance>>>
+johnson(G &graph, Weight weight) {
 
   // New vertex
   size_t size = graph.num_vertices();
   Vertex<G> johnson_vertex = size;
   graph.add_vertex(johnson_vertex);
 
-  DistanceTree<Vertex<G>, Distance> distances(size + 1);
+  std::vector<std::vector<JohnsonNode<Vertex<G>, Distance>>> distances(size +
+                                                                       1);
   WeightMap<G, Distance> weight_map(size + 1);
 
   auto get_weight = [&](Edge<G> e) {
@@ -69,7 +71,7 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
   }
 
   // Run Bellman–Ford algorithm
-  auto bf_tree = bellman_ford::visit(graph, johnson_vertex, weight);
+  auto bf_tree = bellman_ford(graph, johnson_vertex, weight);
   graph.remove_vertex(johnson_vertex);
 
   // Reweigh the edges using the values computed by Bellman–Ford algorithm:
@@ -85,7 +87,7 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
 
   // Run Dijkstra for every vertex
   for (Vertex<G> source = 0; source < size; source++) {
-    auto d_tree = dijkstra::visit(graph, source, get_weight);
+    auto d_tree = dijkstra(graph, source, get_weight);
     for (Vertex<G> target = 0; target < size; target++) {
       distances[source].push_back({.distance = d_tree[target].distance +
                                                bf_tree[target].distance -
@@ -96,4 +98,4 @@ DistanceTree<Vertex<G>, Distance> visit(G &graph, Weight weight) {
 
   return distances;
 }
-} // namespace graphxx::algorithms::johnson
+} // namespace graphxx::algorithms

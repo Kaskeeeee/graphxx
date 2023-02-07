@@ -31,10 +31,10 @@
 
 #pragma once
 
-#include "base.hpp"
+#include "base.hpp" // G::Vertex
 
-#include <concepts>
-#include <ranges>
+#include <concepts> // std::unsigned_integral
+#include <ranges>   // std::ranges::range_value_t
 
 namespace graphxx::concepts {
 
@@ -65,7 +65,9 @@ concept HasGraphBasicMethods =
       g.remove_edge(vertex, vertex);
       { g.get_edge(vertex, vertex) } -> std::convertible_to<typename G::Edge>;
       g.set_attributes(vertex, vertex, attributes);
-      { g.get_attributes(vertex, vertex) } -> std::same_as<typename G::Attributes>;
+      {
+        g.get_attributes(vertex, vertex)
+        } -> std::same_as<typename G::Attributes>;
       { g.num_attributes() } -> std::same_as<size_t>;
       { g.num_vertices() } -> std::same_as<size_t>;
       { g.num_edges() } -> std::same_as<size_t>;

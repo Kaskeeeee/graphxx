@@ -38,18 +38,19 @@
 #include <limits>
 #include <vector>
 
-namespace graphxx::algorithms::floyd_warshall {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(const G &graph,
-                                                          Weight weight) {
+std::vector<std::vector<FloydWarshallNode<Vertex<G>, Distance>>>
+floyd_warshall(const G &graph, Weight weight) {
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   size_t num_vertices = graph.num_vertices();
 
-  std::vector<std::vector<Node<Vertex<G>, Distance>>> matrix(
-      num_vertices, std::vector<Node<Vertex<G>, Distance>>(
-                        num_vertices, Node{.distance = distance_upperbound,
-                                           .parent = INVALID_VERTEX<G>}));
+  std::vector<std::vector<FloydWarshallNode<Vertex<G>, Distance>>> matrix(
+      num_vertices,
+      std::vector<FloydWarshallNode<Vertex<G>, Distance>>(
+          num_vertices, FloydWarshallNode{.distance = distance_upperbound,
+                                          .parent = INVALID_VERTEX<G>}));
 
   for (Vertex<G> u = 0; u < num_vertices; u++) {
     for (auto &edge : graph[u]) {
@@ -86,4 +87,4 @@ std::vector<std::vector<Node<Vertex<G>, Distance>>> visit(const G &graph,
   return matrix;
 }
 
-} // namespace graphxx::algorithms::floyd_warshall
+} // namespace graphxx::algorithms

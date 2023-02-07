@@ -31,13 +31,16 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <vector>
+#include <concepts>   // std::invocable
+#include <functional> // std::function
+#include <tuple>      // std::tuple_element_t
+#include <utility>    // std::declval
+#include <vector>     // std::vector
 
-namespace graphxx::algorithms::kruskal {
+namespace graphxx::algorithms {
 
 /// @brief Implementation of kruskal algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -51,10 +54,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<Edge<G>> visit(
+std::vector<Edge<G>> kruskal(
     const G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::kruskal
+} // namespace graphxx::algorithms
 
 #include "algorithms/kruskal.i.hpp"

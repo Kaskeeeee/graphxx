@@ -31,22 +31,22 @@
 
 #pragma once
 
-#include "algorithms_base.hpp"
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "algorithms_base.hpp" // VertexStatus
+#include "base.hpp"            // Vertex
+#include "graph_concepts.hpp"  // Graph
 
-#include <functional>
-#include <vector>
+#include <functional> // std::function
+#include <vector>     // std::vector
 
-namespace graphxx::algorithms::bfs {
+namespace graphxx::algorithms {
 
 /// @brief Structure to store information about graph vertices during the visit
-template <concepts::Identifier Id> struct Node {
+template <concepts::Identifier Id> struct BfsNode {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Number of edges in the shortest path from the source vertex
   size_t distance;
-  /// @brief Id of the predecessor Vertex in BFS Tree
+  /// @brief Id of the predecessor Vertex in visit Tree
   Id parent;
 };
 
@@ -58,7 +58,7 @@ template <concepts::Identifier Id> struct Node {
 /// @param source source vertex
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
+std::vector<BfsNode<Vertex<G>>> bfs(const G &graph, Vertex<G> source);
 
 /// @brief Performs a breadth-first traversal of a graph. A breadth-first
 ///        traversal visits vertices that are closer to the source before
@@ -70,10 +70,10 @@ std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type BFSTree
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>>
-visit(const G &graph, Vertex<G> source,
-      const std::function<void(Vertex<G>)> &callback);
+std::vector<BfsNode<Vertex<G>>>
+bfs(const G &graph, Vertex<G> source,
+    const std::function<void(Vertex<G>)> &callback);
 
-} // namespace graphxx::algorithms::bfs
+} // namespace graphxx::algorithms
 
 #include "algorithms/bfs.i.hpp"

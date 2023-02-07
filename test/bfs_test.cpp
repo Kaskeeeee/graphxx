@@ -61,7 +61,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -69,7 +69,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -79,7 +79,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -105,7 +105,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
 
   SECTION("check if all the distances from the source are correct, now with "
           "cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -115,7 +115,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -127,8 +127,7 @@ TEST_CASE("BFS Tree correct visited order for directed list graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::bfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = bfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -159,7 +158,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -167,7 +166,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -177,7 +176,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -203,7 +202,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
 
   SECTION("check if all the distances from the source are correct, now with "
           "cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -213,7 +212,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -225,8 +224,7 @@ TEST_CASE("BFS Tree correct visited order for directed matrix graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::bfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = bfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -258,7 +256,7 @@ TEST_CASE("BFS Tree correct visited order for undirected list graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, c);
+    auto tree = bfs(graph, c);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -266,7 +264,7 @@ TEST_CASE("BFS Tree correct visited order for undirected list graph",
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -276,7 +274,7 @@ TEST_CASE("BFS Tree correct visited order for undirected list graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -288,8 +286,7 @@ TEST_CASE("BFS Tree correct visited order for undirected list graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::bfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = bfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -321,7 +318,7 @@ TEST_CASE("BFS Tree correct visited order for undirected matrix graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, c);
+    auto tree = bfs(graph, c);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -329,7 +326,7 @@ TEST_CASE("BFS Tree correct visited order for undirected matrix graph",
   }
 
   SECTION("check if all the distances from the source are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].distance == 0);
     REQUIRE(tree[b].distance == 1);
@@ -339,7 +336,7 @@ TEST_CASE("BFS Tree correct visited order for undirected matrix graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::bfs::visit(graph, a);
+    auto tree = bfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -351,8 +348,7 @@ TEST_CASE("BFS Tree correct visited order for undirected matrix graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::bfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = bfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=

@@ -31,22 +31,22 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Vertex
+#include "graph_concepts.hpp" // Graph
 
-#include <vector>
+#include <vector> // std::vector
 
-namespace graphxx::algorithms::tarjan {
+namespace graphxx::algorithms {
 
 /// @brief Vertex containing informations for the algorithm
-struct Node {
+struct TarjanNode {
   int index;
   int low_link;
   bool on_stack;
 };
 
 /// @brief a map of id to Node
-using TarjanTree = std::vector<Node>;
+using TarjanTree = std::vector<TarjanNode>;
 
 /// @brief a vector of id
 template <concepts::Identifier Id> using StackVector = std::vector<Id>;
@@ -58,8 +58,8 @@ using SCCVector = std::vector<StackVector<Id>>;
 /// @brief Implementation of tarjan algorithm
 /// @tparam G graph type that is coherent with Graph concept
 /// @return a vector containing all the strongly connected components
-template <concepts::Graph G> SCCVector<Vertex<G>> visit(const G &graph);
+template <concepts::Graph G> SCCVector<Vertex<G>> tarjan(const G &graph);
 
-} // namespace graphxx::algorithms::tarjan
+} // namespace graphxx::algorithms
 
 #include "algorithms/tarjan.i.hpp"

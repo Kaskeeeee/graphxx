@@ -36,8 +36,9 @@
 #include <algorithm>
 #include <vector>
 
-namespace graphxx::algorithms::tarjan {
+namespace graphxx::algorithms {
 
+namespace detail::tarjan {
 template <concepts::Graph G>
 void tarjan_rec(const G &graph, Vertex<G> v, TarjanTree &tarjan_tree,
                 SCCVector<Vertex<G>> &scc_vector, StackVector<Vertex<G>> &stack,
@@ -77,8 +78,9 @@ void tarjan_rec(const G &graph, Vertex<G> v, TarjanTree &tarjan_tree,
     scc_vector.push_back(new_scc);
   }
 }
+} // namespace detail::tarjan
 
-template <concepts::Graph G> SCCVector<Vertex<G>> visit(const G &graph) {
+template <concepts::Graph G> SCCVector<Vertex<G>> tarjan(const G &graph) {
 
   SCCVector<Vertex<G>> scc_vector;
   TarjanTree tarjan_tree;
@@ -86,17 +88,19 @@ template <concepts::Graph G> SCCVector<Vertex<G>> visit(const G &graph) {
   int index = 0;
 
   for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    tarjan_tree.push_back(Node{.index = -1, .low_link = -1, .on_stack = false});
+    tarjan_tree.push_back(
+        TarjanNode{.index = -1, .low_link = -1, .on_stack = false});
   }
 
   for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
     if (tarjan_tree[vertex].index != -1) {
       continue;
     }
-    tarjan_rec(graph, vertex, tarjan_tree, scc_vector, stack, index);
+    detail::tarjan::tarjan_rec(graph, vertex, tarjan_tree, scc_vector, stack,
+                               index);
   }
 
   return scc_vector;
 }
 
-} // namespace graphxx::algorithms::tarjan
+} // namespace graphxx::algorithms

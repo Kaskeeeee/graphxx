@@ -31,11 +31,12 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // DefaultIdType
+#include "graph_concepts.hpp" // concepts::Identifier
 
-#include <list>
-#include <vector>
+#include <list>   // std::list
+#include <tuple>  // std::tuple
+#include <vector> // std::vector
 
 namespace graphxx {
 

@@ -39,19 +39,19 @@
 #include <queue>
 #include <vector>
 
-namespace graphxx::algorithms::bfs {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source) {
-  return visit(graph, source, [](Vertex<G>) {});
+std::vector<BfsNode<Vertex<G>>> bfs(const G &graph, Vertex<G> source) {
+  return bfs(graph, source, [](Vertex<G>) {});
 }
 
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>>
-visit(const G &graph, Vertex<G> source,
-      const std::function<void(Vertex<G>)> &callback) {
+std::vector<BfsNode<Vertex<G>>>
+bfs(const G &graph, Vertex<G> source,
+    const std::function<void(Vertex<G>)> &callback) {
 
-  using NodeType = Node<Vertex<G>>;
+  using NodeType = BfsNode<Vertex<G>>;
   std::vector<NodeType> distance_tree;
   constexpr auto distance_upperbound = std::numeric_limits<size_t>::max();
 
@@ -91,4 +91,4 @@ visit(const G &graph, Vertex<G> source,
   return distance_tree;
 }
 
-} // namespace graphxx::algorithms::bfs
+} // namespace graphxx::algorithms

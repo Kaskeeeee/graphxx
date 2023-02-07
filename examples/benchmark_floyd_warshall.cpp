@@ -109,9 +109,9 @@ int main(int argc, char **argv) {
 
   bench
       .run("floyd warshall graphxx",
-           [&]() { graphxx::algorithms::floyd_warshall::visit(list_graph); })
+           [&]() { graphxx::algorithms::floyd_warshall(list_graph); })
       .run("floyd warshall matrix graphxx",
-           [&]() { graphxx::algorithms::floyd_warshall::visit(matrix_graph); })
+           [&]() { graphxx::algorithms::floyd_warshall(matrix_graph); })
       .run("floyd warshall boost", [&]() {
         boost::floyd_warshall_all_pairs_shortest_paths(
             boost_graph, dm, boost::weight_map(weight_pmap));

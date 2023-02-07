@@ -31,8 +31,6 @@
 
 #pragma once
 
-#include "graph_concepts.hpp"
-
 namespace graphxx::algorithms {
 
 /// @brief Status of the vertices during the visit algorithms

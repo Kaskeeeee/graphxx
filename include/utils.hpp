@@ -31,11 +31,12 @@
 
 #pragma once
 
-#include "graph_concepts.hpp"
+#include "graph_concepts.hpp" // concepts::Numeric
 
-#include <limits>
-#include <type_traits>
-#include <vector>
+#include <limits>      // std::numeric_limits::max()
+#include <type_traits> // std::decay_t
+#include <utility>     // std::declval
+#include <vector>      // std::vector
 
 namespace graphxx {
 

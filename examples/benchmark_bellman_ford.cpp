@@ -99,9 +99,9 @@ int main(int argc, char **argv) {
 
   bench
       .run("bellman_ford graphxx",
-           [&]() { graphxx::algorithms::bellman_ford::visit(list_graph, 0); })
+           [&]() { graphxx::algorithms::bellman_ford(list_graph, 0); })
       .run("bellman_ford matrix graphxx",
-           [&]() { graphxx::algorithms::bellman_ford::visit(matrix_graph, 0); })
+           [&]() { graphxx::algorithms::bellman_ford(matrix_graph, 0); })
       .run("bellman_ford boost", [&]() {
         boost::bellman_ford_shortest_paths(
             boost_graph, boost::root_vertex(boost::vertex(0, boost_graph)));

@@ -38,12 +38,12 @@
 #include <limits>
 #include <vector>
 
-namespace graphxx::algorithms::bellman_ford {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
-                                             Weight weight) {
-  using NodeType = Node<Vertex<G>, Distance>;
+std::vector<BellmanFordNode<Vertex<G>, Distance>>
+bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
+  using NodeType = BellmanFordNode<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   std::vector<NodeType> distance_tree{
       graph.num_vertices(),
@@ -97,4 +97,4 @@ std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
 
   return distance_tree;
 }
-} // namespace graphxx::algorithms::bellman_ford
+} // namespace graphxx::algorithms

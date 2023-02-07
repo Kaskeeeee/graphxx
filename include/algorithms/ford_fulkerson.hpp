@@ -31,37 +31,13 @@
 
 #pragma once
 
-#include "algorithms_base.hpp"
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Vertex
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <map>
-#include <vector>
+#include <functional> // std::function
+#include <vector>     // std::vector
 
-namespace graphxx::algorithms::ford_fulkerson {
-
-template <concepts::Graph G, concepts::Numeric Distance> struct Node {
-  VertexStatus status;
-  Edge<G> edge;
-  Distance residual_capacity;
-  Vertex<G> parent;
-};
-
-template <concepts::Graph G, concepts::Numeric Distance>
-using DistanceTree = std::vector<Node<G, Distance>>;
-
-/// @brief
-/// @tparam WeightType
-template <concepts::Graph G, concepts::Numeric Distance>
-using FlowMap = std::map<Edge<G>, Distance>;
-
-/// @brief
-/// @tparam WeightType
-template <concepts::Graph G, concepts::Numeric Distance> struct FFpair {
-  FlowMap<G, Distance> flow;
-  Distance max_flow;
-};
+namespace graphxx::algorithms {
 
 /// @brief Implementation of ford_fulkerson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -73,14 +49,10 @@ template <concepts::Graph G, concepts::Numeric Distance> struct FFpair {
 /// @param sink sink vertex
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
-template <concepts::Graph G,
-          std::invocable<Edge<G>> Weight =
-              std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
-          typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-FFpair<G, Distance> visit(
-    const G &graph, Vertex<G> source, Vertex<G> sink,
-    Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
+template <concepts::Graph G, concepts::Numeric Flow = int>
+Flow ford_fulkerson(const G &graph, Vertex<G> source, Vertex<G> sink,
+                    std::vector<std::vector<Flow>> &capacity);
 
-} // namespace graphxx::algorithms::ford_fulkerson
+} // namespace graphxx::algorithms
 
 #include "algorithms/ford_fulkerson.i.hpp"

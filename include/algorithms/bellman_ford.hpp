@@ -31,18 +31,19 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <vector>
+#include <concepts>   // std::invocable
+#include <functional> // std::function
+#include <tuple>      // std::tuple_element_t
+#include <utility>    // std::declval
+#include <vector>     // std::vector
 
-namespace graphxx::algorithms::bellman_ford {
+namespace graphxx::algorithms {
 
-/// @brief Node containing informations about its distance
-///        and the previous node in the shortest path from a given source
-/// @tparam WeightType numeric weight
-template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+template <concepts::Identifier Id, concepts::Numeric Distance>
+struct BellmanFordNode {
   Distance distance;
   Id parent;
 };
@@ -60,10 +61,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<Node<Vertex<G>, Distance>> visit(
+std::vector<BellmanFordNode<Vertex<G>, Distance>> bellman_ford(
     const G &graph, Vertex<G> source,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::bellman_ford
+} // namespace graphxx::algorithms
 
 #include "algorithms/bellman_ford.i.hpp"

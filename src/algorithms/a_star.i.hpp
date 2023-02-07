@@ -40,15 +40,15 @@
 #include <queue>
 #include <vector>
 
-namespace graphxx::algorithms::a_star {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Vertex<G>> Heuristic,
           std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<Node<Vertex<G>, Distance>>
-visit(const G &graph, Vertex<G> source, Vertex<G> target,
-      Heuristic heuristic_weight, Weight weight) {
+std::vector<AStarNode<Vertex<G>, Distance>>
+a_star(const G &graph, Vertex<G> source, Vertex<G> target,
+       Heuristic heuristic_weight, Weight weight) {
 
-  using NodeType = Node<Vertex<G>, Distance>;
+  using NodeType = AStarNode<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   std::vector<NodeType> path_vector;
   std::vector<NodeType> distance_tree;
@@ -102,4 +102,4 @@ visit(const G &graph, Vertex<G> source, Vertex<G> target,
   }
   return {};
 }
-} // namespace graphxx::algorithms::a_star
+} // namespace graphxx::algorithms

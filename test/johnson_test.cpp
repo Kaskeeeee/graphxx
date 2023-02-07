@@ -71,7 +71,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -97,7 +97,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -125,7 +125,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
     REQUIRE(tree[c][c].distance == 0);
@@ -152,7 +152,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -194,7 +194,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -221,7 +221,7 @@ TEST_CASE("Johnson shortest paths for directed list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -273,7 +273,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -299,7 +299,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -327,7 +327,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
     REQUIRE(tree[c][c].distance == 0);
@@ -354,7 +354,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -396,7 +396,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -423,7 +423,7 @@ TEST_CASE("Johnson shortest paths for directed matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -475,7 +475,7 @@ TEST_CASE("Johnson shortest paths for undirected list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -501,7 +501,7 @@ TEST_CASE("Johnson shortest paths for undirected list graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);
@@ -552,7 +552,7 @@ TEST_CASE("Johnson shortest paths for undirected matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].distance == 0);
     REQUIRE(tree[b][b].distance == 0);
@@ -578,7 +578,7 @@ TEST_CASE("Johnson shortest paths for undirected matrix graph",
       }
     }
 
-    auto tree = johnson::visit(graph);
+    auto tree = johnson(graph);
 
     REQUIRE(tree[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b][b].parent == INVALID_VERTEX<Graph>);

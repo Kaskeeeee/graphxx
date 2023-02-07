@@ -65,13 +65,13 @@ TEST_CASE("Tarjan for strongly connected components for directed list graph",
   */
 
   SECTION("detects strongly connected components") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc.size() == 3);
   }
 
   SECTION("check if strongly connected component are the correct") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc[0][0] == c);
     REQUIRE(scc[0][1] == b);
@@ -110,13 +110,13 @@ TEST_CASE("Tarjan for strongly connected components for directed matrix graph",
   */
 
   SECTION("detects strongly connected components") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc.size() == 3);
   }
 
   SECTION("check if strongly connected component are the correct") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc[0][0] == c);
     REQUIRE(scc[0][1] == b);
@@ -154,7 +154,7 @@ TEST_CASE("Tarjan for strongly connected components for undirected list graph",
   */
 
   SECTION("detects strongly connected components") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc.size() == 1);
   }
@@ -186,7 +186,7 @@ TEST_CASE(
   */
 
   SECTION("detects strongly connected components") {
-    auto scc = tarjan::visit(graph);
+    auto scc = tarjan(graph);
 
     REQUIRE(scc.size() == 1);
   }

@@ -61,7 +61,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -69,7 +69,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -79,7 +79,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -104,7 +104,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   */
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -114,7 +114,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -126,8 +126,7 @@ TEST_CASE("DFS Tree correct visited order for directed list graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::dfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = dfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -158,7 +157,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -166,7 +165,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -176,7 +175,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -201,7 +200,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   */
 
   SECTION("check if all parent node are correct, now with cycles") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE((tree[b].parent == a || tree[b].parent == c));
@@ -211,7 +210,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -223,8 +222,7 @@ TEST_CASE("DFS Tree correct visited order for directed matrix graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::dfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = dfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -255,7 +253,7 @@ TEST_CASE("DFS Tree correct visited order for undirected list graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -263,7 +261,7 @@ TEST_CASE("DFS Tree correct visited order for undirected list graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(tree[b].parent == a);
@@ -273,7 +271,7 @@ TEST_CASE("DFS Tree correct visited order for undirected list graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -285,8 +283,7 @@ TEST_CASE("DFS Tree correct visited order for undirected list graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::dfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = dfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=
@@ -317,7 +314,7 @@ TEST_CASE("DFS Tree correct visited order for undirected matrix graph",
   */
 
   SECTION("check if all nodes were processed") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(tree[vertex].status == VertexStatus::PROCESSED);
@@ -325,7 +322,7 @@ TEST_CASE("DFS Tree correct visited order for undirected matrix graph",
   }
 
   SECTION("check if all parent node are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE((tree[b].parent == a || tree[b].parent == c));
@@ -335,7 +332,7 @@ TEST_CASE("DFS Tree correct visited order for undirected matrix graph",
   }
 
   SECTION("check if discovery and finishing time are correct") {
-    auto tree = graphxx::algorithms::dfs::visit(graph, a);
+    auto tree = dfs(graph, a);
 
     REQUIRE(tree[a].discovery_time == 1);
     REQUIRE(tree[a].finishing_time == 10);
@@ -347,8 +344,7 @@ TEST_CASE("DFS Tree correct visited order for undirected matrix graph",
   SECTION("check if visit with function work properly") {
     std::vector<DefaultIdType> vertices;
 
-    auto tree = graphxx::algorithms::dfs::visit(
-        graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
+    auto tree = dfs(graph, a, [&](DefaultIdType v) { vertices.push_back(v); });
 
     for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
       REQUIRE(std::find(vertices.begin(), vertices.end(), vertex) !=

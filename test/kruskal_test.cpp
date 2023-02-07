@@ -75,13 +75,13 @@ TEST_CASE("Kruskal minimum spanning tree for directed list graph",
   graph.set_attributes(c, d, {9});
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(vector.size() == 3);
   }
 
   SECTION("check if edges founded are correct") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(((graph.get_source(vector[0]) == a &&
               graph.get_target(vector[0]) == c) ||
@@ -103,7 +103,7 @@ TEST_CASE("Kruskal minimum spanning tree for directed list graph",
     graph2.add_edge(a, a);
     graph.set_attributes(a, a, {1});
 
-    auto vector = kruskal::visit(graph2);
+    auto vector = kruskal(graph2);
 
     REQUIRE(vector.size() == 0);
   }
@@ -146,13 +146,13 @@ TEST_CASE("Kruskal minimum spanning tree for directed matrix graph",
   graph.set_attributes(c, d, {9});
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(vector.size() == 3);
   }
 
   SECTION("check if edges founded are correct") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(((graph.get_source(vector[0]) == a &&
               graph.get_target(vector[0]) == c) ||
@@ -174,7 +174,7 @@ TEST_CASE("Kruskal minimum spanning tree for directed matrix graph",
     graph2.add_edge(a, a);
     graph.set_attributes(a, a, {1});
 
-    auto vector = kruskal::visit(graph2);
+    auto vector = kruskal(graph2);
 
     REQUIRE(vector.size() == 0);
   }
@@ -209,13 +209,13 @@ TEST_CASE("Kruskal minimum spanning tree for undirected list graphs",
   graph.set_attributes(c, d, {9});
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(vector.size() == 3);
   }
 
   SECTION("check if edges founded are correct") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(((graph.get_source(vector[0]) == a &&
               graph.get_target(vector[0]) == c) ||
@@ -237,7 +237,7 @@ TEST_CASE("Kruskal minimum spanning tree for undirected list graphs",
     graph2.add_edge(a, a);
     graph.set_attributes(a, a, {1});
 
-    auto vector = kruskal::visit(graph2);
+    auto vector = kruskal(graph2);
 
     REQUIRE(vector.size() == 0);
   }
@@ -272,13 +272,13 @@ TEST_CASE("Kruskal minimum spanning tree for undirected matrix graph",
   graph.set_attributes(c, d, {9});
 
   SECTION("find mimimum spanning tree") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(vector.size() == 3);
   }
 
   SECTION("check if edges founded are correct") {
-    auto vector = kruskal::visit(graph);
+    auto vector = kruskal(graph);
 
     REQUIRE(((graph.get_source(vector[0]) == a &&
               graph.get_target(vector[0]) == c) ||
@@ -300,7 +300,7 @@ TEST_CASE("Kruskal minimum spanning tree for undirected matrix graph",
     graph2.add_edge(a, a);
     graph.set_attributes(a, a, {1});
 
-    auto vector = kruskal::visit(graph2);
+    auto vector = kruskal(graph2);
 
     REQUIRE(vector.size() == 0);
   }

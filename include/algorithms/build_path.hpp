@@ -31,11 +31,10 @@
 
 #pragma once
 
-#include "algorithms_base.hpp"
-#include "graph_concepts.hpp"
+#include "graph_concepts.hpp" // HasParent
 
-#include <algorithm>
-#include <vector>
+#include <algorithm> // std::reverse
+#include <vector>    // std::vector
 
 namespace graphxx::algorithms {
 
