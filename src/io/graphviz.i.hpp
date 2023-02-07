@@ -29,20 +29,20 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
 #include "io/graphviz.hpp"
+#include "utils.hpp"
 #include "utils/string_utils.hpp"
 
 #include <functional>
+#include <set>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 
-namespace graphxx::io::graphviz {
+namespace graphxx::io {
 
 template <Directedness D> std::string GraphvizTraits<D>::name() {
   return "digraph";
@@ -57,10 +57,11 @@ template <> struct GraphvizTraits<Directedness::UNDIRECTED> {
 };
 
 template <concepts::Graph G>
-void serialize(
+void graphviz_serialize(
     std::ostream &out, const G &graph,
-    const std::function<GraphvizProperties(Vertex)> &get_vertex_properties,
-    const std::function<GraphvizProperties(Edge)> &get_edge_properties) {
+    const std::function<GraphvizProperties(Vertex<G>)> &get_vertex_properties,
+    const std::function<GraphvizProperties(Vertex<G>, Vertex<G>)>
+        &get_edge_properties) {
 
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
@@ -68,10 +69,11 @@ void serialize(
       << "{" << std::endl;
 
   // insert vertices properties
-  for (auto vertex : graph.vertices()) {
+  for (auto vertex : get_sorted_vertices(graph)) {
+    out << vertex;
     GraphvizProperties vertex_properties = get_vertex_properties(vertex);
     if (!vertex_properties.empty()) {
-      out << vertex.id << " [";
+      out << " [";
       bool comma = false;
       for (const auto &[key, value] : vertex_properties) {
         if (comma) {
@@ -82,19 +84,19 @@ void serialize(
         out << key << "=\"" << value << "\"";
       }
       out << "]";
-      out << ";" << std::endl;
     }
+    out << ";" << std::endl;
   }
 
   // insert edges
-  std::set<DefaultIdType> inserted_edges;
-  for (auto edge : graph.edges()) {
-    if (!inserted_edges.contains(edge)) {
-      inserted_edges.insert(edge);
-      out << edge.u.id << Traits::delimiter() << edge.v.id;
+  std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
+  for (auto [source, target] : get_sorted_edges(graph)) {
+    if (!inserted_edges.contains({source, target})) {
+      inserted_edges.insert({source, target});
+      out << source << Traits::delimiter() << target;
 
       // insert edge properties
-      GraphvizProperties edge_properties = get_edge_properties(edge);
+      GraphvizProperties edge_properties = get_edge_properties(source, target);
       if (!edge_properties.empty()) {
         out << " [";
         bool comma = false;
@@ -116,19 +118,20 @@ void serialize(
 }
 
 template <concepts::Graph G>
-void serialize(
+void graphviz_serialize(
     std::ostream &out, const G &graph,
-    const std::function<GraphvizProperties(Vertex)> &get_vertex_properties) {
+    const std::function<GraphvizProperties(Vertex<G>)> &get_vertex_properties) {
   GraphvizProperties empty_map;
-  return serialize(out, graph, get_vertex_properties,
-                   [&](Edge) { return empty_map; });
+  return graphviz_serialize(out, graph, get_vertex_properties,
+                            [&](Vertex<G>, Vertex<G>) { return empty_map; });
 }
 
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
+template <concepts::Graph G>
+void graphviz_serialize(std::ostream &out, const G &graph) {
   GraphvizProperties empty_map;
-  return serialize(
-      out, graph, [&](Vertex) { return empty_map; },
-      [&](Edge) { return empty_map; });
+  return graphviz_serialize(
+      out, graph, [&](Vertex<G>) { return empty_map; },
+      [&](Vertex<G>, Vertex<G>) { return empty_map; });
 }
 
 GraphvizProperties parse_properties(std::string &attributes_list) {
@@ -166,9 +169,11 @@ GraphvizProperties parse_properties(std::string &attributes_list) {
 }
 
 template <concepts::Graph G>
-void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<DefaultIdType, GraphvizProperties> &vertex_properties,
-                 std::unordered_map<DefaultIdType, GraphvizProperties> &edge_properties) {
+void graphviz_deserialize(
+    std::istream &in, G &graph,
+    std::unordered_map<Vertex<G>, GraphvizProperties> &vertex_properties,
+    std::unordered_map<Edge<G>, GraphvizProperties, xor_tuple_hash<Edge<G>>>
+        &edge_properties) {
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
   const std::vector<std::string> STATEMENT_SEPARATORS = {";", "\r\n", "\n"};
@@ -180,7 +185,7 @@ void deserialize(std::istream &in, G &graph,
   const std::string string_graph((std::istreambuf_iterator<char>(in)),
                                  std::istreambuf_iterator<char>());
 
-  std::unordered_map<std::string, DefaultIdType> inserted_vertices;
+  std::unordered_map<std::string, Vertex<G>> inserted_vertices;
 
   size_t body_start = 0;
   size_t body_end = 0;
@@ -203,6 +208,8 @@ void deserialize(std::istream &in, G &graph,
   } else {
     throw exceptions::BadGraphvizParseException();
   }
+
+  int vertices_count = 0;
 
   // parse statements
   std::vector<std::string> statements = utils::split(
@@ -227,7 +234,8 @@ void deserialize(std::istream &in, G &graph,
       std::string vertex_name = utils::trim(statement_body);
       if (!vertex_name.empty()) {
         if (!inserted_vertices.contains(vertex_name)) {
-          Vertex v = graph.add_vertex();
+          Vertex<G> v = vertices_count++;
+          graph.add_vertex();
           inserted_vertices[vertex_name] = v;
         }
 
@@ -239,7 +247,8 @@ void deserialize(std::istream &in, G &graph,
       if (!source_vertex_name.empty()) {
 
         if (!inserted_vertices.contains(source_vertex_name)) {
-          Vertex source = graph.add_vertex();
+          Vertex<G> source = vertices_count++;
+          graph.add_vertex();
           inserted_vertices[source_vertex_name] = source;
         }
 
@@ -248,14 +257,17 @@ void deserialize(std::istream &in, G &graph,
           if (!target_vertex_name.empty()) {
 
             if (!inserted_vertices.contains(target_vertex_name)) {
-              Vertex target = graph.add_vertex();
+              Vertex<G> target = vertices_count++;
+              graph.add_vertex();
               inserted_vertices[target_vertex_name] = target;
             }
 
-            Edge e =
-                graph.add_edge(Vertex{inserted_vertices[source_vertex_name]},
-                               Vertex{inserted_vertices[target_vertex_name]});
-            edge_properties[e] = properties;
+            graph.add_edge(inserted_vertices[source_vertex_name],
+                           inserted_vertices[target_vertex_name]);
+
+            edge_properties[{inserted_vertices[source_vertex_name],
+                             inserted_vertices[target_vertex_name]}] =
+                properties;
           }
         }
       }
@@ -263,6 +275,4 @@ void deserialize(std::istream &in, G &graph,
   }
 }
 
-} // namespace graphxx::io::graphviz
-
-#endif
+} // namespace graphxx::io

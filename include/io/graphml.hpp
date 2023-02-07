@@ -29,17 +29,16 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
+#include "utils/tuple_utils.hpp"
 
 #include <fstream>
 #include <functional>
 
-namespace graphxx::io::graphml {
+namespace graphxx::io {
 
 using GraphMLProperties = std::unordered_map<std::string, std::string>;
 
@@ -58,7 +57,8 @@ const std::string GRAPHML_ROOT_CLOSE = "</graphml>";
  * @param[out] out output stream
  * @param[in] graph input graph object
  */
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
+template <concepts::Graph G>
+void graphml_serialize(std::ostream &out, const G &graph);
 
 /**
  * @brief Write a graph object into an output stream in the GraphML format.
@@ -67,12 +67,13 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  * @tparam G type of input graph
  * @param[out] out output stream
  * @param[in] graph input graph object
- * @param[in] get_vertex_properties function that returns a propery map for each
- *                                  vertex
+ * @param[in] get_vertex_properties function that returns a property map for
+ * each vertex
  */
 template <concepts::Graph G>
-void serialize(std::ostream &out, const G &graph,
-               std::function<GraphMLProperties(Vertex)> get_vertex_properties);
+void graphml_serialize(
+    std::ostream &out, const G &graph,
+    std::function<GraphMLProperties(Vertex<G>)> get_vertex_properties);
 
 /**
  * @brief Write a graph object into an output stream in the GraphML format.
@@ -83,15 +84,16 @@ void serialize(std::ostream &out, const G &graph,
  * @tparam G type of input graph
  * @param[out] out output stream
  * @param[in] graph input graph object
- * @param[in] get_vertex_properties function that returns a propery map for each
- *                                  vertex
- * @param[in] get_edge_properties function that returns a propery map for each
+ * @param[in] get_vertex_properties function that returns a property map for
+ * each vertex
+ * @param[in] get_edge_properties function that returns a property map for each
  *                                edge
  */
 template <concepts::Graph G>
-void serialize(std::ostream &out, const G &graph,
-               std::function<GraphMLProperties(Vertex)> get_vertex_properties,
-               std::function<GraphMLProperties(Edge)> get_edge_properties);
+void graphml_serialize(
+    std::ostream &out, const G &graph,
+    std::function<GraphMLProperties(Vertex<G>)> get_vertex_properties,
+    std::function<GraphMLProperties(Vertex<G>, Vertex<G>)> get_edge_properties);
 
 /**
  * @brief Interprets a graph described using the GraphML language and
@@ -107,12 +109,12 @@ void serialize(std::ostream &out, const G &graph,
  *                             the edges
  */
 template <concepts::Graph G>
-void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<DefaultIdType, GraphMLProperties> &vertex_properties,
-                 std::unordered_map<DefaultIdType, GraphMLProperties> &edge_properties);
+void graphml_deserialize(
+    std::istream &in, G &graph,
+    std::unordered_map<Vertex<G>, GraphMLProperties> &vertex_properties,
+    std::unordered_map<Edge<G>, GraphMLProperties, xor_tuple_hash<Edge<G>>>
+        &edge_properties);
 
-} // namespace graphxx::io::graphml
+} // namespace graphxx::io
 
 #include "io/graphml.i.hpp"
-
-#endif

@@ -29,19 +29,18 @@
  * @version v1.0
  */
 
-#if 0
-
 #pragma once
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
+#include "utils/tuple_utils.hpp"
 
 #include <fstream>
 #include <functional>
 #include <string>
 #include <unordered_map>
 
-namespace graphxx::io::graphviz {
+namespace graphxx::io {
 
 using GraphvizProperties = std::unordered_map<std::string, std::string>;
 
@@ -62,7 +61,8 @@ template <Directedness D> struct GraphvizTraits {
  * @param[out] out output stream
  * @param[in] graph input graph object
  */
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
+template <concepts::Graph G>
+void graphviz_serialize(std::ostream &out, const G &graph);
 
 /**
  * @brief Writes a graph object into an output stream in graphviz DOT format
@@ -76,8 +76,9 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
  *                                  vertex
  */
 template <concepts::Graph G>
-void serialize(std::ostream &out, const G &graph,
-               const std::function<GraphvizProperties(Vertex)> &get_vertex_properties);
+void graphviz_serialize(
+    std::ostream &out, const G &graph,
+    const std::function<GraphvizProperties(Vertex<G>)> &get_vertex_properties);
 
 /**
  * @brief Writes a graph object into an output stream in graphviz DOT format
@@ -95,9 +96,11 @@ void serialize(std::ostream &out, const G &graph,
  *                                edge
  */
 template <concepts::Graph G>
-void serialize(std::ostream &out, const G &graph,
-               const std::function<GraphvizProperties(Vertex)> &get_vertex_properties,
-               const std::function<GraphvizProperties(Edge)> &get_edge_properties);
+void graphviz_serialize(
+    std::ostream &out, const G &graph,
+    const std::function<GraphvizProperties(Vertex<G>)> &get_vertex_properties,
+    const std::function<GraphvizProperties(Vertex<G>, Vertex<G>)>
+        &get_edge_properties);
 
 /**
  * @brief Interprets a graph described using the graphviz DOT language and
@@ -113,12 +116,12 @@ void serialize(std::ostream &out, const G &graph,
  *                             the edges
  */
 template <concepts::Graph G>
-void deserialize(std::istream &in, G &graph,
-                 std::unordered_map<DefaultIdType, GraphvizProperties> &vertex_properties,
-                 std::unordered_map<DefaultIdType, GraphvizProperties> &edge_properties);
+void graphviz_deserialize(
+    std::istream &in, G &graph,
+    std::unordered_map<Vertex<G>, GraphvizProperties> &vertex_properties,
+    std::unordered_map<Edge<G>, GraphvizProperties, xor_tuple_hash<Edge<G>>>
+        &edge_properties);
 
-} // namespace graphxx::io::graphviz
+} // namespace graphxx::io
 
 #include "io/graphviz.i.hpp"
-
-#endif

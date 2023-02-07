@@ -33,43 +33,39 @@
 
 #include "base.hpp"
 #include "graph_concepts.hpp"
-#include "utils.hpp"
 
 #include <fstream>
-#include <functional>
 
-namespace graphxx::io::matrix_market {
+namespace graphxx::io {
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
 ///        format. It's possible to assign a weight to the edges of the graph.
 /// @tparam G type of input graph
-/// @tparam C type of weights map
-/// @tparam WeightType type of weight
+/// @tparam WeightType type of edge weight attribute
 /// @param out output stream
 /// @param graph input graph object
-/// @param weights weights map
-template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-void serialize(std::ostream &out, const G &graph, C &weights);
+/// @param get_weight function that returns weight for each edge
+template <concepts::Graph G, concepts::Numeric WeightType>
+void mm_serialize(std::ostream &out, const G &graph,
+                  std::function<WeightType(Edge<G>)> &get_weight);
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
 ///        format.
 /// @tparam G type of input graph
 /// @param out output stream
 /// @param graph input graph object
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph);
+template <concepts::Graph G>
+void mm_serialize(std::ostream &out, const G &graph);
 
 /// @brief Interprets a graph described using the Matrix Market NIST language
 ///        and builds a graph object that captures that description.
 /// @tparam G type of output graph
-/// @tparam C C type of weights map
-/// @tparam WeightType type of weight
+/// @tparam WeightType type of edge weight attribute
 /// @param in input stream
 /// @param graph refrence to output graph
-/// @param weights reference to map in which store edges' weights
 template <concepts::Graph G, concepts::Numeric WeightType>
-void deserialize(std::istream &in, G &graph);
+void mm_deserialize(std::istream &in, G &graph);
 
-} // namespace graphxx::io::matrix_market
+} // namespace graphxx::io
 
 #include "io/matrix_market.i.hpp"

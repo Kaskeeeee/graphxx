@@ -34,18 +34,17 @@
 #include "graph_concepts.hpp"
 #include "utils.hpp"
 
+#include <functional>
 #include <sstream>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
-namespace graphxx::io::matrix_market {
+namespace graphxx::io {
 
-/*
-// TODO
- template <concepts::Graph G, concepts::Subscriptable<DefaultIdType> C,
-          concepts::Numeric WeightType = DecaySubscriptValue<DefaultIdType, C>>
-void serialize(std::ostream &out, const G &graph, C &weights) {
+template <concepts::Graph G, concepts::Numeric WeightType>
+void mm_serialize(std::ostream &out, const G &graph,
+                  std::function<WeightType(Edge<G>)> &get_weight) {
+
   std::string number_format = "";
   if (std::is_integral_v<WeightType>) {
     number_format = "integer";
@@ -59,24 +58,20 @@ void serialize(std::ostream &out, const G &graph, C &weights) {
   const std::string header =
       "%%MatrixMarket matrix coordinate " + number_format + " general";
 
-  size_t num_vertices, num_edges;
-  for (auto _ : graph.vertices()) {
-    num_vertices++;
-  }
-  for (auto _ : graph.edges()) {
-    num_edges++;
-  }
-
   out << header << std::endl;
-  out << num_vertices << " " << num_vertices << " " << num_edges << std::endl;
+  out << graph.num_vertices() << " " << graph.num_vertices() << " "
+      << graph.num_edges() << std::endl;
 
-  for (auto edge : graph.edges()) {
-    out << (edge.u + 1) << " " << (edge.v + 1) << " " << weights[edge]
-        << std::endl;
+  for (auto vertex : graph) {
+    for (auto edge : vertex) {
+      out << (graph.get_source(edge) + 1) << " " << (graph.get_target(edge) + 1)
+          << " " << get_weight(edge) << std::endl;
+    }
   }
 }
- */
-template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
+
+template <concepts::Graph G>
+void mm_serialize(std::ostream &out, const G &graph) {
   const std::string header = "%%MatrixMarket matrix coordinate pattern general";
 
   out << header << std::endl;
@@ -92,7 +87,7 @@ template <concepts::Graph G> void serialize(std::ostream &out, const G &graph) {
 }
 
 template <concepts::Graph G, concepts::Numeric WeightType>
-void deserialize(std::istream &in, G &graph) {
+void mm_deserialize(std::istream &in, G &graph) {
   std::string input_string;
   bool symmetric = false;
   bool weighted = false;
@@ -166,4 +161,4 @@ void deserialize(std::istream &in, G &graph) {
   }
 }
 
-} // namespace graphxx::io::matrix_market
+} // namespace graphxx::io
