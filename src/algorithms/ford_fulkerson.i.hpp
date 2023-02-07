@@ -50,15 +50,14 @@ Flow dfs(const G &graph, Vertex<G> u, Vertex<G> sink,
     return flow;
   }
   visited[u] = true;
-  for (Edge<G> &edge : graph[u]) {
-    Vertex<G> v = graph.get_target(edge);
+  for (Vertex<G> v = 0; v < graph.num_vertices(); ++v) {
     if (!visited[v] && capacity[u][v] > 0) {
-      Flow flow = dfs(graph, v, sink, visited, std::min(flow, capacity[u][v]),
-                      capacity);
-      if (flow > 0) {
-        capacity[u][v] -= flow;
-        capacity[v][u] += flow;
-        return flow;
+      Flow new_flow = dfs(graph, v, sink, visited,
+                          std::min(flow, capacity[u][v]), capacity);
+      if (new_flow > 0) {
+        capacity[u][v] -= new_flow;
+        capacity[v][u] += new_flow;
+        return new_flow;
       }
     }
   }
