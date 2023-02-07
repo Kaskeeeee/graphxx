@@ -33,11 +33,13 @@ graphxx
 │   ├── io/
 │   ├── utils/
 │   └── ...
+├── src/
 ├── test/
 └── third_party/
 ```
 
-The `include` directory contains the interfaces that the library exposes for use and also their implementation.
+The `include` directory contains the interfaces that the library exposes for use, while the implementation of 
+most of them is in the `src` directory.
 The `test` directory includes all the tests that were used to consider the build accepted.
 The `examples` directory contains example of use and benchmarks that were evaluated on the datasets located
 in the `data` directory.
@@ -63,22 +65,32 @@ make
 For other purposes you can check the following commands:
 To build benchmarks:
 ```bash
-$ cmake .. -DBENCHMARK=ON
+$ cmake .. -DBUILD_BENCH=ON
 ```
 
 To choose the build type (default `Release`):
 ```bash
-$ cmake .. -DBUILD_TYPE=Release (or Debug)
+$ cmake .. -DCMAKE_BUILD_TYPE=Release (or Debug)
 ```
 
 To build test cases:
 ```bash
-$ cmake .. -DBUILD_TESTS=ON
+$ cmake .. -DBUILD_TEST=ON
 ```
 
 To use memory sanitizers:
 ```bash
-$ cmake .. -D ??
+$ cmake .. -DSANITIZE=ON
+```
+
+To include examples:
+```bash
+$ cmake .. -DBUILD_EXAMPLES=ON
+```
+
+To check coverage:
+```bash
+$ cmake .. -DCOVERAGE=ON
 ```
 
 ### Supported Representation Formats
