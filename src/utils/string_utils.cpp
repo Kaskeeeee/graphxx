@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <locale>
+#include <algorithm>
 
 namespace graph::utils {
 

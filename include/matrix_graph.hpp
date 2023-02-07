@@ -31,13 +31,12 @@
 
 #pragma once
 
-#include "adaptors/map_list.hpp"
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "adaptors/map_list.hpp" // MapList
+#include "base.hpp"              // DefaultIdType
+#include "graph_concepts.hpp"    // concepts::Identifier
 
-#include <tuple>
-#include <unordered_map>
-#include <vector>
+#include <tuple> // std::tuple
+#include <vector> // std::vector
 
 namespace graphxx {
 

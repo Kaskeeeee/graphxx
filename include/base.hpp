@@ -31,8 +31,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include <limits>
+#include <cstdint> // uint64_t
+#include <limits>  // std::numeric_limits
 
 namespace graphxx {
 /// The id type that is used to identify vertices and edges

@@ -31,10 +31,10 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Vertex
+#include "graph_concepts.hpp" // Graph
 
-#include <vector>
+#include <vector> // std::vector
 
 namespace graphxx::algorithms {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <functional>
-#include <tuple>
+#include <functional> // std::function
+#include <tuple>      // std::tuple
 
 namespace graphxx {
 
