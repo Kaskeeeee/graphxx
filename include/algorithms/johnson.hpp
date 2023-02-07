@@ -31,12 +31,15 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <unordered_map>
-#include <vector>
+#include <concepts>      // std::invocable
+#include <functional>    // std::function
+#include <tuple>         // std::tuple_element_t
+#include <unordered_map> // std::unordered_map
+#include <utility>       // std::declval
+#include <vector>        // std::vector
 
 namespace graphxx::algorithms {
 

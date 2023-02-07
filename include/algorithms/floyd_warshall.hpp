@@ -31,10 +31,13 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
+#include <concepts>   // std::invocable
+#include <functional> // std::function
+#include <tuple>      // std::tuple_element_t
+#include <utility>    // std::declval
 
 namespace graphxx::algorithms {
 

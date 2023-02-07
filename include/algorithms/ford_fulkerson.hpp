@@ -31,13 +31,11 @@
 
 #pragma once
 
-#include "algorithms_base.hpp"
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Vertex
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <map>
-#include <vector>
+#include <functional> // std::function
+#include <vector>     // std::vector
 
 namespace graphxx::algorithms {
 

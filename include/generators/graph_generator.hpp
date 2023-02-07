@@ -31,11 +31,11 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
-#include "tuple_utils.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
+#include "tuple_utils.hpp"    // xor_tuple_hash
 
-#include <unordered_map>
+#include <unordered_map> // std::unordered_map
 
 namespace graphxx {
 

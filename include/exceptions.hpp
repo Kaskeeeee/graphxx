@@ -31,8 +31,8 @@
 
 #pragma once
 
-#include <exception>
-#include <string>
+#include <exception> // std::exception
+#include <string>    // std::string
 
 namespace graphxx::exceptions {
 

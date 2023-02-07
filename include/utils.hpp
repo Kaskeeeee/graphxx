@@ -31,11 +31,12 @@
 
 #pragma once
 
-#include "graph_concepts.hpp"
+#include "graph_concepts.hpp" // concepts::Numeric
 
-#include <limits>
-#include <type_traits>
-#include <vector>
+#include <limits>      // std::numeric_limits::max()
+#include <type_traits> // std::decay_t
+#include <utility>     // std::declval
+#include <vector>      // std::vector
 
 namespace graphxx {
 
@@ -60,6 +61,27 @@ template <typename T> void fill_vector(std::vector<T> &v, size_t id, T &&t) {
   for (auto i = v.size(); i <= id; ++i) {
     v.push_back(t);
   }
+}
+
+template <concepts::Graph G>
+std::vector<Vertex<G>> get_sorted_vertices(const G &graph) {
+  std::vector<Vertex<G>> vertices(graph.num_vertices());
+  std::iota(vertices.begin(), vertices.end(), 0);
+  return vertices;
+}
+
+template <concepts::Graph G>
+std::vector<std::pair<Vertex<G>, Vertex<G>>> get_sorted_edges(const G &graph) {
+  std::vector<std::pair<Vertex<G>, Vertex<G>>> edges;
+
+  for (auto &outEdges : graph) {
+    for (auto &edge : outEdges) {
+      edges.emplace_back(graph.get_source(edge), graph.get_target(edge));
+    }
+  }
+
+  std::sort(edges.begin(), edges.end());
+  return edges;
 }
 
 } // namespace graphxx
