@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of Floyd Warshall algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -38,23 +38,29 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Node containing informations about its distance and
-///        and the previous node on the shortest path from a given source
-/// @tparam WeightType
+/// @brief Stucture of the node, containing informations about the parent (which
+/// is the previous node) on the shortest path and its distance from the source
+/// @tparam Id type of vertices identifier
+/// @tparam Distance type of distance among the nodes
 template <concepts::Identifier Id, concepts::Numeric Distance>
 struct FloydWarshallNode {
+  /// @brief Distance of the vertex from the source
   Distance distance;
+  /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
 };
 
 /// @brief Implementantation of Floyd Warhsall algorithm for multi source
-///        shortest paths
-/// @tparam G graph type
-/// @tparam C edge weights supplier (overloads operator[])
-/// @tparam WeightType numeric weight type
-/// @param graph input graph
-/// @param weight edges weights
-/// @return a map of maps containing all shortest paths
+/// shortest paths. Floyd Warhsall compares all possible paths through
+/// the graph between each pair of vertices. For each pair (i, j), if the
+/// algorithm finds a path passing by k, where dist(i,j) > dist(i, k) +
+/// dist(k,j) then the distance of i and j will be updated
+/// @tparam G type of input graph
+/// @tparam Weight function used to get weight of an edge
+/// @tparam Distance type of distance among the nodes
+/// @param graph graph on which the algorithm will run
+/// @param weight weight function
+/// @return a vector of vectors composed by FloydWarshallNode structs
 template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,

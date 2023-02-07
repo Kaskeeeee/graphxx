@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file contains the unit tests for Johnson algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *

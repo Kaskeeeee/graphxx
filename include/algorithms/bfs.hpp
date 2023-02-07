@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of BFS algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -40,13 +40,16 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Structure to store information about graph vertices during the visit
+/// @brief Stucture of the node, containing informations about the parent (which
+/// is the previous node) on the shortest path, its distance from the source and
+/// the status of the node itself
+/// @tparam Id type of vertices identifier
 template <concepts::Identifier Id> struct BfsNode {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Number of edges in the shortest path from the source vertex
   size_t distance;
-  /// @brief Id of the predecessor Vertex in visit Tree
+  /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
 };
 
@@ -54,9 +57,9 @@ template <concepts::Identifier Id> struct BfsNode {
 ///        traversal visits vertices that are closer to the source before
 ///        visiting vertices that are further away.
 /// @tparam G type of input graph
-/// @param graph input graph
-/// @param source source vertex
-/// @return flatten tree as described for type BFSTree
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
+/// @return a vector composed by BfsNode structs
 template <concepts::Graph G>
 std::vector<BfsNode<Vertex<G>>> bfs(const G &graph, Vertex<G> source);
 
@@ -65,10 +68,10 @@ std::vector<BfsNode<Vertex<G>>> bfs(const G &graph, Vertex<G> source);
 ///        visiting vertices that are further away. For each visited node
 ///        function `callback` is called.
 /// @tparam G type of input graph
-/// @param graph input graph
-/// @param source source vertex
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
 /// @param callback function to call when a new node is visited
-/// @return flatten tree as described for type BFSTree
+/// @return a vector composed by BfsNode structs
 template <concepts::Graph G>
 std::vector<BfsNode<Vertex<G>>>
 bfs(const G &graph, Vertex<G> source,

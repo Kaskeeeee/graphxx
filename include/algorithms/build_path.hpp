@@ -1,5 +1,6 @@
 /**
- * @file
+ * @file This file is contains an utility function to construct a path from an
+ * array of nodes with parent
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -39,6 +40,14 @@
 
 namespace graphxx::algorithms {
 
+/// @brief function that construct a path from the source vertex to the target
+/// one
+/// @tparam Id of the predecessor vertex in the visited tree
+/// @tparam Node struct that has the "parent" property
+/// @param vector_of_struct array of nodes with parent
+/// @param source starting vertex
+/// @param target goal vertex
+/// @return vector that denote the path from source to target
 template <concepts::Identifier Id, concepts::HasParent Node>
 std::vector<Node> build_path(std::vector<Node> vector_of_struct, Id source,
                              Id target) {

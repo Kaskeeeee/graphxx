@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of DFS algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -40,16 +40,20 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Structure to store information about graph vertices during the visit
+/// @brief Stucture of the node, containing informations about the parent (which
+/// is the previous node) on the shortest path, its distance from the source,
+/// the status of the node itself and two numbers indicating its discovery and
+/// finishing time
+/// @tparam Id type of vertices identifier
 template <concepts::Identifier Id> struct DfsNode {
   /// @brief Vertex visitation status
   VertexStatus status;
-  /// @brief Id of the predecessor Vertex in DFS Tree
+  /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
-  /// @brief Counter indicating when vertex is discovered
-  int discovery_time;
-  /// @brief Counter indicating when the processing of vertex is finished
-  int finishing_time;
+  /// @brief Counter indicating when the vertex is discovered
+  size_t discovery_time;
+  /// @brief Counter indicating when the processing of the vertex is finished
+  size_t finishing_time;
 };
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
@@ -58,9 +62,9 @@ template <concepts::Identifier Id> struct DfsNode {
 ///        are no adjacent vertices, then the algorithm backtracks to the last
 ///        vertex that had undiscovered neighbors.
 /// @tparam G type of input graph
-/// @param graph input graph
-/// @param source vertex
-/// @return flatten tree as described for type DFSTree
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
+/// @return flatten tree composed by DfsNode structs
 template <concepts::Graph G>
 std::vector<DfsNode<Vertex<G>>> dfs(const G &graph, Vertex<G> source);
 
@@ -71,10 +75,10 @@ std::vector<DfsNode<Vertex<G>>> dfs(const G &graph, Vertex<G> source);
 ///        vertex that had undiscovered neighbors. For each visited node
 ///        function `callback` is called.
 /// @tparam G type of input graph
-/// @param graph input graph
-/// @param source vertex
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
 /// @param callback function to call when a new node is visited
-/// @return flatten tree as described for type DFSTree
+/// @return flatten tree composed by DfsNode structs
 template <concepts::Graph G>
 std::vector<DfsNode<Vertex<G>>>
 dfs(const G &graph, Vertex<G> source,

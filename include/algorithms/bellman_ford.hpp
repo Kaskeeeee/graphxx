@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of Bellman Ford algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -39,21 +39,29 @@
 
 namespace graphxx::algorithms {
 
+/// @brief Stucture of the node, containing informations about the parent (which
+/// is the previous node) on the shortest path and its distance from the source
+/// @tparam Id type of vertices identifier
+/// @tparam Distance type of distance among the nodes
 template <concepts::Identifier Id, concepts::Numeric Distance>
 struct BellmanFordNode {
+  /// @brief Distance of the vertex from the source
   Distance distance;
+  /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
 };
 
-/// @brief Implementation of bellman_ford algorithm
-/// @tparam G graph type that is coherent with Graph concept
-/// @tparam C object that overloads operator[] to get the weight of a specific
-///         edge
-/// @tparam WeightType numeric weight type
-/// @param graph input graph
-/// @param source source vertex
-/// @param edges_weights edges weights
-/// @return flatten tree as described for type Tree<WeightType>
+/// @brief Implementation of Bellman Ford algorithm. Bellman Ford performs |V| -
+/// 1 iterations (where |V| is the number of vertices). In every iteration it
+/// will relax the edges, replacing the approximations to the correct distance
+/// with better ones until they eventually reach the solution.
+/// @tparam G type of input graph
+/// @tparam Weight function used to get weight of an edge
+/// @tparam Distance type of distance among the nodes
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
+/// @param weight weight function
+/// @return a vector composed by BellmanFordNode structs
 template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,

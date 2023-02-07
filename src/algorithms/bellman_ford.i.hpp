@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header implementation of Bellman Ford algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *

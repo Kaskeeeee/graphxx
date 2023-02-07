@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of Kruskal algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -39,14 +39,18 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Implementation of kruskal algorithm
-/// @tparam G graph type that is coherent with Graph concept
-/// @tparam C object that overloads operator[] to get the weight of a specific
-///         edge
-/// @tparam WeightType numeric weight type
-/// @param graph input graph
-/// @param weight edges weights
-/// @return flatten tree as described for type Tree
+/// @brief Implementation of Kruskal algorithm. Starting by creating a forest
+/// (a set of trees), where each vertex in the graph is a separate tree, Kruskal
+/// iters on each edge, in increasing weight order. If the edge connects two
+/// different trees then the algorithms adds it to the forest , combining two
+/// trees into a single tree. At the termination of the algorithm, the forest
+/// forms a minimum spanning forest or tree.
+/// @tparam G type of input graph
+/// @tparam Weight function used to get weight of an edge
+/// @tparam Distance type of distance among the nodes
+/// @param graph graph on which the algorithm will run
+/// @param weight weight function
+/// @return a vector of edges
 template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,

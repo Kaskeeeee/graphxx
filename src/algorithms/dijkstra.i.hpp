@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header implementation of Dijkstra algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -42,8 +42,8 @@
 namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<DijkstraNode<Vertex<G>, Distance>> dijkstra(const G &graph, Vertex<G> source,
-                                             Weight weight) {
+std::vector<DijkstraNode<Vertex<G>, Distance>>
+dijkstra(const G &graph, Vertex<G> source, Weight weight) {
 
   using NodeType = DijkstraNode<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
@@ -88,4 +88,4 @@ std::vector<DijkstraNode<Vertex<G>, Distance>> dijkstra(const G &graph, Vertex<G
   return distance_tree;
 }
 
-} // namespace graphxx::algorithms::dijkstra
+} // namespace graphxx::algorithms

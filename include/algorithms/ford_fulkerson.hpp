@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of Ford Fulkerson algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -41,17 +41,22 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Implementation of ford_fulkerson algorithm
-/// @tparam G graph type that is coherent with Graph concept
-/// @tparam C object that overloads operator[] to get the weight of a specific
-/// edge
-/// @tparam WeightType numeric weight type
-/// @param graph input graph
-/// @param source source vertex
-/// @param sink sink vertex
-/// @param edges_capacity edges capacity
-/// @return maximum flow from source to sink in the given graph
-template <concepts::Graph G, concepts::Numeric Flow = int>
+/// @brief Implementation of Ford Fulkerson algorithm. Ford Fulkerson performs a
+/// BFS or DFS in order to find a path from the source (starting vertex) to the
+/// sink (goal vertex), with available capacity on all edges in the path. If
+/// there is a path, the algorithm sends flow along it, taking some of the
+/// capacity of the edges. Then it finds another path, and so on. The algorithms
+/// terminates when there isn't a path with enough capacity on its edges,
+/// returning the maximum flow from the source to the sink.
+/// @tparam G type of input graph
+/// @tparam Flow type of flow and capacity of the edges
+/// @param graph graph on which the algorithm will run
+/// @param source starting vertex
+/// @param sink goal vertex
+/// @param capacity edges capacity
+/// @return a number, which is the maximum flow from source to sink in the given
+/// graph
+template <concepts::Graph G, concepts::Numeric Flow = size_t>
 Flow ford_fulkerson(const G &graph, Vertex<G> source, Vertex<G> sink,
                     std::vector<std::vector<Flow>> &capacity);
 

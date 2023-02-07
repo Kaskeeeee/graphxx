@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the header of Tarjan algorithm
  *
  * @copyright Copyright © 2022 Graphxx. All rights reserved.
  *
@@ -38,10 +38,10 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Vertex containing informations for the algorithm
+/// @brief Stucture of the node, containing informations about
 struct TarjanNode {
-  int index;
-  int low_link;
+  size_t index;
+  size_t low_link;
   bool on_stack;
 };
 
@@ -49,15 +49,22 @@ struct TarjanNode {
 using TarjanTree = std::vector<TarjanNode>;
 
 /// @brief a vector of id
+/// @tparam Id type of vertices identifier
 template <concepts::Identifier Id> using StackVector = std::vector<Id>;
 
 /// @brief a vector containing all the strongly connected components
+/// @tparam Id type of vertices identifier
 template <concepts::Identifier Id>
 using SCCVector = std::vector<StackVector<Id>>;
 
-/// @brief Implementation of tarjan algorithm
-/// @tparam G graph type that is coherent with Graph concept
-/// @return a vector containing all the strongly connected components
+/// @brief Implementation of Tarjan algorithm. Tarjan starts by performing a DFS
+/// from an arbitrary start node. Then, the algorithms will
+/// recover all the strongly connected components as certain subtrees fromt he
+/// result of the DFS.
+/// @tparam G type of input graph
+/// @param graph graph on which the algorithm will run
+/// @return a vector of vertices, containing all the strongly connected
+/// components
 template <concepts::Graph G> SCCVector<Vertex<G>> tarjan(const G &graph);
 
 } // namespace graphxx::algorithms
