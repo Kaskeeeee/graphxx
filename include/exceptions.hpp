@@ -39,9 +39,12 @@ namespace graphxx::exceptions {
 /// @brief Generic graph exceptions from which the other ones inherits
 /// its extends std::exception by adding a custom message
 struct GraphException : public std::exception {
-  explicit GraphException(std::string message);
+  explicit GraphException(std::string message)
+      : _message{std::move(message)} {};
 
-  [[nodiscard]] const char *what() const noexcept override;
+  [[nodiscard]] const char *what() const noexcept override {
+    return _message.c_str();
+  };
 
 protected:
   std::string _message;
@@ -50,38 +53,45 @@ protected:
 /// @brief Exception thrown when trying to do some operations on vertices that
 /// don't exist
 struct NoSuchVertexException : GraphException {
-  NoSuchVertexException();
+  NoSuchVertexException()
+      : GraphException("Vertex is missing from graph exception"){};
 };
 
 /// @brief Exception thrown when trying to do some operations on edges that
 /// don't exist
 struct NoSuchEdgeException : GraphException {
-  NoSuchEdgeException();
+  NoSuchEdgeException()
+      : GraphException("Edge is missing from graph exeception"){};
 };
 
 /// @brief Exception thrown when an invariant is violated
 struct InvariantViolationException : GraphException {
-  explicit InvariantViolationException(const std::string &message);
+  explicit InvariantViolationException(const std::string &message)
+      : GraphException("Invariant violation exception: " + message){};
 };
 
 struct DirectedGraphParseException : GraphException {
-  DirectedGraphParseException();
+  DirectedGraphParseException()
+      : GraphException(
+            "Tried to read a directed graph into an undirected graph"){};
 };
 
 struct UndirectedGraphParseException : GraphException {
-  UndirectedGraphParseException();
+  UndirectedGraphParseException()
+      : GraphException(
+            "Tried to read an undirected graph into a directed graph"){};
 };
 
 struct BadGraphvizParseException : GraphException {
-  BadGraphvizParseException();
+  BadGraphvizParseException() : GraphException("Bad graphviz file syntax"){};
 };
 
 struct BadGraphmlParseException : GraphException {
-  BadGraphmlParseException();
+  BadGraphmlParseException() : GraphException("Bad graphml file syntax"){};
 };
 
 struct BadMatrixMarketParseException : GraphException {
-  BadMatrixMarketParseException();
+  BadMatrixMarketParseException()
+      : GraphException("Bad matrix market file syntax"){};
 };
-
 } // namespace graphxx::exceptions
