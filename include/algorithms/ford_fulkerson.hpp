@@ -39,17 +39,7 @@
 #include <map>
 #include <vector>
 
-namespace graphxx::algorithms::ford_fulkerson {
-
-template <concepts::Graph G, concepts::Numeric Distance> struct Node {
-  VertexStatus status;
-  Edge<G> edge;
-  Distance residual_capacity;
-  Vertex<G> parent;
-};
-
-template <concepts::Graph G, concepts::Numeric Distance>
-using DistanceTree = std::vector<Node<G, Distance>>;
+namespace graphxx::algorithms {
 
 /// @brief Implementation of ford_fulkerson algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -62,9 +52,9 @@ using DistanceTree = std::vector<Node<G, Distance>>;
 /// @param edges_capacity edges capacity
 /// @return maximum flow from source to sink in the given graph
 template <concepts::Graph G, concepts::Numeric Flow = int>
-Flow visit(const G &graph, Vertex<G> source, Vertex<G> sink,
-           std::vector<std::vector<Flow>> &capacity);
+Flow ford_fulkerson(const G &graph, Vertex<G> source, Vertex<G> sink,
+                    std::vector<std::vector<Flow>> &capacity);
 
-} // namespace graphxx::algorithms::ford_fulkerson
+} // namespace graphxx::algorithms
 
 #include "algorithms/ford_fulkerson.i.hpp"

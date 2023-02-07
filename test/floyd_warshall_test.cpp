@@ -71,7 +71,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -97,7 +97,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -125,7 +125,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -153,7 +153,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -181,7 +181,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
 
     graph.set_attributes(c, d, {-10});
 
-    REQUIRE_THROWS(floyd_warshall::visit(graph));
+    REQUIRE_THROWS(floyd_warshall(graph));
   }
 
   graph.add_edge(c, a); // 2->0
@@ -209,7 +209,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -236,7 +236,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -288,7 +288,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -314,7 +314,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -342,7 +342,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -370,7 +370,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
 
     graph.set_attributes(a, c, {-2});
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -398,7 +398,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
 
     graph.set_attributes(c, d, {-10});
 
-    REQUIRE_THROWS(floyd_warshall::visit(graph));
+    REQUIRE_THROWS(floyd_warshall(graph));
   }
 
   graph.add_edge(c, a); // 2->0
@@ -426,7 +426,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -453,7 +453,7 @@ TEST_CASE("Floyd Warshall shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -505,7 +505,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -531,7 +531,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected list graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -559,7 +559,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected list graph",
 
     graph.set_attributes(c, d, {-10});
 
-    REQUIRE_THROWS(floyd_warshall::visit(graph));
+    REQUIRE_THROWS(floyd_warshall(graph));
   }
 }
 
@@ -596,7 +596,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].distance == 0);
     REQUIRE(distances[b][b].distance == 0);
@@ -622,7 +622,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected matrix graph",
       }
     }
 
-    auto distances = floyd_warshall::visit(graph);
+    auto distances = floyd_warshall(graph);
 
     REQUIRE(distances[a][a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b][b].parent == INVALID_VERTEX<Graph>);
@@ -650,7 +650,7 @@ TEST_CASE("Floyd Warshall shortest paths for undirected matrix graph",
 
     graph.set_attributes(c, d, {-10});
 
-    REQUIRE_THROWS(floyd_warshall::visit(graph));
+    REQUIRE_THROWS(floyd_warshall(graph));
   }
 }
 } // namespace floyd_warshall_test

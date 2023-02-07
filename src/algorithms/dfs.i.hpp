@@ -37,39 +37,13 @@
 #include <functional>
 #include <vector>
 
-namespace graphxx::algorithms::dfs {
+namespace graphxx::algorithms {
 
-template <concepts::Graph G>
-std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source) {
-  return visit(graph, source, [](Vertex<G>) {});
-}
-
-template <concepts::Graph G>
-std::vector<Node<Vertex<G>>>
-visit(const G &graph, Vertex<G> source,
-      const std::function<void(Vertex<G>)> &callback) {
-
-  using NodeType = Node<Vertex<G>>;
-  std::vector<NodeType> distance_tree;
-
-  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
-    distance_tree.push_back(NodeType{.status = VertexStatus::READY,
-                                     .parent = INVALID_VERTEX<G>,
-                                     .discovery_time = -1,
-                                     .finishing_time = -1});
-  }
-
-  int time = 0;
-
-  visit_rec(graph, source, callback, time, distance_tree);
-
-  return distance_tree;
-}
-
+namespace detail::dfs {
 template <concepts::Graph G>
 void visit_rec(const G &graph, Vertex<G> vertex,
                const std::function<void(Vertex<G>)> &callback, int &time,
-               std::vector<Node<Vertex<G>>> &distance_tree) {
+               std::vector<DfsNode<Vertex<G>>> &distance_tree) {
   callback(vertex);
 
   distance_tree[vertex].status = VertexStatus::WAITING;
@@ -87,5 +61,33 @@ void visit_rec(const G &graph, Vertex<G> vertex,
   distance_tree[vertex].status = VertexStatus::PROCESSED;
   distance_tree[vertex].finishing_time = ++time;
 }
+} // namespace detail::dfs
 
-} // namespace graphxx::algorithms::dfs
+template <concepts::Graph G>
+std::vector<DfsNode<Vertex<G>>> dfs(const G &graph, Vertex<G> source) {
+  return dfs(graph, source, [](Vertex<G>) {});
+}
+
+template <concepts::Graph G>
+std::vector<DfsNode<Vertex<G>>>
+dfs(const G &graph, Vertex<G> source,
+    const std::function<void(Vertex<G>)> &callback) {
+
+  using NodeType = DfsNode<Vertex<G>>;
+  std::vector<NodeType> distance_tree;
+
+  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
+    distance_tree.push_back(NodeType{.status = VertexStatus::READY,
+                                     .parent = INVALID_VERTEX<G>,
+                                     .discovery_time = -1,
+                                     .finishing_time = -1});
+  }
+
+  int time = 0;
+
+  detail::dfs::visit_rec(graph, source, callback, time, distance_tree);
+
+  return distance_tree;
+}
+
+} // namespace graphxx::algorithms

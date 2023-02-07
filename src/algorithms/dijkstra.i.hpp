@@ -39,13 +39,13 @@
 #include <queue>
 #include <vector>
 
-namespace graphxx::algorithms::dijkstra {
+namespace graphxx::algorithms {
 
 template <concepts::Graph G, std::invocable<Edge<G>> Weight, typename Distance>
-std::vector<Node<Vertex<G>, Distance>> visit(const G &graph, Vertex<G> source,
+std::vector<DijkstraNode<Vertex<G>, Distance>> dijkstra(const G &graph, Vertex<G> source,
                                              Weight weight) {
 
-  using NodeType = Node<Vertex<G>, Distance>;
+  using NodeType = DijkstraNode<Vertex<G>, Distance>;
   constexpr auto distance_upperbound = std::numeric_limits<Distance>::max();
   std::vector<NodeType> distance_tree{
       graph.num_vertices(),

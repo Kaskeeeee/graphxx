@@ -38,10 +38,10 @@
 #include <functional>
 #include <vector>
 
-namespace graphxx::algorithms::dfs {
+namespace graphxx::algorithms {
 
 /// @brief Structure to store information about graph vertices during the visit
-template <concepts::Identifier Id> struct Node {
+template <concepts::Identifier Id> struct DfsNode {
   /// @brief Vertex visitation status
   VertexStatus status;
   /// @brief Id of the predecessor Vertex in DFS Tree
@@ -62,7 +62,7 @@ template <concepts::Identifier Id> struct Node {
 /// @param source vertex
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
+std::vector<DfsNode<Vertex<G>>> dfs(const G &graph, Vertex<G> source);
 
 /// @brief Performs a depth-first traversal of the graph. A depth-first
 ///        traversal chooses a vertex adjacent to the current vertex to visit
@@ -76,10 +76,10 @@ std::vector<Node<Vertex<G>>> visit(const G &graph, Vertex<G> source);
 /// @param callback function to call when a new node is visited
 /// @return flatten tree as described for type DFSTree
 template <concepts::Graph G>
-std::vector<Node<Vertex<G>>>
-visit(const G &graph, Vertex<G> source,
-      const std::function<void(Vertex<G>)> &callback);
+std::vector<DfsNode<Vertex<G>>>
+dfs(const G &graph, Vertex<G> source,
+    const std::function<void(Vertex<G>)> &callback);
 
-} // namespace graphxx::algorithms::dfs
+} // namespace graphxx::algorithms
 
 #include "algorithms/dfs.i.hpp"

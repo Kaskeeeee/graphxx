@@ -37,7 +37,7 @@
 #include <functional>
 #include <vector>
 
-namespace graphxx::algorithms::kruskal {
+namespace graphxx::algorithms {
 
 /// @brief Implementation of kruskal algorithm
 /// @tparam G graph type that is coherent with Graph concept
@@ -51,10 +51,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<Edge<G>> visit(
+std::vector<Edge<G>> kruskal(
     const G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::kruskal
+} // namespace graphxx::algorithms
 
 #include "algorithms/kruskal.i.hpp"

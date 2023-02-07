@@ -96,11 +96,9 @@ int main(int argc, char **argv) {
     }
   }
 
-  bench
-      .run("dfs graphxx",
-           [&]() { graphxx::algorithms::dfs::visit(list_graph, 0); })
+  bench.run("dfs graphxx", [&]() { graphxx::algorithms::dfs(list_graph, 0); })
       .run("dfs matrix graphxx",
-           [&]() { graphxx::algorithms::dfs::visit(matrix_graph, 0); })
+           [&]() { graphxx::algorithms::dfs(matrix_graph, 0); })
       .run("dfs boost", [&]() {
         boost::depth_first_search(
             boost_graph, boost::root_vertex(boost::vertex(0, boost_graph)));

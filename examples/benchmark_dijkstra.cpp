@@ -100,9 +100,9 @@ int main(int argc, char **argv) {
 
   bench
       .run("dijkstra graphxx",
-           [&]() { graphxx::algorithms::dijkstra::visit(list_graph, 0); })
+           [&]() { graphxx::algorithms::dijkstra(list_graph, 0); })
       .run("dijkstra matrix graphxx",
-           [&]() { graphxx::algorithms::dijkstra::visit(matrix_graph, 0); })
+           [&]() { graphxx::algorithms::dijkstra(matrix_graph, 0); })
       .run("dijkstra boost", [&]() {
         boost::dijkstra_shortest_paths(
             boost_graph, boost::vertex(0, boost_graph),

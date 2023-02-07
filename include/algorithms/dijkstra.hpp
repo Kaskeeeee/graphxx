@@ -37,13 +37,14 @@
 #include <functional>
 #include <vector>
 
-namespace graphxx::algorithms::dijkstra {
+namespace graphxx::algorithms {
 
 /// @brief Node containing informations about the parent (which is the previous
 ///        node)
 ///        on the shortest path and its distance from the source
 /// @tparam WeightType numeric weight
-template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+template <concepts::Identifier Id, concepts::Numeric Distance>
+struct DijkstraNode {
   Distance distance;
   Id parent;
 };
@@ -61,10 +62,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<Node<Vertex<G>, Distance>> visit(
+std::vector<DijkstraNode<Vertex<G>, Distance>> dijkstra(
     const G &graph, Vertex<G> source,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::dijkstra
+} // namespace graphxx::algorithms
 
 #include "algorithms/dijkstra.i.hpp"

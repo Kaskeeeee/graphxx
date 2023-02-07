@@ -37,13 +37,10 @@
 #include <functional>
 #include <vector>
 
-namespace graphxx::algorithms::a_star {
+namespace graphxx::algorithms {
 
-/// @brief Node containing informations about its distance,
-///        its heurisitc_distance (initially given by the user) and
-///        the previous node in the shortest path from a given source
-/// @tparam Distance numeric weight
-template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+template <concepts::Identifier Id, concepts::Numeric Distance>
+struct AStarNode {
   Distance distance;
   Id parent;
 };
@@ -63,10 +60,10 @@ template <concepts::Graph G, std::invocable<Vertex<G>> Heuristic,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-std::vector<Node<Vertex<G>, Distance>> visit(
+std::vector<AStarNode<Vertex<G>, Distance>> a_star(
     const G &graph, Vertex<G> source, Vertex<G> target,
     Heuristic heuristic_weight,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
-} // namespace graphxx::algorithms::a_star
+} // namespace graphxx::algorithms
 
 #include "algorithms/a_star.i.hpp"

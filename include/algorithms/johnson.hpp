@@ -38,17 +38,13 @@
 #include <unordered_map>
 #include <vector>
 
-namespace graphxx::algorithms::johnson {
+namespace graphxx::algorithms {
 
-template <concepts::Identifier Id, concepts::Numeric Distance> struct Node {
+template <concepts::Identifier Id, concepts::Numeric Distance>
+struct JohnsonNode {
   Distance distance;
   Id parent;
 };
-
-/// @brief A simple map of maps of ids to Nodes
-/// @tparam WeightType
-template <concepts::Identifier Id, concepts::Numeric Distance>
-using DistanceTree = std::vector<std::vector<Node<Id, Distance>>>;
 
 template <concepts::Graph G, concepts::Numeric Distance>
 using WeightMap = std::vector<std::unordered_map<Vertex<G>, Distance>>;
@@ -65,10 +61,10 @@ template <concepts::Graph G,
           std::invocable<Edge<G>> Weight =
               std::function<std::tuple_element_t<2, Edge<G>>(const Edge<G> &)>,
           typename Distance = decltype(std::declval<Weight>()(Edge<G>{}))>
-DistanceTree<Vertex<G>, Distance> visit(
+std::vector<std::vector<JohnsonNode<Vertex<G>, Distance>>> johnson(
     G &graph,
     Weight weight = [](const Edge<G> &edge) { return std::get<2>(edge); });
 
-} // namespace graphxx::algorithms::johnson
+} // namespace graphxx::algorithms
 
 #include "algorithms/johnson.i.hpp"

@@ -71,7 +71,7 @@ TEST_CASE("Bellman ford shortest paths for directed list graph",
 
     graph.set_attributes(e, c, {-10});
 
-    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+    REQUIRE_THROWS(bellman_ford(graph, a));
   }
 
   SECTION("find the shortest path length with all positive weights") {
@@ -83,7 +83,7 @@ TEST_CASE("Bellman ford shortest paths for directed list graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -101,7 +101,7 @@ TEST_CASE("Bellman ford shortest paths for directed list graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -121,7 +121,7 @@ TEST_CASE("Bellman ford shortest paths for directed list graph",
 
     graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -141,7 +141,7 @@ TEST_CASE("Bellman ford shortest paths for directed list graph",
 
     graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -184,7 +184,7 @@ TEST_CASE("Bellman ford shortest paths for directed matrix graph",
 
     graph.set_attributes(e, c, {-10});
 
-    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+    REQUIRE_THROWS(bellman_ford(graph, a));
   }
 
   SECTION("find the shortest path length with all positive weights") {
@@ -196,7 +196,7 @@ TEST_CASE("Bellman ford shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -214,7 +214,7 @@ TEST_CASE("Bellman ford shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -234,7 +234,7 @@ TEST_CASE("Bellman ford shortest paths for directed matrix graph",
 
     graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -254,7 +254,7 @@ TEST_CASE("Bellman ford shortest paths for directed matrix graph",
 
     graph.set_attributes(d, e, {-1});
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -296,7 +296,7 @@ TEST_CASE("Bellman ford shortest paths for undirected list graph",
 
     graph.set_attributes(e, c, {-10});
 
-    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+    REQUIRE_THROWS(bellman_ford(graph, a));
   }
 
   SECTION("find the shortest path length with all positive weights") {
@@ -308,7 +308,7 @@ TEST_CASE("Bellman ford shortest paths for undirected list graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -326,7 +326,7 @@ TEST_CASE("Bellman ford shortest paths for undirected list graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);
@@ -368,7 +368,7 @@ TEST_CASE("Bellman ford shortest paths for undirected matrix graph",
 
     graph.set_attributes(e, c, {-10});
 
-    REQUIRE_THROWS(bellman_ford::visit(graph, a));
+    REQUIRE_THROWS(bellman_ford(graph, a));
   }
 
   SECTION("find the shortest path length with all positive weights") {
@@ -380,7 +380,7 @@ TEST_CASE("Bellman ford shortest paths for undirected matrix graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -398,7 +398,7 @@ TEST_CASE("Bellman ford shortest paths for undirected matrix graph",
       }
     }
 
-    auto distances = bellman_ford::visit(graph, a);
+    auto distances = bellman_ford(graph, a);
 
     REQUIRE(distances[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(distances[b].parent == a);

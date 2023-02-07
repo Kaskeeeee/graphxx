@@ -84,7 +84,7 @@ TEST_CASE("A* shortest paths for directed list graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+    REQUIRE_THROWS(a_star(graph, a, z, get_heuristic));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -100,7 +100,7 @@ TEST_CASE("A* shortest paths for directed list graph",
     graph.set_attributes(a, c, {2});
     graph.set_attributes(b, f, {2});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -119,7 +119,7 @@ TEST_CASE("A* shortest paths for directed list graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -160,7 +160,7 @@ TEST_CASE("A* shortest paths for directed list graph",
     graph.set_attributes(d, d, {1});
     graph.set_attributes(e, c, {1});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -179,7 +179,7 @@ TEST_CASE("A* shortest paths for directed list graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -200,8 +200,7 @@ TEST_CASE("A* shortest paths for directed list graph",
       }
     }
 
-    auto distances =
-        a_star::visit(graph, a, graph.num_vertices() - 1, get_heuristic);
+    auto distances = a_star(graph, a, graph.num_vertices() - 1, get_heuristic);
 
     REQUIRE(distances.size() == 0);
   }
@@ -251,7 +250,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+    REQUIRE_THROWS(a_star(graph, a, z, get_heuristic));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -267,7 +266,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
     graph.set_attributes(a, c, {2});
     graph.set_attributes(b, f, {2});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -286,7 +285,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -327,7 +326,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
     graph.set_attributes(d, d, {1});
     graph.set_attributes(e, c, {1});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -346,7 +345,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -367,8 +366,7 @@ TEST_CASE("A* shortest paths for directed matrix graph",
       }
     }
 
-    auto distances =
-        a_star::visit(graph, a, graph.num_vertices() - 1, get_heuristic);
+    auto distances = a_star(graph, a, graph.num_vertices() - 1, get_heuristic);
 
     REQUIRE(distances.size() == 0);
   }
@@ -418,7 +416,7 @@ TEST_CASE("A* shortest paths for undirected list graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+    REQUIRE_THROWS(a_star(graph, a, z, get_heuristic));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -434,7 +432,7 @@ TEST_CASE("A* shortest paths for undirected list graph",
     graph.set_attributes(a, c, {2});
     graph.set_attributes(b, f, {2});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -453,7 +451,7 @@ TEST_CASE("A* shortest paths for undirected list graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a
@@ -507,7 +505,7 @@ TEST_CASE("A* shortest paths for undirected matrix graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(a_star::visit(graph, a, z, get_heuristic));
+    REQUIRE_THROWS(a_star(graph, a, z, get_heuristic));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -523,7 +521,7 @@ TEST_CASE("A* shortest paths for undirected matrix graph",
     graph.set_attributes(a, c, {2});
     graph.set_attributes(b, f, {2});
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].distance == 0); // a
@@ -542,7 +540,7 @@ TEST_CASE("A* shortest paths for undirected matrix graph",
       }
     }
 
-    auto distances = a_star::visit(graph, a, z, get_heuristic);
+    auto distances = a_star(graph, a, z, get_heuristic);
 
     REQUIRE(distances.size() == 4);
     REQUIRE(distances[0].parent == INVALID_VERTEX<Graph>); // a

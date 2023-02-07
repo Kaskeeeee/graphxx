@@ -97,11 +97,9 @@ int main(int argc, char **argv) {
     }
   }
 
-  bench
-      .run("bfs graphxx",
-           [&]() { graphxx::algorithms::bfs::visit(list_graph, 0); })
+  bench.run("bfs graphxx", [&]() { graphxx::algorithms::bfs(list_graph, 0); })
       .run("bfs matrix graphxx",
-           [&]() { graphxx::algorithms::bfs::visit(matrix_graph, 0); })
+           [&]() { graphxx::algorithms::bfs(matrix_graph, 0); })
       .run("bfs boost", [&]() {
         boost::breadth_first_search(
             boost_graph, boost::vertex(0, boost_graph),

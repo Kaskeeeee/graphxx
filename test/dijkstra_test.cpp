@@ -75,7 +75,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(dijkstra::visit(graph, a));
+    REQUIRE_THROWS(dijkstra(graph, a));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -89,7 +89,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
 
     graph.set_attributes(c, f, {1});
 
-    auto distances = dijkstra::visit(graph, a);
+    auto distances = dijkstra(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -108,7 +108,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
@@ -146,7 +146,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
     graph.set_attributes(d, d, {0});
     graph.set_attributes(e, c, {0});
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].distance == 0);
     REQUIRE(result[b].distance == 1);
@@ -165,7 +165,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
@@ -213,7 +213,7 @@ TEST_CASE("Dijkstra shortest paths for directed matrix graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(dijkstra::visit(graph, a));
+    REQUIRE_THROWS(dijkstra(graph, a));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -227,7 +227,7 @@ TEST_CASE("Dijkstra shortest paths for directed matrix graph",
 
     graph.set_attributes(c, f, {1});
 
-    auto distances = dijkstra::visit(graph, a);
+    auto distances = dijkstra(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -246,7 +246,7 @@ TEST_CASE("Dijkstra shortest paths for directed matrix graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
@@ -284,7 +284,7 @@ TEST_CASE("Dijkstra shortest paths for directed matrix graph",
     graph.set_attributes(d, d, {0});
     graph.set_attributes(e, c, {0});
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].distance == 0);
     REQUIRE(result[b].distance == 1);
@@ -303,7 +303,7 @@ TEST_CASE("Dijkstra shortest paths for directed matrix graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
@@ -351,7 +351,7 @@ TEST_CASE("Dijkstra shortest paths for undirected list graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(dijkstra::visit(graph, a));
+    REQUIRE_THROWS(dijkstra(graph, a));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -365,7 +365,7 @@ TEST_CASE("Dijkstra shortest paths for undirected list graph",
 
     graph.set_attributes(c, f, {1});
 
-    auto distances = dijkstra::visit(graph, a);
+    auto distances = dijkstra(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -384,7 +384,7 @@ TEST_CASE("Dijkstra shortest paths for undirected list graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);
@@ -432,7 +432,7 @@ TEST_CASE("Dijkstra shortest paths for undirected matrix graph",
 
     graph.set_attributes(a, b, {-1});
 
-    REQUIRE_THROWS(dijkstra::visit(graph, a));
+    REQUIRE_THROWS(dijkstra(graph, a));
   }
 
   SECTION("finds the shortest path length with all positive weights") {
@@ -446,7 +446,7 @@ TEST_CASE("Dijkstra shortest paths for undirected matrix graph",
 
     graph.set_attributes(c, f, {1});
 
-    auto distances = dijkstra::visit(graph, a);
+    auto distances = dijkstra(graph, a);
 
     REQUIRE(distances[a].distance == 0);
     REQUIRE(distances[b].distance == 1);
@@ -465,7 +465,7 @@ TEST_CASE("Dijkstra shortest paths for undirected matrix graph",
       }
     }
 
-    auto result = dijkstra::visit(graph, a);
+    auto result = dijkstra(graph, a);
 
     REQUIRE(result[a].parent == INVALID_VERTEX<Graph>);
     REQUIRE(result[b].parent == a);

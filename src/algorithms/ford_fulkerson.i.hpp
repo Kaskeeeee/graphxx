@@ -39,8 +39,9 @@
 #include <limits>
 #include <queue>
 
-namespace graphxx::algorithms::ford_fulkerson {
+namespace graphxx::algorithms {
 
+namespace detail::ford_fulkerson {
 template <concepts::Graph G, concepts::Numeric Flow>
 Flow dfs(const G &graph, Vertex<G> u, Vertex<G> sink,
          std::vector<bool> &visited, Flow flow,
@@ -63,18 +64,20 @@ Flow dfs(const G &graph, Vertex<G> u, Vertex<G> sink,
   }
   return 0;
 }
+} // namespace detail::ford_fulkerson
 
 template <concepts::Graph G, concepts::Numeric Flow>
-Flow visit(const G &graph, Vertex<G> source, Vertex<G> sink,
-           std::vector<std::vector<Flow>> &capacity) {
+Flow ford_fulkerson(const G &graph, Vertex<G> source, Vertex<G> sink,
+                    std::vector<std::vector<Flow>> &capacity) {
 
   Flow max_flow = 0;
   std::vector<bool> visited(graph.num_vertices());
 
   while (true) {
     std::fill(visited.begin(), visited.end(), false);
-    Flow flow = dfs(graph, source, sink, visited,
-                    std::numeric_limits<Flow>::max(), capacity);
+    Flow flow =
+        detail::ford_fulkerson::dfs(graph, source, sink, visited,
+                                    std::numeric_limits<Flow>::max(), capacity);
     if (flow == 0) {
       break;
     }
@@ -84,4 +87,4 @@ Flow visit(const G &graph, Vertex<G> source, Vertex<G> sink,
   return max_flow;
 }
 
-} // namespace graphxx::algorithms::ford_fulkerson
+} // namespace graphxx::algorithms
