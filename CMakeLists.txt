@@ -41,7 +41,7 @@ option(BUILD_BENCH "Enable benchmarking" OFF)
 # Compile with examples
 option(BUILD_EXAMPLES "Enable examples" OFF)
 
-# Compile with examples
+# Compile with tests
 option(BUILD_TEST "Enable tests" OFF)
 
 # ###############################################################################
@@ -225,8 +225,8 @@ if (BUILD_TEST)
 
     target_sources(graphxx_test
         PRIVATE ${PROJECT_SOURCE_DIR}/test/test_main.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/utils_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/list_graph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/matrix_graph_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/a_star_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/bellman_ford_test.cpp
@@ -235,9 +235,11 @@ if (BUILD_TEST)
         PRIVATE ${PROJECT_SOURCE_DIR}/test/dijkstra_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/floyd_warshall_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/ford_fulkerson_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/kruskal_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphml_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphviz_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
     )
@@ -275,7 +277,7 @@ if (BUILD_TEST)
 
     enable_testing()
 
-    add_test(NAME all_tests
+    add_test(NAME unit_tests
             COMMAND graphxx_test
     )
 

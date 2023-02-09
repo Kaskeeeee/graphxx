@@ -39,6 +39,7 @@
 
 #include <cctype>
 #include <map>
+#include <set>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -59,7 +60,7 @@ TEST_CASE("directed list graph object is correctly serialized",
     graphml_serialize(out, g);
 
     std::string s = out.str();
-    REQUIRE(utils::contains(s, io::kXmlHeader));
+    REQUIRE(utils::contains(s, io::XML_HEADER));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
 
@@ -379,9 +380,8 @@ TEST_CASE("undirected list graph object is correctly serialized",
   SECTION("serialize empty graph") {
     std::stringstream out;
     graphml_serialize(out, g);
-
     std::string s = out.str();
-    REQUIRE(utils::contains(s, io::kXmlHeader));
+    REQUIRE(utils::contains(s, io::XML_HEADER));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
 
@@ -401,14 +401,20 @@ TEST_CASE("undirected list graph object is correctly serialized",
   SECTION("serialize simple graph") {
     std::stringstream out;
     graphml_serialize(out, g);
-
     std::string s = out.str();
+
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
 
     for (int v = a; v < d; v++) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
       for (auto &e : g[v]) {
+        if (inserted_edges.contains({g.get_target(e), g.get_source(e)}))
+          continue;
+
+        inserted_edges.insert({g.get_source(e), g.get_target(e)});
+
         std::string edge = "source=\"n" + std::to_string(g.get_source(e)) +
                            "\" target=\"n" + std::to_string(g.get_target(e)) +
                            "\">";
@@ -458,7 +464,13 @@ TEST_CASE("undirected list graph object is correctly serialized",
     }
 
     int edge_count = 0;
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
     for (auto [source, target] : get_sorted_edges(g)) {
+      if (inserted_edges.contains({target, source}))
+        continue;
+
+      inserted_edges.insert({source, target});
+
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -470,8 +482,12 @@ TEST_CASE("undirected list graph object is correctly serialized",
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
+  edge_properties[{c, a}] = {{"weight", "10"}};
   edge_properties[{a, d}] = {{"weight", "32"}};
+  edge_properties[{d, a}] = {{"weight", "32"}};
+  edge_properties[{c, d}] = {{"weight", "5"}, {"foo", "bar"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
+
   std::unordered_map<std::string, std::string> edge_key_ids;
 
   SECTION("serialize graph with vertex and edge attributes") {
@@ -506,7 +522,13 @@ TEST_CASE("undirected list graph object is correctly serialized",
     }
 
     int edge_count = 0;
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
     for (auto [source, target] : get_sorted_edges(g)) {
+      if (inserted_edges.contains({target, source}))
+        continue;
+
+      inserted_edges.insert({source, target});
+
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -549,10 +571,10 @@ TEST_CASE("undirected list graph object is correctly deserialized",
         "xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns "
         "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\"> <graph "
         "id=\"G\" edgedefault=\"undirected\"> <node id=\"n0\"> </node> <node "
-        "id=\"n1\"> </node> <node id=\"n2\"> </node> <node id=\"n3\"> "
-        "</node> <edge id=\"e0\" source=\"n0\" target=\"n2\"> </edge> <edge "
-        "id=\"e1\" source=\"n0\" target=\"n3\"> </edge> <edge id=\"e2\" "
-        "source=\"n3\" target=\"n2\"> </edge> </graph> </graphml>";
+        "id=\"n1\"> </node> <node id=\"n2\"> </node> <node id=\"n3\"> </node> "
+        "<edge id=\"e0\" source=\"n0\" target=\"n2\"> </edge> <edge id=\"e1\" "
+        "source=\"n0\" target=\"n3\"> </edge> <edge id=\"e2\" source=\"n2\" "
+        "target=\"n3\"> </edge> </graph> </graphml>";
 
     std::istringstream istream(GRAPHML_INPUT);
     graphml_deserialize(istream, g, vertex_properties, edge_properties);
@@ -593,7 +615,7 @@ TEST_CASE("undirected list graph object is correctly deserialized",
         "key=\"k1\">D</data> </node> <edge id=\"e0\" source=\"n0\" "
         "target=\"n2\"> <data key=\"k2\">10</data> </edge> <edge id=\"e1\" "
         "source=\"n0\" target=\"n3\"> <data key=\"k2\">32</data> </edge> <edge "
-        "id=\"e2\" source=\"n3\" target=\"n2\"> <data key=\"k3\">bar</data> "
+        "id=\"e2\" source=\"n2\" target=\"n3\"> <data key=\"k3\">bar</data> "
         "<data key=\"k2\">5</data> </edge> </graph> </graphml>";
 
     std::istringstream istream(GRAPHML_INPUT);
@@ -660,6 +682,7 @@ TEST_CASE("undirected list graph object is preserved in serialization and "
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
+  edge_properties[{c, d}] = {{"weight", "5"}, {"foo", "bar"}};
 
   std::stringstream out;
   graphml_serialize(
@@ -706,7 +729,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
     graphml_serialize(out, g);
 
     std::string s = out.str();
-    REQUIRE(utils::contains(s, io::kXmlHeader));
+    REQUIRE(utils::contains(s, io::XML_HEADER));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
 
@@ -1026,9 +1049,8 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
   SECTION("serialize empty graph") {
     std::stringstream out;
     graphml_serialize(out, g);
-
     std::string s = out.str();
-    REQUIRE(utils::contains(s, io::kXmlHeader));
+    REQUIRE(utils::contains(s, io::XML_HEADER));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
     REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
 
@@ -1048,14 +1070,20 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
   SECTION("serialize simple graph") {
     std::stringstream out;
     graphml_serialize(out, g);
-
     std::string s = out.str();
+
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
 
     for (int v = a; v < d; v++) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
       for (auto &e : g[v]) {
+        if (inserted_edges.contains({g.get_target(e), g.get_source(e)}))
+          continue;
+
+        inserted_edges.insert({g.get_source(e), g.get_target(e)});
+
         std::string edge = "source=\"n" + std::to_string(g.get_source(e)) +
                            "\" target=\"n" + std::to_string(g.get_target(e)) +
                            "\">";
@@ -1105,7 +1133,13 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
     }
 
     int edge_count = 0;
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
     for (auto [source, target] : get_sorted_edges(g)) {
+      if (inserted_edges.contains({target, source}))
+        continue;
+
+      inserted_edges.insert({source, target});
+
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -1117,8 +1151,12 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
+  edge_properties[{c, a}] = {{"weight", "10"}};
   edge_properties[{a, d}] = {{"weight", "32"}};
+  edge_properties[{d, a}] = {{"weight", "32"}};
+  edge_properties[{c, d}] = {{"weight", "5"}, {"foo", "bar"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
+
   std::unordered_map<std::string, std::string> edge_key_ids;
 
   SECTION("serialize graph with vertex and edge attributes") {
@@ -1153,7 +1191,13 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
     }
 
     int edge_count = 0;
+    std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
     for (auto [source, target] : get_sorted_edges(g)) {
+      if (inserted_edges.contains({target, source}))
+        continue;
+
+      inserted_edges.insert({source, target});
+
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -1196,10 +1240,10 @@ TEST_CASE("undirected matrix graph object is correctly deserialized",
         "xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns "
         "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\"> <graph "
         "id=\"G\" edgedefault=\"undirected\"> <node id=\"n0\"> </node> <node "
-        "id=\"n1\"> </node> <node id=\"n2\"> </node> <node id=\"n3\"> "
-        "</node> <edge id=\"e0\" source=\"n0\" target=\"n2\"> </edge> <edge "
-        "id=\"e1\" source=\"n0\" target=\"n3\"> </edge> <edge id=\"e2\" "
-        "source=\"n3\" target=\"n2\"> </edge> </graph> </graphml>";
+        "id=\"n1\"> </node> <node id=\"n2\"> </node> <node id=\"n3\"> </node> "
+        "<edge id=\"e0\" source=\"n0\" target=\"n2\"> </edge> <edge id=\"e1\" "
+        "source=\"n0\" target=\"n3\"> </edge> <edge id=\"e2\" source=\"n2\" "
+        "target=\"n3\"> </edge> </graph> </graphml>";
 
     std::istringstream istream(GRAPHML_INPUT);
     graphml_deserialize(istream, g, vertex_properties, edge_properties);
@@ -1240,7 +1284,7 @@ TEST_CASE("undirected matrix graph object is correctly deserialized",
         "key=\"k1\">D</data> </node> <edge id=\"e0\" source=\"n0\" "
         "target=\"n2\"> <data key=\"k2\">10</data> </edge> <edge id=\"e1\" "
         "source=\"n0\" target=\"n3\"> <data key=\"k2\">32</data> </edge> <edge "
-        "id=\"e2\" source=\"n3\" target=\"n2\"> <data key=\"k3\">bar</data> "
+        "id=\"e2\" source=\"n2\" target=\"n3\"> <data key=\"k3\">bar</data> "
         "<data key=\"k2\">5</data> </edge> </graph> </graphml>";
 
     std::istringstream istream(GRAPHML_INPUT);
@@ -1307,6 +1351,7 @@ TEST_CASE("undirected matrix graph object is preserved in serialization and "
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
+  edge_properties[{c, d}] = {{"weight", "5"}, {"foo", "bar"}};
 
   std::stringstream out;
   graphml_serialize(

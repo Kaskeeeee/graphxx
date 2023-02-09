@@ -403,8 +403,11 @@ TEST_CASE(
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
+  edge_properties[{c, a}] = {{"weight", "10"}};
   edge_properties[{a, d}] = {{"weight", "32"}};
+  edge_properties[{d, a}] = {{"weight", "32"}};
   edge_properties[{c, d}] = {{"weight", "5"}, {"foo", "bar"}};
+  edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
 
   SECTION("serialize graph with vertex and edge attributes") {
     std::stringstream out;
