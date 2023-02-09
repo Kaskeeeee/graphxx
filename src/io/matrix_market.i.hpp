@@ -133,11 +133,11 @@ void mm_deserialize(std::istream &in, G &graph) {
   std::stringstream(input_string) >> rows >> columns >> entries;
 
   size_t num_vertices = rows * (symmetric ? 2 : 1);
-  for (int64_t i = 0; i < num_vertices; i++) {
+  for (size_t i = 0; i < num_vertices; i++) {
     graph.add_vertex(i);
   }
 
-  for (int64_t i = 0; i < entries; i++) {
+  for (size_t i = 0; i < entries; i++) {
     DefaultIdType source_id, target_id;
     WeightType weight{1.0};
 

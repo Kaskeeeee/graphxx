@@ -52,7 +52,7 @@ inline size_t find_first_of(const std::string &input,
   size_t current_found = std::string::npos;
 
   const size_t size = find.size();
-  for (int64_t i = 0; i < size; ++i) {
+  for (size_t i = 0; i < size; ++i) {
     current_found = input.find(find[i], pos);
     if (current_found < first_found) {
       first_found = current_found;
