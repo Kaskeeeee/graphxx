@@ -52,10 +52,7 @@ public:
 
   /// @brief Indicates whether the graph is directed or undirected
   static constexpr Directedness DIRECTEDNESS = D;
-
-  AdjacencyMatrixGraph();
-  AdjacencyMatrixGraph(const AdjacencyMatrixGraph &graph);
-
+  
   /// @brief Adds a new vertex to the graph.
   ///        The vertex id will be the index of the first free position in the
   ///        adjacency list

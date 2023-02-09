@@ -39,19 +39,6 @@
 
 namespace graphxx {
 
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(){};
-
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyListGraph<Id, D, AttributesType...>::AdjacencyListGraph(
-    const AdjacencyListGraph &graph) {
-  for (auto &&vertex : graph) {
-    for (auto &&edge : vertex) {
-      add_edge(get_source(edge), get_target(edge),
-               get_elements_from_index<2>(edge));
-    }
-  }
-};
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex() {

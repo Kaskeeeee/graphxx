@@ -36,19 +36,6 @@
 #include <algorithm>
 
 namespace graphxx {
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrixGraph(){};
-
-template <concepts::Identifier Id, Directedness D, typename... AttributesType>
-AdjacencyMatrixGraph<Id, D, AttributesType...>::AdjacencyMatrixGraph(
-    const AdjacencyMatrixGraph &graph) {
-  for (auto &&vertex : graph) {
-    for (auto &&edge : vertex) {
-      add_edge(get_source(edge), get_target(edge),
-               get_elements_from_index<2>(edge));
-    }
-  }
-};
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyMatrixGraph<Id, D, AttributesType...>::add_vertex() {

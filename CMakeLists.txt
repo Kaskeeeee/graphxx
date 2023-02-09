@@ -173,7 +173,7 @@ target_link_options(graphxx
 # LINTER
 # ###############################################################################
 
-find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 if (CLANG_TIDY_EXE)
     add_custom_target(tidy
                       COMMAND ${CLANG_TIDY_EXE} -config-file=${PROJECT_SOURCE_DIR}/.clang-tidy
