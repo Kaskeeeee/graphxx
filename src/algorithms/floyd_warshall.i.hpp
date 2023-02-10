@@ -1,7 +1,7 @@
 /**
  * @file This file is the header implementation of Floyd Warshall algorithm
  *
- * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy

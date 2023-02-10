@@ -1,7 +1,7 @@
 /**
  * @file This file contains the unit tests for Johnson algorithm
  *
- * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy

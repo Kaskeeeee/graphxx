@@ -5,7 +5,7 @@
  * Each additional file need only `#include "catch2/catch.hpp"`- do not repeat
  * the `#define`.
  *
- * @copyright Copyright © 2022 Graphxx. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
