@@ -31,10 +31,10 @@
 
 #include "base.hpp"
 #include "catch.hpp"
+#include "graph_utils.hpp"
 #include "io/graphml.hpp"
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
-#include "utils.hpp"
 #include "utils/tuple_utils.hpp"
 
 #include <cctype>
@@ -60,8 +60,8 @@ TEST_CASE("directed list graph object is correctly serialized",
 
     std::string s = out.str();
     REQUIRE(utils::contains(s, io::kXmlHeader));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
+    REQUIRE(utils::contains(s, io::kGraphmlRootOpen));
+    REQUIRE(utils::contains(s, io::kGraphmlRootClose));
 
     std::string directedness = "<graph id=\"G\" edgedefault=\"directed\">";
     REQUIRE(utils::contains(s, directedness, false));
@@ -382,8 +382,8 @@ TEST_CASE("undirected list graph object is correctly serialized",
 
     std::string s = out.str();
     REQUIRE(utils::contains(s, io::kXmlHeader));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
+    REQUIRE(utils::contains(s, io::kGraphmlRootOpen));
+    REQUIRE(utils::contains(s, io::kGraphmlRootClose));
 
     std::string directedness = "<graph id=\"G\" edgedefault=\"undirected\">";
     REQUIRE(utils::contains(s, directedness, false));
@@ -707,8 +707,8 @@ TEST_CASE("directed matrix graph object is correctly serialized",
 
     std::string s = out.str();
     REQUIRE(utils::contains(s, io::kXmlHeader));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
+    REQUIRE(utils::contains(s, io::kGraphmlRootOpen));
+    REQUIRE(utils::contains(s, io::kGraphmlRootClose));
 
     std::string directedness = "<graph id=\"G\" edgedefault=\"directed\">";
     REQUIRE(utils::contains(s, directedness, false));
@@ -1029,8 +1029,8 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
 
     std::string s = out.str();
     REQUIRE(utils::contains(s, io::kXmlHeader));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_OPEN));
-    REQUIRE(utils::contains(s, io::GRAPHML_ROOT_CLOSE));
+    REQUIRE(utils::contains(s, io::kGraphmlRootOpen));
+    REQUIRE(utils::contains(s, io::kGraphmlRootClose));
 
     std::string directedness = "<graph id=\"G\" edgedefault=\"undirected\">";
     REQUIRE(utils::contains(s, directedness, false));

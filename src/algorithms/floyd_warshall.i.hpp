@@ -33,7 +33,7 @@
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
-#include "utils.hpp"
+#include "numeric_utils.hpp"
 
 #include <limits>
 #include <vector>

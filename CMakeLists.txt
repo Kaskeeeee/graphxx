@@ -213,6 +213,7 @@ if (CLOC_FOUND)
     add_custom_target(stats
                       COMMAND cloc ${PROJECT_SOURCE_DIR}/src
                                    ${PROJECT_SOURCE_DIR}/include
+                                   ${PROJECT_SOURCE_DIR}/test
     )
 endif()
 
@@ -239,6 +240,8 @@ if (BUILD_TEST)
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/johnson_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphml_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphviz_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
     )
 

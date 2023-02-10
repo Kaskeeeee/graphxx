@@ -32,10 +32,10 @@
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
+#include "graph_utils.hpp"
 #include "io/graphml.hpp"
 #include "pugixml.hpp"
 #include "string_utils.hpp"
-#include "utils.hpp"
 
 #include <functional>
 #include <set>
@@ -53,7 +53,7 @@ void graphml_serialize(
         get_edge_properties) {
 
   out << kXmlHeader << std::endl;
-  out << GRAPHML_ROOT_OPEN << std::endl;
+  out << kGraphmlRootOpen << std::endl;
 
   int key_count = 0;
   std::unordered_map<std::string, std::string> vertex_key_ids;
@@ -145,7 +145,7 @@ void graphml_serialize(
   }
 
   out << "\t</graph>" << std::endl;
-  out << GRAPHML_ROOT_CLOSE << std::endl;
+  out << kGraphmlRootClose << std::endl;
 }
 
 template <concepts::Graph G>

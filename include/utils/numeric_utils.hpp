@@ -32,12 +32,7 @@
 #pragma once
 
 #include "graph_concepts.hpp" // concepts::Numeric
-
-#include <limits>      // std::numeric_limits::max()
-#include <numeric>     // std::iota
-#include <type_traits> // std::decay_t
-#include <utility>     // std::declval
-#include <vector>      // std::vector
+#include <limits>             // std::numeric_limits::max()
 
 namespace graphxx {
 
@@ -49,40 +44,6 @@ namespace graphxx {
 template <concepts::Numeric T> bool sum_will_overflow(T lhs, T rhs) {
   return lhs > 0 ? (std::numeric_limits<T>::max() - lhs) < rhs
                  : (std::numeric_limits<T>::min() - lhs) > rhs;
-}
-
-/// @brief type that represents the decayed version of the type returned by
-/// accessing an object through operator[]
-/// @tparam Key
-/// @tparam C
-template <typename Key, concepts::Subscriptable<Key> C>
-using DecaySubscriptValue = std::decay_t<decltype(std::declval<C>()[Key()])>;
-
-template <typename T> void fill_vector(std::vector<T> &v, size_t id, T &&t) {
-  for (auto i = v.size(); i <= id; ++i) {
-    v.push_back(t);
-  }
-}
-
-template <concepts::Graph G>
-std::vector<Vertex<G>> get_sorted_vertices(const G &graph) {
-  std::vector<Vertex<G>> vertices(graph.num_vertices());
-  std::iota(vertices.begin(), vertices.end(), 0);
-  return vertices;
-}
-
-template <concepts::Graph G>
-std::vector<std::pair<Vertex<G>, Vertex<G>>> get_sorted_edges(const G &graph) {
-  std::vector<std::pair<Vertex<G>, Vertex<G>>> edges;
-
-  for (auto &out_edges : graph) {
-    for (auto &edge : out_edges) {
-      edges.emplace_back(graph.get_source(edge), graph.get_target(edge));
-    }
-  }
-
-  std::sort(edges.begin(), edges.end());
-  return edges;
 }
 
 } // namespace graphxx

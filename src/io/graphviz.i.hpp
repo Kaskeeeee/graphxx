@@ -32,8 +32,8 @@
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
+#include "graph_utils.hpp"
 #include "io/graphviz.hpp"
-#include "utils.hpp"
 #include "utils/string_utils.hpp"
 
 #include <functional>
@@ -252,7 +252,7 @@ void graphviz_deserialize(
           inserted_vertices[source_vertex_name] = source;
         }
 
-        for (int64_t i = 1; i < edge_vertices.size(); ++i) {
+        for (size_t i = 1; i < edge_vertices.size(); ++i) {
           std::string target_vertex_name = utils::trim(edge_vertices[i]);
           if (!target_vertex_name.empty()) {
 

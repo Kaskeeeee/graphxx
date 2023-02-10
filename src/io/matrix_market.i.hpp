@@ -32,7 +32,7 @@
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "graph_concepts.hpp"
-#include "utils.hpp"
+#include "graph_utils.hpp"
 
 #include <functional>
 #include <sstream>
