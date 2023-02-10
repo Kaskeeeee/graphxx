@@ -158,7 +158,7 @@ void graphml_serialize(
   }
 
   out << "\t</graph>" << std::endl;
-  out << kGraphmlRootClose << std::endl;
+  out << GRAPHML_ROOT_CLOSE << std::endl;
 }
 
 template <concepts::Graph G>
