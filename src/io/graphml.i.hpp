@@ -52,12 +52,14 @@ void graphml_serialize(
     std::function<GraphMLProperties(Vertex<G>, Vertex<G>)>
         get_edge_properties) {
 
-  out << kXmlHeader << std::endl;
-  out << kGraphmlRootOpen << std::endl;
+  out << XML_HEADER << std::endl;
+  out << GRAPHML_ROOT_OPEN << std::endl;
 
   int key_count = 0;
   std::unordered_map<std::string, std::string> vertex_key_ids;
   std::unordered_map<std::string, std::string> edge_key_ids;
+
+  std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
 
   // declaring GraphML-Attributes for nodes
   for (auto vertex : get_sorted_vertices(graph)) {
@@ -78,6 +80,12 @@ void graphml_serialize(
 
   // declaring GraphML-Attributes for edges
   for (auto [source, target] : get_sorted_edges(graph)) {
+    if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+      if (inserted_edges.contains({target, source}))
+        continue;
+
+    inserted_edges.insert({source, target});
+
     GraphMLProperties edge_properties = get_edge_properties(source, target);
     for (const auto &[name, value] : edge_properties) {
       if (edge_key_ids.contains(name)) {
@@ -120,9 +128,14 @@ void graphml_serialize(
 
   // declaring edges
   int edge_count = 0;
-  std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
+  inserted_edges.clear();
   for (auto [source, target] : get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
+
+      if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+        if (inserted_edges.contains({target, source}))
+          continue;
+
       inserted_edges.insert({source, target});
 
       out << "\t\t"

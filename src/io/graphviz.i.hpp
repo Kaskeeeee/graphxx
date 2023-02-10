@@ -92,6 +92,11 @@ void graphviz_serialize(
   std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
   for (auto [source, target] : get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
+
+      if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+        if (inserted_edges.contains({target, source}))
+          continue;
+
       inserted_edges.insert({source, target});
       out << source << Traits::delimiter() << target;
 
@@ -268,6 +273,12 @@ void graphviz_deserialize(
             edge_properties[{inserted_vertices[source_vertex_name],
                              inserted_vertices[target_vertex_name]}] =
                 properties;
+
+            if (G::DIRECTEDNESS == Directedness::UNDIRECTED) {
+              edge_properties[{inserted_vertices[target_vertex_name],
+                               inserted_vertices[source_vertex_name]}] =
+                  properties;
+            }
           }
         }
       }

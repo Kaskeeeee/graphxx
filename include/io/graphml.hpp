@@ -42,14 +42,13 @@ namespace graphxx::io {
 
 using GraphMLProperties = std::unordered_map<std::string, std::string>;
 
-const std::string kXmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-const std::string kGraphmlRootOpen =
+const std::string XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+const std::string GRAPHML_ROOT_OPEN =
     "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" "
     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
     "xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns "
     "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">";
-
-const std::string kGraphmlRootClose = "</graphml>";
+const std::string GRAPHML_ROOT_CLOSE = "</graphml>";
 
 /**
  * @brief  Write a graph object into an output stream in the GraphML format.
