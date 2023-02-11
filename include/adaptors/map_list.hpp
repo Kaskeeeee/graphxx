@@ -1,5 +1,6 @@
 
-#include <cstddef>       // std::ptrdiff_t
+#pragma once
+
 #include <iterator>      // std::bidirectional_iterator_tag
 #include <unordered_map> // std::unordered_map
 
