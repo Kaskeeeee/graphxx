@@ -41,7 +41,7 @@
 
 namespace graphxx::io {
 
-template <concepts::Graph G, concepts::Numeric WeightType>
+template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph,
                   std::function<WeightType(Edge<G>)> &get_weight) {
 
@@ -86,7 +86,7 @@ void mm_serialize(std::ostream &out, const G &graph) {
   }
 }
 
-template <concepts::Graph G, concepts::Numeric WeightType>
+template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_deserialize(std::istream &in, G &graph) {
   std::string input_string;
   bool symmetric = false;

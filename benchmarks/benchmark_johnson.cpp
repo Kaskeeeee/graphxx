@@ -75,14 +75,14 @@ int main(int argc, char **argv) {
   if (argc <= 1) {
     // default file, if not specified
     std::fstream input_file("../data/cage4.mtx");
-    graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+    graphxx::io::mm_deserialize<double>(
         input_file, list_graph);
   } else if (argc >= 2) {
     // Check if the file is a regular file and is not empty
     if (std::filesystem::is_regular_file(argv[1])) {
       if (!std::filesystem::is_empty(argv[1])) {
         std::fstream input_file(argv[1]);
-        graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+        graphxx::io::mm_deserialize<double>(
             input_file, list_graph);
       } else {
         std::cout << "An empty file was passed as input" << std::endl;

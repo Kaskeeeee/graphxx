@@ -55,8 +55,7 @@ bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
   for (Vertex<G> i = 0; i < graph.num_vertices() - 1; ++i) {
     bool at_least_one_edge_relaxed = false;
     for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-      auto out_edge_list = graph[vertex];
-      for (auto edge : out_edge_list) {
+      for (auto edge : graph[vertex]) {
         auto edge_weight = weight(edge);
         auto source_distance = distance_tree[graph.get_source(edge)].distance;
         auto target_distance = distance_tree[graph.get_target(edge)].distance;

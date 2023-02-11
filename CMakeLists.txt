@@ -36,7 +36,7 @@ option(SANITIZE "Enable sanitizer option" OFF)
 option(COVERAGE "Enable coverage output" OFF)
 
 # Compile with benchmark
-option(BUILD_BENCH "Enable benchmarking" OFF)
+option(BUILD_BENCHMARK "Enable benchmarking" OFF)
 
 # Compile with examples
 option(BUILD_EXAMPLES "Enable examples" OFF)
@@ -347,32 +347,24 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_dijkstra)
 
             target_sources(benchmark_dijkstra
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dijkstra.cpp
-            )
-
-            target_include_directories(benchmark_dijkstra
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_dijkstra.cpp
             )
 
             target_link_libraries(benchmark_dijkstra
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
 
             # kruskal
-            add_executable(benchmark_krsukal)
+            add_executable(benchmark_kruskal)
 
-            target_sources(benchmark_krsukal
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_kruskal.cpp
+            target_sources(benchmark_kruskal
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_kruskal.cpp
             )
 
-            target_include_directories(benchmark_krsukal
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
-            )
-
-            target_link_libraries(benchmark_krsukal
-                    PUBLIC graph
+            target_link_libraries(benchmark_kruskal
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
@@ -381,15 +373,11 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_bfs)
 
             target_sources(benchmark_bfs
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bfs.cpp
-            )
-
-            target_include_directories(benchmark_bfs
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_bfs.cpp
             )
 
             target_link_libraries(benchmark_bfs
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
@@ -398,15 +386,11 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_dfs)
 
             target_sources(benchmark_dfs
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_dfs.cpp
-            )
-
-            target_include_directories(benchmark_dfs
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_dfs.cpp
             )
 
             target_link_libraries(benchmark_dfs
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
@@ -415,15 +399,11 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_bellman_ford)
 
             target_sources(benchmark_bellman_ford
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_bellman_ford.cpp
-            )
-
-            target_include_directories(benchmark_bellman_ford
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_bellman_ford.cpp
             )
 
             target_link_libraries(benchmark_bellman_ford
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
@@ -432,15 +412,11 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_floyd_warshall)
 
             target_sources(benchmark_floyd_warshall
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_floyd_warshall.cpp
-            )
-
-            target_include_directories(benchmark_floyd_warshall
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_floyd_warshall.cpp
             )
 
             target_link_libraries(benchmark_floyd_warshall
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
@@ -449,21 +425,17 @@ if(BUILD_BENCHMARK)
             add_executable(benchmark_johnson)
 
             target_sources(benchmark_johnson
-                    PRIVATE ${PROJECT_SOURCE_DIR}/examples/benchmark_johnson.cpp
-            )
-
-            target_include_directories(benchmark_johnson
-                    PRIVATE ${PROJECT_SOURCE_DIR}/src
+                    PRIVATE ${PROJECT_SOURCE_DIR}/benchmarks/benchmark_johnson.cpp
             )
 
             target_link_libraries(benchmark_johnson
-                    PUBLIC graph
+                    PUBLIC graphxx
                     PUBLIC ${Boost_LIBRARIES}
                     PRIVATE nanobench
             )
 
             install(
-                    TARGETS benchmark_dijkstra benchmark_krsukal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall benchmark_johnson
+                    TARGETS benchmark_dijkstra benchmark_kruskal benchmark_bfs benchmark_dfs benchmark_bellman_ford benchmark_floyd_warshall benchmark_johnson
                     RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
             )
     endif()

@@ -25,6 +25,7 @@ graphxx
 ├── README.md
 ├── data/
 ├── doxygen.cfg
+├── benchmarks/
 ├── examples/
 ├── include
 │   ├── adaptors/
@@ -41,8 +42,9 @@ graphxx
 The `include` directory contains the interfaces that the library exposes for use, while the implementation of 
 most of them is in the `src` directory.
 The `test` directory includes all the tests that were used to consider the build accepted.
-The `examples` directory contains example of use and benchmarks that were evaluated on the datasets located
+The `benchmarks` directory contains the benchmarks that were evaluated on the datasets located
 in the `data` directory.
+The `examples` directory contains use case examples.
 
 The Graphxx library uses C++20 `concept` language feature which helps to define common interfaces that are used
 mostly to define generic algorithms on all types of graphs.
@@ -65,7 +67,7 @@ make
 For other purposes you can check the following commands:
 To build benchmarks:
 ```bash
-$ cmake .. -DBUILD_BENCH=ON
+$ cmake .. -DBUILD_BENCHMARK=ON
 ```
 
 To choose the build type (default `Release`):
@@ -113,10 +115,10 @@ $ ./benchmark_bfs [path/to/file.mtx]
 ### Running Tests
 
 Once you have built with the correct flag, you can find
-the `graph_test` executable in the build and run it:
+the `unit_tests` executable in the build and run it:
 
 ```bash
-$ ./build/graph_test
+$ make test
 ```
 
 ### Generating Documentation

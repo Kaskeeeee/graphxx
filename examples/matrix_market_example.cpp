@@ -44,7 +44,7 @@ int main() {
   graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
   std::unordered_map<int, double> weights;
   std::fstream input_file("../data/mm.txt");
-  graphxx::io::matrix_market::deserialize(input_file, g, weights);
+  graphxx::io::mm_deserialize(input_file, g, weights);
   graphxx::io::matrix_market::serialize(std::cout, g, weights);
   return 0;
 }

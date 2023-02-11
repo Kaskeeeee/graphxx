@@ -46,7 +46,7 @@ namespace graphxx::io {
 /// @param out output stream
 /// @param graph input graph object
 /// @param get_weight function that returns weight for each edge
-template <concepts::Graph G, concepts::Numeric WeightType>
+template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph,
                   std::function<WeightType(Edge<G>)> &get_weight);
 
@@ -64,7 +64,7 @@ void mm_serialize(std::ostream &out, const G &graph);
 /// @tparam WeightType type of edge weight attribute
 /// @param in input stream
 /// @param graph refrence to output graph
-template <concepts::Graph G, concepts::Numeric WeightType>
+template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_deserialize(std::istream &in, G &graph);
 
 } // namespace graphxx::io

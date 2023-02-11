@@ -29,7 +29,7 @@
  * @version v1.0
  */
 
-#include "algorithms/floyd_warshall.hpp"
+#include "algorithms/dijkstra.hpp"
 #include "base.hpp"
 #include "exceptions.hpp"
 #include "io/matrix_market.hpp"
@@ -39,8 +39,7 @@
 #include <bits/stdc++.h> //DA TENERE?
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/exterior_property.hpp>
-#include <boost/graph/floyd_warshall_shortest.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <filesystem>
 #include <iostream>
 #include <nanobench.h>
@@ -49,10 +48,6 @@ using BoostGraph =
     boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS,
                           boost::property<boost::vertex_distance_t, double>,
                           boost::property<boost::edge_weight_t, double>>;
-using WeightMap = boost::property_map<BoostGraph, boost::edge_weight_t>::type;
-using DistanceProperty = boost::exterior_vertex_property<BoostGraph, double>;
-using DistanceMatrix = DistanceProperty::matrix_type;
-using DistanceMatrixMap = DistanceProperty::matrix_map_type;
 using BoostVertex = boost::graph_traits<BoostGraph>::vertex_descriptor;
 
 using ListGraph =
@@ -75,14 +70,14 @@ int main(int argc, char **argv) {
   if (argc <= 1) {
     // default file, if not specified
     std::fstream input_file("../data/cage4.mtx");
-    graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+    graphxx::io::mm_deserialize<double>(
         input_file, list_graph);
   } else if (argc >= 2) {
     // Check if the file is a regular file and is not empty
     if (std::filesystem::is_regular_file(argv[1])) {
       if (!std::filesystem::is_empty(argv[1])) {
         std::fstream input_file(argv[1]);
-        graphxx::io::matrix_market::deserialize<decltype(list_graph), double>(
+        graphxx::io::mm_deserialize<double>(
             input_file, list_graph);
       } else {
         std::cout << "An empty file was passed as input" << std::endl;
@@ -103,18 +98,15 @@ int main(int argc, char **argv) {
     }
   }
 
-  WeightMap weight_pmap = boost::get(boost::edge_weight, boost_graph);
-  DistanceMatrix distances(num_vertices(boost_graph));
-  DistanceMatrixMap dm(distances, boost_graph);
-
   bench
-      .run("floyd warshall graphxx",
-           [&]() { graphxx::algorithms::floyd_warshall(list_graph); })
-      .run("floyd warshall matrix graphxx",
-           [&]() { graphxx::algorithms::floyd_warshall(matrix_graph); })
-      .run("floyd warshall boost", [&]() {
-        boost::floyd_warshall_all_pairs_shortest_paths(
-            boost_graph, dm, boost::weight_map(weight_pmap));
+      .run("dijkstra graphxx",
+           [&]() { graphxx::algorithms::dijkstra(list_graph, 0); })
+      .run("dijkstra matrix graphxx",
+           [&]() { graphxx::algorithms::dijkstra(matrix_graph, 0); })
+      .run("dijkstra boost", [&]() {
+        boost::dijkstra_shortest_paths(
+            boost_graph, boost::vertex(0, boost_graph),
+            boost::distance_map(get(boost::vertex_distance, boost_graph)));
       });
 
   return 0;
