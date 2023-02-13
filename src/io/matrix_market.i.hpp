@@ -36,6 +36,7 @@
 
 #include <fstream>    // std::ostream
 #include <functional> // std::function
+#include <sstream>    // std::stringstream
 #include <string>     // std::string
 #include <vector>     // std::vector
 

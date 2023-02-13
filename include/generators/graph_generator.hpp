@@ -44,8 +44,8 @@ namespace graphxx {
 /// number of edges and vertices
 class GraphGenerator {
 public:
-  /// @brief Graph generator default constructor
-  GraphGenerator() = default;
+  /// @brief Graph generator constructor
+  GraphGenerator();
 
   /// @brief Creates a graph generator with a user specified seed
   /// @param seed Seed of the random generator
