@@ -1,7 +1,8 @@
 /**
  * @file
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,67 +30,26 @@
  * @version v1.0
  */
 
-#if 0
-
-#include "io/graphml.hpp"
+#include "generators/graph_generator.hpp"
 #include "io/graphviz.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
-#include <fstream>
 #include <iostream>
-#include <unordered_map>
 
-using namespace graph;
+using namespace graphxx;
+using namespace graphxx::io;
 
 int main() {
+  using G = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
+  G g;
 
-  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
+  GraphGenerator generator;
 
-  std::unordered_map<int, std::string> vertex_map;
+  // Generate a random graph with 10 vertices and 15 edges
+  generator.generate_random_graph(g, 10, 15);
 
-  Vertex v1 = g.add_vertex(); //A
-  vertex_map.insert({v1, "A"});
-
-  Vertex v2 = g.add_vertex();
-  vertex_map.insert({v2, "B"});
-
-  Vertex v3 = g.add_vertex();
-  vertex_map.insert({v3, "C"});
-
-  Vertex v4 = g.add_vertex();
-  vertex_map.insert({v4, "D"});
-
-  Vertex v5 = g.add_vertex();
-  vertex_map.insert({v5, "E"});
-
-  g.add_edge(v1, v2);
-  g.add_edge(v2, v2);
-  g.add_edge(v1, v3);
-  g.add_edge(v3, v4);
-  g.add_edge(v5, v3);
-  g.add_edge(v4, v5);
-  g.add_edge(v5, v4);
-  g.add_edge(v4, v2);
-  g.add_edge(v4, v4);
-
-//   GraphGenerator gen;
-
-//   gen.generate_random_graph(g, 1000, 3000);
-
-  std::unordered_map<graphxx::DefaultIdType, graphxx::io::graphviz::GraphvizProperties>
-      vertex_properties;
-  std::unordered_map<graphxx::DefaultIdType, graphxx::io::graphviz::GraphvizProperties>
-      edge_properties;
-
-  std::fstream input_file("../data/test.txt");
-  graphxx::io::graphviz::deserialize(input_file, g, vertex_properties,
-                                   edge_properties);
-
-  graphxx::io::graphviz::serialize(
-      std::cout, g, [&](graphxx::Vertex v) { return vertex_properties[v.id]; });
+  // Print the graph on std::cout
+  graphviz_serialize(std::cout, g);
 
   return 0;
 }
-
-#endif
