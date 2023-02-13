@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header of the class that generates random graphs
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,15 +40,36 @@
 
 namespace graphxx {
 
+/// @brief This class allows to generate graphs at runtime by specifying the
+/// number of edges and vertices
 class GraphGenerator {
 public:
-  GraphGenerator();
+  /// @brief Graph generator default constructor
+  GraphGenerator() = default;
+
+  /// @brief Creates a graph generator with a user specified seed
+  /// @param seed Seed of the random generator
   explicit GraphGenerator(unsigned int seed);
 
+  /// @brief Generates random graph by specifying the number of edges and
+  /// vertices
+  /// @tparam G type of random graph
+  /// @param graph refrence to output graph
+  /// @param num_vertices number of graph vertices
+  /// @param num_edges number of graph edges
+  /// @param max_out_degree maximum out degree of graph vertices
+  /// @param self_edges if a vertex can have self edges
   template <concepts::Graph G>
   void generate_random_graph(G &graph, int num_vertices, int num_edges,
                              int max_out_degree = -1, bool self_edges = true);
 
+  /// @brief Generates random weight map for graph
+  /// @tparam G type of graph
+  /// @tparam W type of weight
+  /// @param graph input graph
+  /// @param min_weight minimo weight value
+  /// @param max_weight maximum weight value
+  /// @return map that assigns random weight to each edge of the graph
   template <concepts::Graph G, concepts::Numeric W>
   std::unordered_map<Edge<G>, W, XorTupleHash<Edge<G>>>
   generate_random_weights(const G &graph, W min_weight, W max_weight);
@@ -56,6 +78,8 @@ private:
   unsigned int _seed;
   bool _fixed_seed;
 
+  /// @brief Retrives the generator seed
+  /// @return Seed for the random generator
   unsigned int get_seed();
 };
 

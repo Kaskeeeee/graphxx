@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file contains definitions of basic graph types
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,6 +36,7 @@
 #include <limits>  // std::numeric_limits
 
 namespace graphxx {
+
 /// The id type that is used to identify vertices and edges
 using DefaultIdType = uint64_t;
 
@@ -42,10 +44,16 @@ using DefaultIdType = uint64_t;
 /// undirected graphs
 enum class Directedness { DIRECTED, UNDIRECTED };
 
+/// @brief Type of a graph vertex
+/// @tparam  G type of the graph
 template <typename G> using Vertex = typename G::Vertex;
 
+/// @brief Type of a graph edge
+/// @tparam G type of the graph
 template <typename G> using Edge = typename G::Edge;
 
+/// @brief Represents an invalid vertex
+/// @tparam G type of the graph
 template <typename G>
 constexpr Vertex<G> INVALID_VERTEX = std::numeric_limits<Vertex<G>>::max();
 

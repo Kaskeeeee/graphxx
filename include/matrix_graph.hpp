@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header of the adjacency matrix graph
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -52,7 +53,7 @@ public:
 
   /// @brief Indicates whether the graph is directed or undirected
   static constexpr Directedness DIRECTEDNESS = D;
-  
+
   /// @brief Adds a new vertex to the graph.
   ///        The vertex id will be the index of the first free position in the
   ///        adjacency list

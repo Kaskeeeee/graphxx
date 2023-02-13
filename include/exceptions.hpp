@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file contains definitions of custom exceptions
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -70,26 +71,36 @@ struct InvariantViolationException : GraphException {
       : GraphException("Invariant violation exception: " + message){};
 };
 
+/// @brief Exception thrown when trying to parse a directed graph file into an
+/// undirected graph
 struct DirectedGraphParseException : GraphException {
   DirectedGraphParseException()
       : GraphException(
             "Tried to read a directed graph into an undirected graph"){};
 };
 
+/// @brief Exception thrown when trying to parse an undirected graph file into a
+/// directed graph
 struct UndirectedGraphParseException : GraphException {
   UndirectedGraphParseException()
       : GraphException(
             "Tried to read an undirected graph into a directed graph"){};
 };
 
+/// @brief Exception thrown when trying to parse a file that is not in the
+/// correct graphviz format
 struct BadGraphvizParseException : GraphException {
   BadGraphvizParseException() : GraphException("Bad graphviz file syntax"){};
 };
 
+/// @brief Exception thrown when trying to parse a file that is not in the
+/// correct graphml format
 struct BadGraphmlParseException : GraphException {
   BadGraphmlParseException() : GraphException("Bad graphml file syntax"){};
 };
 
+/// @brief Exception thrown when trying to parse a file that is not in the
+/// correct matrix market format
 struct BadMatrixMarketParseException : GraphException {
   BadMatrixMarketParseException()
       : GraphException("Bad matrix market file syntax"){};

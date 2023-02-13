@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header implementation of the graphml serializer
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,19 +30,19 @@
  * @version v1.0
  */
 
-#include "base.hpp"
-#include "exceptions.hpp"
-#include "graph_concepts.hpp"
-#include "graph_utils.hpp"
-#include "io/graphml.hpp"
-#include "pugixml.hpp"
-#include "string_utils.hpp"
+#include "base.hpp"           // Vertex
+#include "exceptions.hpp"     // exceptions::BadGraphmlParseException
+#include "graph_concepts.hpp" // Graph
+#include "graph_utils.hpp"    // get_sorted_edges
+#include "io/graphml.hpp"     // graphml_serialize
+#include "pugixml.hpp"        // pugi::xml_document
+#include "string_utils.hpp"   // trim
 
-#include <functional>
-#include <set>
-#include <sstream>
-#include <string>
-#include <unordered_map>
+#include <fstream>       // std::ostream
+#include <functional>    // std::function
+#include <set>           // std::set
+#include <string>        // std::string
+#include <unordered_map> // std::unordered_map
 
 namespace graphxx::io {
 

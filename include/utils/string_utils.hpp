@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file contains utility functions to manage strings
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -63,7 +64,7 @@ inline size_t find_first_of(const std::string &input,
   return first_found;
 }
 
-/// @brief  Removes whitespace from the end of a string and returns a new
+/// @brief Removes whitespace from the end of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without trailing spaces.
@@ -74,7 +75,7 @@ inline std::string trim_right(const std::string &str) {
   return str.substr(0, pos + 1);
 }
 
-/// @brief  Removes whitespace from the beginning of a string and returns a new
+/// @brief Removes whitespace from the beginning of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without leading spaces.
@@ -86,7 +87,7 @@ inline std::string trim_left(const std::string &str) {
   return str.substr(pos);
 }
 
-/// @brief  Removes whitespace from both ends of a string and returns a new
+/// @brief Removes whitespace from both ends of a string and returns a new
 /// string, without modifying the original string.
 /// @param str Input string.
 /// @return New string without leading and trailing spaces.

@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header for the matrix market input/output functions
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,16 +32,16 @@
 
 #pragma once
 
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "base.hpp"           // Edge
+#include "graph_concepts.hpp" // Graph
 
-#include <fstream>
-#include <functional>
+#include <fstream>    // std::ostream
+#include <functional> // std::function
 
 namespace graphxx::io {
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
-///        format. It's possible to assign a weight to the edges of the graph.
+/// format. It's possible to assign a weight to the edges of the graph.
 /// @tparam G type of input graph
 /// @tparam WeightType type of edge weight attribute
 /// @param out output stream
@@ -51,7 +52,7 @@ void mm_serialize(std::ostream &out, const G &graph,
                   std::function<WeightType(Edge<G>)> get_weight);
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
-///        format.
+/// format.
 /// @tparam G type of input graph
 /// @param out output stream
 /// @param graph input graph object
@@ -59,7 +60,7 @@ template <concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph);
 
 /// @brief Interprets a graph described using the Matrix Market NIST language
-///        and builds a graph object that captures that description.
+/// and builds a graph object that captures that description.
 /// @tparam G type of output graph
 /// @tparam WeightType type of edge weight attribute
 /// @param in input stream

@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header implementation of the graphviz serializer
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,18 +30,19 @@
  * @version v1.0
  */
 
-#include "base.hpp"
-#include "exceptions.hpp"
-#include "graph_concepts.hpp"
-#include "graph_utils.hpp"
-#include "io/graphviz.hpp"
-#include "utils/string_utils.hpp"
+#include "base.hpp"               // Vertex
+#include "exceptions.hpp"         // exceptions::BadGraphvizParseException
+#include "graph_concepts.hpp"     // Graph
+#include "graph_utils.hpp"        // XorTupleHash
+#include "io/graphviz.hpp"        // graphviz_serialize
+#include "utils/string_utils.hpp" // get_text_between_delimiters
 
-#include <functional>
-#include <set>
-#include <sstream>
-#include <string>
-#include <unordered_map>
+#include <fstream>       // std::ostream
+#include <functional>    // std::function
+#include <set>           // std::set
+#include <sstream>       // std::istreambuf_iterator
+#include <string>        // std::string
+#include <unordered_map> // std::unordered_map
 
 namespace graphxx::io {
 

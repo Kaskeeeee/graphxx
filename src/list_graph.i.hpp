@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header implementation of the adjacency list graph
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,16 +30,14 @@
  * @version v1.0
  */
 
-#include "base.hpp"
-#include "exceptions.hpp"
-#include "list_graph.hpp"
-#include "utils/tuple_utils.hpp"
+#include "base.hpp"              // Directedness
+#include "exceptions.hpp"        // exceptions::NoSuchEdgeException
+#include "list_graph.hpp"        // AdjacencyListGraph
+#include "utils/tuple_utils.hpp" // get_elements_from_index
 
-#include <algorithm>
-#include <type_traits>
+#include <algorithm> // std::ranges::find_if
 
 namespace graphxx {
-
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 void AdjacencyListGraph<Id, D, AttributesType...>::add_vertex() {

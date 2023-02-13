@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file is the header implementation of the matrix market serializer
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,15 +30,14 @@
  * @version v1.0
  */
 
-#include "base.hpp"
-#include "exceptions.hpp"
-#include "graph_concepts.hpp"
-#include "graph_utils.hpp"
+#include "base.hpp"           // Vertex
+#include "exceptions.hpp"     // exceptions::BadMatrixMarketParseException
+#include "graph_concepts.hpp" // Graph
 
-#include <functional>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <fstream>    // std::ostream
+#include <functional> // std::function
+#include <string>     // std::string
+#include <vector>     // std::vector
 
 namespace graphxx::io {
 

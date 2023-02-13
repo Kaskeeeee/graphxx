@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file contains graphs concepts
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,12 +39,15 @@
 
 namespace graphxx::concepts {
 
+/// @brief Type of the values contained in a range
 template <typename T> using InnerValue = std::ranges::range_value_t<T>;
 
+/// @brief Check if type is a range of ranges (e.g. matrix)
 template <typename T>
 concept IsRangeOfRanges = std::ranges::random_access_range<T> &&
                           std::ranges::forward_range<InnerValue<T>>;
 
+/// @brief Check if type has graph basic traits
 template <typename G>
 concept HasGraphBasicTraits =
     requires(G) {
@@ -54,6 +58,7 @@ concept HasGraphBasicTraits =
                        G::DIRECTEDNESS == Directedness::UNDIRECTED;
     };
 
+/// @brief Check if type has graph basic methods
 template <typename G>
 concept HasGraphBasicMethods =
     requires(G g, typename G::Vertex vertex, typename G::Attributes attributes,
@@ -77,20 +82,21 @@ concept HasGraphBasicMethods =
       { g.get_target(edge) } -> std::convertible_to<typename G::Vertex>;
     };
 
+/// @brief Check if type is compatible with graph type
 template <typename G>
 concept Graph =
     IsRangeOfRanges<G> && HasGraphBasicTraits<G> && HasGraphBasicMethods<G>;
 
+/// @brief type of the graph identifiers
 template <typename T>
 concept Identifier = std::unsigned_integral<T>;
 
+/// @brief Check if type is a struct with a `parent` field
 template <typename T>
 concept HasParent = requires(T t) { t.parent; };
 
+/// @brief Check if type is numeric
 template <typename T>
 concept Numeric = std::is_arithmetic_v<T>;
-
-template <typename Container, typename Key>
-concept Subscriptable = requires(Container c, Key k) { c[k]; };
 
 } // namespace graphxx::concepts

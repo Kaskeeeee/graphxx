@@ -1,7 +1,8 @@
 /**
  * @file This file is the header implementation of Tarjan algorithm
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,12 +30,12 @@
  * @version v1.0
  */
 
-#include "algorithms/tarjan.hpp"
-#include "base.hpp"
-#include "graph_concepts.hpp"
+#include "algorithms/tarjan.hpp" // tarjan
+#include "base.hpp"              // Vertex
+#include "graph_concepts.hpp"    // Graph
 
-#include <algorithm>
-#include <vector>
+#include <algorithm> // std::min
+#include <vector>    // std::vector
 
 namespace graphxx::algorithms {
 
