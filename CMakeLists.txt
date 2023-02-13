@@ -126,6 +126,8 @@ if(COVERAGE)
                 --gcov-executable gcov-${GCC_MAJOR}
                 --root ${PROJECT_SOURCE_DIR}
                 -e ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
+                -e ${PROJECT_SOURCE_DIR}/third_party/pugixml/pugixml.hpp
+                -e ${PROJECT_SOURCE_DIR}/third_party/pugixml/pugixml.cpp
                 -e ${PROJECT_SOURCE_DIR}/test/.*
                 --html --html-details coverage.html
                 COMMENT "Generating Code Coverage"

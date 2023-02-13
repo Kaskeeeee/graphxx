@@ -721,4 +721,62 @@ TEST_CASE("undirected matrix graph object is correctly deserialized from "
                       exceptions::BadMatrixMarketParseException);
   }
 }
+
+TEST_CASE("parse simple symmetric matrix market file", "[matrix market]") {
+  using G = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  G g;
+
+  const std::string MM_INPUT =
+      "%%MatrixMarket matrix coordinate pattern symmetric\n4 "
+      "4 6\n1 3\n1 4\n3 1\n3 4\n4 1\n4 3";
+  std::istringstream istream(MM_INPUT);
+  mm_deserialize<int>(istream, g);
+
+  REQUIRE(g.num_vertices() == 8);
+  REQUIRE(g.num_edges() == 6);
+}
+
+TEST_CASE("parse weighted symmetric matrix market file", "[matrix market]") {
+  using G = AdjacencyMatrixGraph<unsigned long, Directedness::DIRECTED, int>;
+  G g;
+
+  const std::string MM_INPUT =
+      "%%MatrixMarket matrix coordinate integer symmetric\n4 4 6\n1 3 10\n1 4 "
+      "32\n3 1 10\n3 4 5\n4 1 32\n4 3 5";
+  std::istringstream istream(MM_INPUT);
+  mm_deserialize<int>(istream, g);
+
+  REQUIRE(g.num_vertices() == 8);
+  REQUIRE(g.num_edges() == 6);
+  enum vertices { a, b, c, d };
+  for (int v = a; v < d; v++) {
+    REQUIRE(g.has_vertex(v));
+  }
+
+  REQUIRE(g.has_edge(a, c));
+  REQUIRE(g.has_edge(c, d));
+  REQUIRE(g.has_edge(a, d));
+  REQUIRE(g.has_edge(d, a));
+  REQUIRE(g.has_edge(d, c));
+  REQUIRE(g.has_edge(c, d));
+  REQUIRE(std::get<0>(g.get_attributes(c, a)) == 10);
+  REQUIRE(std::get<0>(g.get_attributes(a, c)) == 10);
+  REQUIRE(std::get<0>(g.get_attributes(d, a)) == 32);
+  REQUIRE(std::get<0>(g.get_attributes(a, d)) == 32);
+  REQUIRE(std::get<0>(g.get_attributes(d, c)) == 5);
+  REQUIRE(std::get<0>(g.get_attributes(c, d)) == 5);
+}
+
+TEST_CASE("parse file in bad format throws a bad matrix market exception",
+          "[matrix market]") {
+  using G = AdjacencyListGraph<unsigned long, Directedness::DIRECTED, double>;
+  G g;
+
+  const std::string MM_INPUT =
+      "%%MatrixMarket matrix coordinate integer bar\nfoo";
+
+  std::istringstream istream(MM_INPUT);
+  REQUIRE_THROWS_AS(mm_deserialize<double>(istream, g),
+                    exceptions::BadMatrixMarketParseException);
+}
 } // namespace matrix_market_test

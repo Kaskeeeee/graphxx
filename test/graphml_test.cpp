@@ -1388,4 +1388,23 @@ TEST_CASE("undirected matrix graph object is preserved in serialization and "
   REQUIRE(edge_properties[{d, c}]["foo"] == "bar");
 }
 
+TEST_CASE("parse file in bad format throws a bad graphml exception",
+          "[graphml]") {
+  using G = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
+  G g;
+
+  std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
+      vertex_properties;
+  std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
+                     XorTupleHash<Edge<G>>>
+      edge_properties;
+
+  const std::string GRAPHVIZ_INPUT = "foo";
+  std::istringstream istream(GRAPHVIZ_INPUT);
+
+  REQUIRE_THROWS_AS(
+      graphml_deserialize(istream, g, vertex_properties, edge_properties),
+      exceptions::BadGraphmlParseException);
+}
+
 } // namespace graphml_test

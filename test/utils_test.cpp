@@ -31,6 +31,7 @@
  */
 
 #include "catch.hpp"
+#include "exceptions.hpp"
 #include "tuple"
 #include "tuple_utils.hpp"
 
@@ -62,6 +63,14 @@ TEST_CASE("Tuple utilities test", "[tuple][utils]") {
     REQUIRE(std::get<0>(test) == 22);
     REQUIRE(std::get<1>(test) == true);
     REQUIRE(std::get<2>(test) == 12.3f);
+  }
+}
+
+TEST_CASE("Exceptions test", "[exceptions]") {
+  try {
+    throw exceptions::GraphException("exceptions test");
+  } catch (const exceptions::GraphException &e) {
+    REQUIRE(std::string(e.what()) == "exceptions test");
   }
 }
 } // namespace utils_test
