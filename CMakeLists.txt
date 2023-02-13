@@ -241,9 +241,8 @@ if (BUILD_TEST)
         PRIVATE ${PROJECT_SOURCE_DIR}/test/tarjan_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graphml_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graphviz_test.cpp
+        PRIVATE ${PROJECT_SOURCE_DIR}/test/matrix_market_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/test/graph_generator_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphml_test.cpp
-        PRIVATE ${PROJECT_SOURCE_DIR}/test/graphviz_test.cpp
         PRIVATE ${PROJECT_SOURCE_DIR}/third_party/catch2/catch.hpp
     )
 

@@ -43,7 +43,7 @@ namespace graphxx::io {
 
 template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph,
-                  std::function<WeightType(Edge<G>)> &get_weight) {
+                  std::function<WeightType(Edge<G>)> get_weight) {
 
   std::string number_format = "";
   if (std::is_integral_v<WeightType>) {
@@ -65,7 +65,7 @@ void mm_serialize(std::ostream &out, const G &graph,
   for (auto vertex : graph) {
     for (auto edge : vertex) {
       out << (graph.get_source(edge) + 1) << " " << (graph.get_target(edge) + 1)
-          << " " << get_weight(edge) << std::endl;
+          << " " << std::to_string(get_weight(edge)) << std::endl;
     }
   }
 }
@@ -139,7 +139,7 @@ void mm_deserialize(std::istream &in, G &graph) {
 
   for (size_t i = 0; i < entries; i++) {
     DefaultIdType source_id, target_id;
-    WeightType weight{1.0};
+    WeightType weight{1};
 
     std::getline(in, input_string);
     auto string_stream = std::stringstream(input_string);

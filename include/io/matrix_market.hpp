@@ -48,7 +48,7 @@ namespace graphxx::io {
 /// @param get_weight function that returns weight for each edge
 template <concepts::Numeric WeightType, concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph,
-                  std::function<WeightType(Edge<G>)> &get_weight);
+                  std::function<WeightType(Edge<G>)> get_weight);
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST
 ///        format.
