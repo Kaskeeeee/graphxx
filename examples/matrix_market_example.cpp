@@ -1,7 +1,8 @@
 /**
  * @file
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,24 +30,26 @@
  * @version v1.0
  */
 
-#if 0
-
-#include "io/graphml.hpp"
-#include "io/graphviz.hpp"
+#include "generators/graph_generator.hpp"
 #include "io/matrix_market.hpp"
 #include "list_graph.hpp"
-#include "utils/graph_generator.hpp"
 
-#include <bits/stdc++.h>
-#include <unordered_map>
+#include <iostream>
+
+using namespace graphxx;
+using namespace graphxx::io;
 
 int main() {
-  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> g{};
-  std::unordered_map<int, double> weights;
-  std::fstream input_file("../data/mm.txt");
-  graphxx::io::mm_deserialize(input_file, g, weights);
-  graphxx::io::matrix_market::serialize(std::cout, g, weights);
+  using G = AdjacencyListGraph<unsigned long, Directedness::DIRECTED>;
+  G g;
+
+  GraphGenerator generator;
+
+  // Generate a random graph with 10 vertices and 15 edges
+  generator.generate_random_graph(g, 10, 15);
+
+  // Print the graph on std::cout in Matrix Market NIST
+  mm_serialize(std::cout, g);
+
   return 0;
 }
-
-#endif

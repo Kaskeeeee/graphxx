@@ -290,17 +290,38 @@ endif()
 # EXAMPLES
 # ###############################################################################
 if(BUILD_EXAMPLES)
+        # graphviz
         add_executable(graphviz_example)
         target_sources(graphviz_example
                 PRIVATE ${PROJECT_SOURCE_DIR}/examples/graphviz_example.cpp
         )
 
         target_link_libraries(graphviz_example
-                PUBLIC graph
+                PUBLIC graphxx
+        )
+
+        # matrix market
+        add_executable(matrix_market_example)
+        target_sources(matrix_market_example
+                PRIVATE ${PROJECT_SOURCE_DIR}/examples/matrix_market_example.cpp
+        )
+
+        target_link_libraries(matrix_market_example
+                PUBLIC graphxx
+        )
+
+        # simple interactive
+        add_executable(simple_interactive)
+        target_sources(simple_interactive
+                PRIVATE ${PROJECT_SOURCE_DIR}/examples/simple_interactive.cpp
+        )
+
+        target_link_libraries(simple_interactive
+                PUBLIC graphxx
         )
 
         install(
-                TARGETS graphviz_example
+                TARGETS graphviz_example matrix_market_example simple_interactive
                 RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bin
         )
 endif()

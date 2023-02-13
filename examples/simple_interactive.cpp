@@ -1,7 +1,8 @@
 /**
  * @file
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,26 +30,27 @@
  * @version v1.0
  */
 
-#if 0
-
 #include "algorithms/bfs.hpp"
 #include "list_graph.hpp"
 
-#include <bits/stdc++.h>
+#include <iostream>
+
+using namespace graphxx;
 
 void printGraph(
-    graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> &graph) {
-  for (auto vertex : graph.vertices()) {
-    std::cout << "V[" << vertex.id << "]: ";
-    for (auto edge : graph.out_edges(vertex)) {
-      std::cout << " -> V[" << edge.target << "]";
+    AdjacencyListGraph<unsigned long, Directedness::DIRECTED> &graph) {
+  for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+    std::cout << "V[" << vertex << "]: ";
+    auto out_edge_list = graph[vertex];
+    for (auto edge : out_edge_list) {
+      std::cout << " -> V[" << graph.get_target(edge) << "]";
     }
     std::cout << "\n";
   }
 }
 
 int main() {
-  graphxx::AdjacencyListGraph<graphxx::Directedness::DIRECTED> a;
+  AdjacencyListGraph<unsigned long, Directedness::DIRECTED> g;
 
   while (true) {
     int opt = -1;
@@ -57,11 +59,10 @@ int main() {
     std::cout << "2. add edge\n";
     std::cout << "3. remove vertex\n";
     std::cout << "4. remove edge\n";
-    std::cout << "5. print bfs\n";
     std::cin >> opt;
     switch (opt) {
     case 1: {
-      a.add_vertex();
+      g.add_vertex();
     } break;
     case 2: {
       int u, v;
@@ -70,13 +71,13 @@ int main() {
       std::cout << "Insert v: ";
       std::cin >> v;
 
-      a.add_edge(graphxx::Vertex{u}, graphxx::Vertex{v});
+      g.add_edge(u, v);
     } break;
     case 3: {
       int u;
       std::cout << "Remove vertex: ";
       std::cin >> u;
-      a.remove_vertex(graphxx::Vertex{u});
+      g.remove_vertex(u);
     } break;
     case 4: {
       int u, v;
@@ -85,27 +86,14 @@ int main() {
       std::cout << "To v: ";
       std::cin >> v;
 
-      for (auto edge : a.edges()) {
-        if (edge.source == u && edge.target == v) {
-          a.remove_edge(edge);
-        }
-      }
-    } break;
-    case 5: {
-      int u;
-      std::cout << "Source vertex: ";
-      std::cin >> u;
+      g.remove_edge(u, v);
 
-      std::cout << "BFS TREE:\n";
-      std::cout << "+++++++++++++++++++++++++++++++++\n";
-    }
+    } break;
     }
     std::cout << "\nGRAPH STRUCTURE:\n";
-    printGraph(a);
+    printGraph(g);
     std::cout << "-----------------------------------\n";
   }
 
   return 0;
 }
-
-#endif
