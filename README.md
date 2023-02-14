@@ -1,3 +1,5 @@
+![logo](logo.png)
+
 # Graphxx: A Graph Library in C++
 
 Graphxx is a header only graph library written in C++20 for the Modern C++ Programming course at University of Verona.
@@ -114,8 +116,7 @@ $ ./benchmark_bfs [path/to/file.mtx]
 
 ### Running Tests
 
-Once you have built with the correct flag, you can find
-the `unit_tests` executable in the build and run it:
+Once you have built with the correct flag, you can run the tests with the following command:
 
 ```bash
 $ make test
