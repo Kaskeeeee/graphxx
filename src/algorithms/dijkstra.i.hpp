@@ -64,7 +64,7 @@ dijkstra(const G &graph, Vertex<G> source, Weight weight) {
     auto u = std::get<1>(queue.top());
     queue.pop();
 
-    for (auto edge : graph[u]) {
+    for (auto&& edge : graph[u]) {
       auto v = graph.get_target(edge);
       Distance edge_weight = weight(edge);
 

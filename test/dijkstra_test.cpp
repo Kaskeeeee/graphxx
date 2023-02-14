@@ -35,6 +35,7 @@
 #include "dijkstra.hpp"
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
+#include <limits>
 
 namespace dijkstra_test {
 using namespace graphxx;
@@ -77,6 +78,39 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
     graph.set_attributes(a, b, {-1});
 
     REQUIRE_THROWS(dijkstra(graph, a));
+  }
+
+  SECTION("no weird behavior on overflow") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      for (auto edge : graph[vertex]) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {std::numeric_limits<int>::max() - 1});
+      }
+    }
+
+    auto res = dijkstra(graph, a);
+    REQUIRE(res.size() == graph.num_vertices());
+
+    for (size_t v = 0; v < res.size(); v++) {
+      if (v == a) {
+        REQUIRE(res[v].distance == 0);
+        continue;
+      }
+
+      bool is_a_neighbor = false;
+      for (auto &&edge: graph[a]) {
+        if (graph.get_target(edge) == v) {
+          is_a_neighbor = true;
+          break;
+        }
+      }
+
+      if (is_a_neighbor) {
+        REQUIRE(res[v].distance == std::numeric_limits<int>::max() - 1);
+      } else {
+        REQUIRE(res[v].distance == std::numeric_limits<int>::max());
+      }
+    }
   }
 
   SECTION("finds the shortest path length with all positive weights") {

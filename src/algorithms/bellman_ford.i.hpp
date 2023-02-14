@@ -55,8 +55,8 @@ bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
   // Relax edges |nodes| - 1 times
   for (Vertex<G> i = 0; i < graph.num_vertices() - 1; ++i) {
     bool at_least_one_edge_relaxed = false;
-    for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-      for (auto edge : graph[vertex]) {
+    for (auto&& edge_list: graph) {
+      for (auto&& edge : edge_list) {
         auto edge_weight = weight(edge);
         auto source_distance = distance_tree[graph.get_source(edge)].distance;
         auto target_distance = distance_tree[graph.get_target(edge)].distance;
@@ -80,9 +80,8 @@ bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
   // Detect if there are negative cycles
   // if value changes then we have a negative cycle in the graph and we cannot
   // find the shortest distances
-  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    auto out_edge_list = graph[vertex];
-    for (auto edge : out_edge_list) {
+  for (auto&& edge_list: graph) {
+    for (auto&& edge : edge_list) {
       auto edge_source = graph.get_source(edge);
       auto edge_target = graph.get_target(edge);
 

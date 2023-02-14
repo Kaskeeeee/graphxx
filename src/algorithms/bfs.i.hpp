@@ -74,7 +74,7 @@ bfs(const G &graph, Vertex<G> source,
 
     callback(vertex_id);
 
-    for (auto edge : graph[vertex_id]) {
+    for (auto&& edge : graph[vertex_id]) {
       Vertex<G> adjacent = graph.get_target(edge);
 
       if (distance_tree[adjacent].status == VertexStatus::READY) {

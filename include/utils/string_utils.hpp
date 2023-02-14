@@ -211,7 +211,7 @@ inline bool get_text_between_delimiters(const std::string &input, size_t &start,
     return false;
   }
 
-  size_t max_close = min_open;
+  size_t max_close = std::string::npos;
 
   if (open_delimiter == close_delimiter) {
     max_close = input.find(close_delimiter, min_open + close_delimiter.size());

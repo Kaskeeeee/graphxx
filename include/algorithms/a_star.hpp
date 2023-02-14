@@ -53,6 +53,7 @@ struct AStarNode {
   Distance distance;
   /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
+  Id id;
 };
 
 /// @brief Implementation of A* search algorithm. A* performs a best-first

@@ -213,6 +213,27 @@ TEST_CASE(
     REQUIRE(g.has_edge(d, c));
   }
 
+  SECTION("parse simple graph file without forward declaration of nodes") {
+    const std::string GRAPHVIZ_INPUT =
+        "digraph { 0->2; 0->3; 3->2; }";
+
+    std::istringstream istream(GRAPHVIZ_INPUT);
+    graphviz_deserialize(istream, g, vertex_properties, edge_properties);
+
+    REQUIRE(g.num_vertices() == 3);
+    REQUIRE(g.num_edges() == 3);
+    REQUIRE(g.has_vertex(0));
+
+    enum vertices { a, b, c };
+    for (int v = a; v < c; v++) {
+      REQUIRE(g.has_vertex(v));
+    }
+
+    REQUIRE(g.has_edge(a, b));
+    REQUIRE(g.has_edge(a, c));
+    REQUIRE(g.has_edge(c, b));
+  }
+
   SECTION("parse graph with vertex and edges attributes") {
     const std::string GRAPHVIZ_INPUT =
         "digraph { 0 [color=\"red\",label=\"A\"]; 1 [label=\"B\"]; 2 "
@@ -1176,6 +1197,12 @@ TEST_CASE("parse file in bad format throws a bad graphviz exception",
 
   REQUIRE_THROWS_AS(
       graphviz_deserialize(istream, g, vertex_properties, edge_properties),
+      exceptions::BadGraphvizParseException);
+
+  const std::string GRAPHVIZ_INPUT2 = "{ 0->1; }";
+  std::istringstream istream2(GRAPHVIZ_INPUT2);
+  REQUIRE_THROWS_AS(
+      graphviz_deserialize(istream2, g, vertex_properties, edge_properties),
       exceptions::BadGraphvizParseException);
 }
 

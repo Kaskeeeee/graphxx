@@ -108,6 +108,28 @@ TEST_CASE("Kruskal minimum spanning tree for directed list graph",
 
     REQUIRE(vector.size() == 0);
   }
+
+  SECTION("more than one big disjoint set") {
+    Graph graph2{};
+    graph2.add_edge(0, 1, {1});
+    graph2.add_edge(2, 1, {2});
+    graph2.add_edge(3, 4, {3});
+    graph2.add_edge(3, 0, {4});
+    graph2.add_edge(1, 5, {5});
+    
+    auto edges = kruskal(graph2);
+
+    REQUIRE(graph2.get_source(edges[0]) == 0);
+    REQUIRE(graph2.get_target(edges[0]) == 1);
+    REQUIRE(graph2.get_source(edges[1]) == 2);
+    REQUIRE(graph2.get_target(edges[1]) == 1);
+    REQUIRE(graph2.get_source(edges[2]) == 3);
+    REQUIRE(graph2.get_target(edges[2]) == 4);
+    REQUIRE(graph2.get_source(edges[3]) == 3);
+    REQUIRE(graph2.get_target(edges[3]) == 0);
+    REQUIRE(graph2.get_source(edges[4]) == 1);
+    REQUIRE(graph2.get_target(edges[4]) == 5);
+  }
 }
 
 TEST_CASE("Kruskal minimum spanning tree for directed matrix graph",

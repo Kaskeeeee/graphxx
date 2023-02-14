@@ -34,9 +34,12 @@
 #include "exceptions.hpp"
 #include "tuple"
 #include "tuple_utils.hpp"
+#include "string_utils.hpp"
+#include "build_path.hpp"
 
 namespace utils_test {
 using namespace graphxx;
+using namespace graphxx::utils;
 TEST_CASE("Tuple utilities test", "[tuple][utils]") {
   SECTION("get elements from index correctly") {
     std::tuple test{22, false, 3.5f};
@@ -71,6 +74,29 @@ TEST_CASE("Exceptions test", "[exceptions]") {
     throw exceptions::GraphException("exceptions test");
   } catch (const exceptions::GraphException &e) {
     REQUIRE(std::string(e.what()) == "exceptions test");
+  }
+}
+
+TEST_CASE("String utils", "[string_utils]") {
+  SECTION("no string between delimiters") {
+    REQUIRE(get_text_between_delimiters("1abcdef", "1", "0") == "");
+  }
+
+  SECTION("ignores second open delimiter") {
+    REQUIRE(get_text_between_delimiters("{{abcdef}", "{", "}") == "{abcdef");
+  }
+}
+
+TEST_CASE("build correct path", "[build_path]") {
+  SECTION("finds correct path") {
+    struct node { unsigned int parent; };
+                        //      0                 1                   2                3                    4                   5
+    std::vector<node> v{node{.parent = 0u},node{.parent = 0u},node{.parent = 2u}, node{.parent = 4u}, node{.parent = 2u}, node{.parent = 3u}};
+    std::vector<node> res = algorithms::build_path(v, 2u, 5u);
+    REQUIRE(res[0].parent == 2);
+    REQUIRE(res[1].parent == 2);
+    REQUIRE(res[2].parent == 4);
+    REQUIRE(res[3].parent == 3);
   }
 }
 } // namespace utils_test

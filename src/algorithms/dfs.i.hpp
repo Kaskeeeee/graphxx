@@ -50,7 +50,7 @@ void visit_rec(const G &graph, Vertex<G> vertex,
   distance_tree[vertex].status = VertexStatus::WAITING;
   distance_tree[vertex].discovery_time = ++time;
 
-  for (auto edge : graph[vertex]) {
+  for (auto&& edge : graph[vertex]) {
     Vertex<G> adjacent = graph.get_target(edge);
 
     if (distance_tree[adjacent].status == VertexStatus::READY) {
@@ -75,14 +75,10 @@ dfs(const G &graph, Vertex<G> source,
     const std::function<void(Vertex<G>)> &callback) {
 
   using NodeType = DfsNode<Vertex<G>>;
-  std::vector<NodeType> distance_tree;
-
-  for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
-    distance_tree.push_back(NodeType{.status = VertexStatus::READY,
+  std::vector<NodeType> distance_tree(graph.num_vertices(), NodeType{.status = VertexStatus::READY,
                                      .parent = INVALID_VERTEX<G>,
                                      .discovery_time = -1,
                                      .finishing_time = -1});
-  }
 
   int time = 0;
 

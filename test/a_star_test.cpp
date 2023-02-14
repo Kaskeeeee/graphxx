@@ -36,6 +36,7 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
+#include <limits>
 #include <map>
 
 namespace a_star_test {
@@ -86,6 +87,21 @@ TEST_CASE("A* shortest paths for directed list graph",
     graph.set_attributes(a, b, {-1});
 
     REQUIRE_THROWS(a_star(graph, a, z, get_heuristic));
+  }
+
+  SECTION("no weird behavior on overflow") {
+    for (size_t vertex = 0; vertex < graph.num_vertices(); vertex++) {
+      auto out_edge_list = graph[vertex];
+      heuristic_weight[vertex] = 1;
+      for (auto edge : out_edge_list) {
+        graph.set_attributes(graph.get_source(edge), graph.get_target(edge),
+                             {std::numeric_limits<int>::max()});
+      }
+    }
+
+    auto path = a_star(graph, a, z, get_heuristic);
+    REQUIRE(path[0].id == a);
+    REQUIRE(path[path.size() - 1].id == z);
   }
 
   SECTION("finds the shortest path length with all positive weights") {

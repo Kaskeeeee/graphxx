@@ -62,6 +62,6 @@ std::vector<Node> build_path(std::vector<Node> vector_of_struct, Id source,
   std::reverse(path.begin(), path.end());
 
   return path;
-};
+}
 
 } // namespace graphxx::algorithms
