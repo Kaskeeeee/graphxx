@@ -59,14 +59,14 @@ void mm_serialize(std::ostream &out, const G &graph,
   const std::string header =
       "%%MatrixMarket matrix coordinate " + number_format + " general";
 
-  out << header << std::endl;
+  out << header << '\n';
   out << graph.num_vertices() << " " << graph.num_vertices() << " "
-      << graph.num_edges() << std::endl;
+      << graph.num_edges() << '\n';
 
   for (auto vertex : graph) {
-    for (auto edge : vertex) {
+    for (auto &edge : vertex) {
       out << (graph.get_source(edge) + 1) << " " << (graph.get_target(edge) + 1)
-          << " " << std::to_string(get_weight(edge)) << std::endl;
+          << " " << std::to_string(get_weight(edge)) << '\n';
     }
   }
 }
@@ -75,14 +75,14 @@ template <concepts::Graph G>
 void mm_serialize(std::ostream &out, const G &graph) {
   const std::string header = "%%MatrixMarket matrix coordinate pattern general";
 
-  out << header << std::endl;
+  out << header << '\n';
   out << graph.num_vertices() << " " << graph.num_vertices() << " "
-      << graph.num_edges() << std::endl;
+      << graph.num_edges() << '\n';
 
   for (auto vertex : graph) {
-    for (auto edge : vertex) {
+    for (auto &edge : vertex) {
       out << (graph.get_source(edge) + 1) << " " << (graph.get_target(edge) + 1)
-          << std::endl;
+          << '\n';
     }
   }
 }
@@ -133,8 +133,8 @@ void mm_deserialize(std::istream &in, G &graph) {
   size_t rows, columns, entries;
   std::stringstream(input_string) >> rows >> columns >> entries;
 
-  size_t num_vertices = rows * (symmetric ? 2 : 1);
-  for (size_t i = 0; i < num_vertices; i++) {
+  for (size_t i = 0, num_vertices = rows * (symmetric ? 2 : 1);
+       i < num_vertices; i++) {
     graph.add_vertex(i);
   }
 

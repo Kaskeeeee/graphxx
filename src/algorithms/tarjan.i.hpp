@@ -50,7 +50,7 @@ void tarjan_rec(const G &graph, Vertex<G> v, TarjanTree &tarjan_tree,
   stack.push_back(v);
   tarjan_tree[v].on_stack = true;
 
-  for (auto edge : graph[v]) {
+  for (auto &edge : graph[v]) {
     auto target = graph.get_target(edge);
     if (tarjan_tree[target].index == -1) {
       tarjan_rec(graph, target, tarjan_tree, scc_vector, stack, index);

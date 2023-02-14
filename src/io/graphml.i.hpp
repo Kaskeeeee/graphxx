@@ -53,8 +53,8 @@ void graphml_serialize(
     std::function<GraphMLProperties(Vertex<G>, Vertex<G>)>
         get_edge_properties) {
 
-  out << XML_HEADER << std::endl;
-  out << GRAPHML_ROOT_OPEN << std::endl;
+  out << XML_HEADER << '\n';
+  out << GRAPHML_ROOT_OPEN << '\n';
 
   int key_count = 0;
   std::unordered_map<std::string, std::string> vertex_key_ids;
@@ -75,7 +75,7 @@ void graphml_serialize(
       out << "\t"
           << "<key id=\"" << key_id << "\" for=\"node\""
           << " attr.name=\"" << name << "\""
-          << " attr.type=\"string\"/>" << std::endl;
+          << " attr.type=\"string\"/>" << '\n';
     }
   }
 
@@ -98,7 +98,7 @@ void graphml_serialize(
       out << "\t"
           << "<key id=\"" << key_id << "\" for=\"edge\""
           << " attr.name=\"" << name << "\""
-          << " attr.type=\"string\"/>" << std::endl;
+          << " attr.type=\"string\"/>" << '\n';
     }
   }
 
@@ -106,12 +106,12 @@ void graphml_serialize(
   std::string edgedefault =
       (G::DIRECTEDNESS == Directedness::UNDIRECTED) ? "undirected" : "directed";
   out << "\t"
-      << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\">" << std::endl;
+      << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\">" << '\n';
 
   // declaring nodes
   for (auto vertex : get_sorted_vertices(graph)) {
     out << "\t\t"
-        << "<node id=\"n" << vertex << "\">" << std::endl;
+        << "<node id=\"n" << vertex << "\">" << '\n';
 
     // defining GraphML-Attribute values for nodes
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
@@ -119,12 +119,12 @@ void graphml_serialize(
       for (const auto &[key, value] : vertex_properties) {
         out << "\t\t\t"
             << "<data key=\"" << vertex_key_ids[key] << "\">" << value
-            << "</data>" << std::endl;
+            << "</data>" << '\n';
       }
     }
 
     out << "\t\t"
-        << "</node>" << std::endl;
+        << "</node>" << '\n';
   }
 
   // declaring edges
@@ -141,7 +141,7 @@ void graphml_serialize(
 
       out << "\t\t"
           << "<edge id=\"e" << edge_count++ << "\" source=\"n" << source
-          << "\" target=\"n" << target << "\">" << std::endl;
+          << "\" target=\"n" << target << "\">" << '\n';
 
       // defining GraphML-Attribute values for edges
       GraphMLProperties edge_properties = get_edge_properties(source, target);
@@ -149,17 +149,17 @@ void graphml_serialize(
         for (const auto &[key, value] : edge_properties) {
           out << "\t\t\t"
               << "<data key=\"" << edge_key_ids[key] << "\">" << value
-              << "</data>" << std::endl;
+              << "</data>" << '\n';
         }
       }
 
       out << "\t\t"
-          << "</edge>" << std::endl;
+          << "</edge>" << '\n';
     }
   }
 
-  out << "\t</graph>" << std::endl;
-  out << GRAPHML_ROOT_CLOSE << std::endl;
+  out << "\t</graph>" << '\n';
+  out << GRAPHML_ROOT_CLOSE << '\n';
 }
 
 template <concepts::Graph G>

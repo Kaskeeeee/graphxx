@@ -135,7 +135,7 @@ GraphGenerator::generate_random_weights(const G &graph, W min_weight,
   std::uniform_int_distribution<W> distribution(min_weight, max_weight);
 
   for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); vertex++) {
-    for (auto edge : graph[vertex]) {
+    for (auto &edge : graph[vertex]) {
       weights[edge] = distribution(generator);
     }
   }
