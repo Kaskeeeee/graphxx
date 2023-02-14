@@ -138,7 +138,7 @@ It is also possible to invoke the command:
 $ make install
 ```
 
-This will create the `bin` directory in which will be installed all the benchmark executables
+This will create the `bin` directory, in which will be installed all the benchmark executables
 
 ### Running Tests
 
@@ -156,7 +156,7 @@ If you want to check out the documentation you can generate it using the followi
 $ make doc
 ```
 
-This command will create the directory `doc` in which will be contained the project documentation
+This command will create the `doc` directory, in which will be contained the project documentation
 
 ## License
 
