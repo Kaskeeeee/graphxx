@@ -57,8 +57,7 @@ int main() {
     std::cout << "Choose an option:\n";
     std::cout << "1. add vertex\n";
     std::cout << "2. add edge\n";
-    std::cout << "3. remove vertex\n";
-    std::cout << "4. remove edge\n";
+    std::cout << "3. remove edge\n";
     std::cin >> opt;
     switch (opt) {
     case 1: {
@@ -74,12 +73,6 @@ int main() {
       g.add_edge(u, v);
     } break;
     case 3: {
-      int u;
-      std::cout << "Remove vertex: ";
-      std::cin >> u;
-      g.remove_vertex(u);
-    } break;
-    case 4: {
       int u, v;
       std::cout << "Remove edge from u: ";
       std::cin >> u;
