@@ -1,4 +1,6 @@
-![logo](logo.png)
+<div align="center">
+    <img src="logo.png">
+</div>
 
 # Graphxx: A Graph Library in C++
 
