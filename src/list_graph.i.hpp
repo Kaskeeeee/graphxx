@@ -89,7 +89,8 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_vertex(
   _adj[vertex].clear();
 
   for (size_t i = 0; i < _adj.size(); i++) {
-    _adj[i].remove_if([&](auto &&edge) { return get_target(edge) == vertex; });
+    std::erase_if(_adj[i],
+                  [&](auto &&edge) { return get_target(edge) == vertex; });
   }
 };
 
@@ -99,12 +100,12 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source,
   if (!has_edge(source, target))
     return;
 
-  _adj[source].remove_if(
-      [&](auto &&edge) { return get_target(edge) == target; });
+  std::erase_if(_adj[source],
+                [&](auto &&edge) { return get_target(edge) == target; });
 
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    _adj[target].remove_if(
-        [&](auto &&edge) { return get_target(edge) == source; });
+    std::erase_if(_adj[target],
+                  [&](auto &&edge) { return get_target(edge) == source; });
   }
 };
 

@@ -57,7 +57,7 @@ public:
   using Edge = std::tuple<Vertex, Vertex, AttributesType...>;
   using Attributes = std::tuple<AttributesType...>;
 
-  using EdgeList = std::list<Edge>;
+  using EdgeList = std::vector<Edge>;
   using AdjacencyList = std::vector<EdgeList>;
 
   /// @brief Indicates whether the graph is directed or undirected
