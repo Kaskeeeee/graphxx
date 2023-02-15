@@ -1,5 +1,6 @@
 /**
- * @file
+ * @file This file contains a program that generates a random graph and prints
+ * it in the Matrix Market format
  *
  * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
  * Quaresmini, Andrea Cinelli. All rights reserved.

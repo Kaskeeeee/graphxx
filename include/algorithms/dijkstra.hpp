@@ -56,8 +56,8 @@ struct DijkstraNode {
 };
 
 /// @brief Implementation of Dijkstra algorithm. Dijkstra produces a shortest
-/// path tree from the source node to all other node in the graph. Starting from
-/// the root, the algorithm analyses all of the unvisited neighbors of the
+/// path tree from the source node to all other nodes in the graph. Starting
+/// from the root, the algorithm analyses all of the unvisited neighbors of the
 /// current node and calculate their tentative distances through it.
 /// @tparam G type of input graph
 /// @tparam Weight function used to get weight of an edge

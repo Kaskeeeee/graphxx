@@ -34,7 +34,7 @@
 
 namespace graphxx::algorithms {
 
-/// @brief Status of the vertices during the visit algorithms
+/// @brief Status of the vertices during visit algorithms
 enum class VertexStatus {
   READY,
   WAITING,

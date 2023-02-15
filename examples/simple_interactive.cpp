@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file contains a simple and interactive terminal program
  *
  * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
  * Quaresmini, Andrea Cinelli. All rights reserved.

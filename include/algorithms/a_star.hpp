@@ -44,7 +44,8 @@
 namespace graphxx::algorithms {
 
 /// @brief Stucture of the node, containing informations about the parent (which
-/// is the previous node) on the shortest path and its distance from the source
+/// is the previous node) on the shortest path, its distance from the source and
+/// its own id
 /// @tparam Id type of vertices identifier
 /// @tparam Distance type of distance among the nodes
 template <concepts::Identifier Id, concepts::Numeric Distance>
@@ -53,6 +54,7 @@ struct AStarNode {
   Distance distance;
   /// @brief Id of the predecessor vertex in the visited tree
   Id parent;
+  /// @brief Id of the vertex
   Id id;
 };
 

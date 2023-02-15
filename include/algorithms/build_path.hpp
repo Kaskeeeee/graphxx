@@ -42,7 +42,7 @@ namespace graphxx::algorithms {
 
 /// @brief function that construct a path from the source vertex to the target
 /// one
-/// @tparam Id of the predecessor vertex in the visited tree
+/// @tparam Id type of vertices identifier
 /// @tparam Node struct that has the "parent" property
 /// @param vector_of_struct array of nodes with parent
 /// @param source starting vertex

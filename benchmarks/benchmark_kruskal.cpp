@@ -1,7 +1,8 @@
 /**
- * @file
+ * @file This file contains the benchmark of Boost and Graphxx Kruskal algorithm
  *
- * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele Quaresmini, Andrea Cinelli. All rights reserved.
+ * @copyright Copyright © 2023 Matteo Cavaliere, Cristiano Di Bari, Michele
+ * Quaresmini, Andrea Cinelli. All rights reserved.
  *
  * @license{<blockquote>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -72,15 +73,13 @@ int main(int argc, char **argv) {
   if (argc <= 1) {
     // default file, if not specified
     std::fstream input_file("../data/cage4.mtx");
-    graphxx::io::mm_deserialize<double>(
-        input_file, list_graph);
+    graphxx::io::mm_deserialize<double>(input_file, list_graph);
   } else if (argc >= 2) {
     // Check if the file is a regular file and is not empty
     if (std::filesystem::is_regular_file(argv[1])) {
       if (!std::filesystem::is_empty(argv[1])) {
         std::fstream input_file(argv[1]);
-        graphxx::io::mm_deserialize<double>(
-            input_file, list_graph);
+        graphxx::io::mm_deserialize<double>(input_file, list_graph);
       } else {
         std::cout << "An empty file was passed as input" << std::endl;
         exit(1);

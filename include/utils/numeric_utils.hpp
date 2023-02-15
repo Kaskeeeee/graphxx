@@ -39,8 +39,8 @@ namespace graphxx {
 
 /// @brief Checks if the sum of two numbers will overflow
 /// @tparam T numeric type
-/// @param lhs
-/// @param rhs
+/// @param lhs first number
+/// @param rhs second number
 /// @return true if the sum will overflow, false otherwise
 template <concepts::Numeric T> bool sum_will_overflow(T lhs, T rhs) {
   return lhs > 0 ? (std::numeric_limits<T>::max() - lhs) < rhs

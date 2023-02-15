@@ -67,7 +67,7 @@ public:
   /// @tparam G type of graph
   /// @tparam W type of weight
   /// @param graph input graph
-  /// @param min_weight minimo weight value
+  /// @param min_weight minimum weight value
   /// @param max_weight maximum weight value
   /// @return map that assigns random weight to each edge of the graph
   template <concepts::Graph G, concepts::Numeric W>
