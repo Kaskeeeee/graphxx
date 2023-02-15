@@ -32,7 +32,7 @@
 
 #pragma once
 
-#include <cstdint> // size_t
+#include <cstddef> // size_t
 #include <limits>  // std::numeric_limits
 
 namespace graphxx {
