@@ -55,8 +55,9 @@ a_star(const G &graph, Vertex<G> source, Vertex<G> target,
   std::vector<NodeType> distance_tree;
 
   for (Vertex<G> vertex = 0; vertex < graph.num_vertices(); ++vertex) {
-    distance_tree.push_back(
-        NodeType{.distance = distance_upperbound, .parent = INVALID_VERTEX<G>, .id = vertex});
+    distance_tree.push_back(NodeType{.distance = distance_upperbound,
+                                     .parent = INVALID_VERTEX<G>,
+                                     .id = vertex});
   }
 
   using WeightedVertex = std::tuple<Distance, Vertex<G>>;
@@ -76,7 +77,7 @@ a_star(const G &graph, Vertex<G> source, Vertex<G> target,
       return build_path(distance_tree, source, target);
     }
 
-    for (auto&& edge : graph[u]) {
+    for (auto &&edge : graph[u]) {
       auto v = graph.get_target(edge);
       Distance edge_weight = weight(edge);
 
@@ -85,12 +86,20 @@ a_star(const G &graph, Vertex<G> source, Vertex<G> target,
             "negative edge weight found");
       }
 
-      Distance alternative_distance = distance_tree[u].distance + edge_weight;
-      Distance new_heuristic_distance =
-          alternative_distance + heuristic_weight(v);
+      bool overflow = sum_will_overflow(distance_tree[u].distance, edge_weight);
 
-      if (sum_will_overflow(distance_tree[u].distance, edge_weight) ||
-          sum_will_overflow(alternative_distance, heuristic_weight(v))) {
+      Distance alternative_distance =
+          (!overflow) ? distance_tree[u].distance + edge_weight
+                      : distance_upperbound;
+
+      overflow = overflow ||
+                 sum_will_overflow(alternative_distance, heuristic_weight(v));
+
+      Distance new_heuristic_distance =
+          (!overflow) ? alternative_distance + heuristic_weight(v)
+                      : distance_upperbound;
+
+      if (overflow) {
         distance_tree[v].distance = distance_upperbound;
         distance_tree[v].parent = u;
         queue.push({distance_upperbound, v});

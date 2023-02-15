@@ -93,22 +93,13 @@ endif()
 # SANITIZE
 # ###############################################################################
 if(SANITIZE)
-        add_compile_options("-O1")
-        add_compile_options("-g")
         add_compile_options("-fno-omit-frame-pointer")
-        add_compile_options("-fno-optimize-sibling-calls")
-
-        add_compile_options("-fsanitize=address")
-        add_compile_options("-fsanitize=leak")
         add_compile_options("-fsanitize=undefined")
 
-        if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-                add_compile_options("-fsanitize=memory")
-                add_compile_options("-fsanitize=integer")
-                add_compile_options("-fsanitize=nullability")
-        endif()
-
-        set(LINKER_FLAGS ${LINKER_FLAGS} -fsanitize=undefined -fno-omit-frame-pointer)
+        set(LINKER_FLAGS ${LINKER_FLAGS} 
+                -fsanitize=undefined
+                -fno-omit-frame-pointer
+        )
 endif()
 
 # ###############################################################################
