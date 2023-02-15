@@ -33,7 +33,7 @@
 #include "base.hpp"               // Vertex
 #include "exceptions.hpp"         // exceptions::BadGraphvizParseException
 #include "graph_concepts.hpp"     // Graph
-#include "graph_utils.hpp"        // utils::XorTupleHash
+#include "graph_utils.hpp"        // XorTupleHash
 #include "io/graphviz.hpp"        // graphviz_serialize
 #include "utils/string_utils.hpp" // get_text_between_delimiters
 

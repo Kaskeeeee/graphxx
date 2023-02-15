@@ -34,7 +34,7 @@
 #include "base.hpp"                // Vertex
 #include "exceptions.hpp"          // exceptions::InvariantViolationException
 #include "graph_concepts.hpp"      // Graph
-#include "numeric_utils.hpp"       // utils::sum_will_overflow
+#include "numeric_utils.hpp"       // sum_will_overflow
 
 #include <limits> // std::numeric_limits
 #include <queue>  // std::priority_queue

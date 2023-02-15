@@ -34,7 +34,7 @@
 
 #include "base.hpp"              // Vertex
 #include "graph_concepts.hpp"    // Graph
-#include "utils/tuple_utils.hpp" // utils::XorTupleHash
+#include "utils/tuple_utils.hpp" // XorTupleHash
 
 #include <fstream>       // std::ostream
 #include <functional>    // std::function

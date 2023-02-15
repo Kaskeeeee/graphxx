@@ -78,11 +78,11 @@ TEST_CASE("Exceptions test", "[exceptions]") {
 
 TEST_CASE("String utils", "[string_utils]") {
   SECTION("no string between delimiters") {
-    REQUIRE(get_text_between_delimiters("1abcdef", "1", "0") == "");
+    REQUIRE(utils::get_text_between_delimiters("1abcdef", "1", "0") == "");
   }
 
   SECTION("ignores second open delimiter") {
-    REQUIRE(get_text_between_delimiters("{{abcdef}", "{", "}") == "{abcdef");
+    REQUIRE(utils::get_text_between_delimiters("{{abcdef}", "{", "}") == "{abcdef");
   }
 }
 

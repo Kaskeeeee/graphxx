@@ -34,7 +34,7 @@
 #include "base.hpp"                    // Edge
 #include "exceptions.hpp"              // Graph
 #include "graph_concepts.hpp"          // std::invocable
-#include "numeric_utils.hpp"           // utils::sum_will_overflow
+#include "numeric_utils.hpp"           // sum_will_overflow
 
 #include <limits> // std::numeric_limits
 #include <vector> // std::vector

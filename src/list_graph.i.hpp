@@ -33,7 +33,7 @@
 #include "base.hpp"              // Directedness
 #include "exceptions.hpp"        // exceptions::NoSuchEdgeException
 #include "list_graph.hpp"        // AdjacencyListGraph
-#include "utils/tuple_utils.hpp" // utils::get_elements_from_index
+#include "utils/tuple_utils.hpp" // get_elements_from_index
 
 #include <algorithm> // std::ranges::find_if
 #include <cstdint>   // size_t

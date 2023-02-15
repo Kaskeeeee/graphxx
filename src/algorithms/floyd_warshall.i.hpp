@@ -34,7 +34,7 @@
 #include "base.hpp"                      // Edge
 #include "exceptions.hpp"     // exceptions::InvariantViolationException
 #include "graph_concepts.hpp" // Graph
-#include "numeric_utils.hpp"  // utils::sum_will_overflow
+#include "numeric_utils.hpp"  // sum_will_overflow
 
 #include <cstdint> // size_t
 #include <limits>  // std::numeric_limits

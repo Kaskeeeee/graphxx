@@ -33,7 +33,7 @@
 #include "base.hpp"              // Directedness
 #include "exceptions.hpp"        // exceptions::NoSuchEdgeException
 #include "matrix_graph.hpp"      // AdjacencyMatrixGraph
-#include "utils/tuple_utils.hpp" // utils::get_elements_from_index
+#include "utils/tuple_utils.hpp" // get_elements_from_index
 
 #include <cstdint> // size_t
 

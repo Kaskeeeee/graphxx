@@ -34,7 +34,7 @@
 
 #include "base.hpp"           // Edge
 #include "graph_concepts.hpp" // Graph
-#include "tuple_utils.hpp"    // utils::XorTupleHash
+#include "tuple_utils.hpp"    // XorTupleHash
 
 #include <unordered_map> // std::unordered_map
 
