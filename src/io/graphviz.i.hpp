@@ -69,7 +69,7 @@ void graphviz_serialize(
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 
   out << Traits::name() << " "
-      << "{" << std::endl;
+      << "{" << '\n';
 
   // insert vertices properties
   for (auto vertex : get_sorted_vertices(graph)) {
@@ -88,7 +88,7 @@ void graphviz_serialize(
       }
       out << "]";
     }
-    out << ";" << std::endl;
+    out << ";" << '\n';
   }
 
   // insert edges
@@ -118,11 +118,11 @@ void graphviz_serialize(
         }
         out << "]";
       }
-      out << ";" << std::endl;
+      out << ";" << '\n';
     }
   }
 
-  out << "}" << std::endl;
+  out << "}" << '\n';
 }
 
 template <concepts::Graph G>

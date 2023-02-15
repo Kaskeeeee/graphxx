@@ -78,11 +78,11 @@ int main(int argc, char **argv) {
         std::fstream input_file(argv[1]);
         graphxx::io::mm_deserialize<double>(input_file, list_graph);
       } else {
-        std::cout << "An empty file was passed as input" << std::endl;
+        std::cout << "An empty file was passed as input" << '\n';
         exit(1);
       }
     } else {
-      std::cout << "File '" << argv[1] << "' does not exists" << std::endl;
+      std::cout << "File '" << argv[1] << "' does not exists" << '\n';
       exit(1);
     }
   }
