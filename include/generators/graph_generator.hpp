@@ -34,10 +34,11 @@
 
 #include "base.hpp"           // Edge
 #include "graph_concepts.hpp" // Graph
-#include "tuple_utils.hpp"    // XorTupleHash
+#include "tuple_utils.hpp"    // utils::XorTupleHash
 
 #include <unordered_map> // std::unordered_map
 
+/// graphxx namespace contains the main features of the graphxx library
 namespace graphxx {
 
 /// @brief This class allows to generate graphs at runtime by specifying the
@@ -71,7 +72,7 @@ public:
   /// @param max_weight maximum weight value
   /// @return map that assigns random weight to each edge of the graph
   template <concepts::Graph G, concepts::Numeric W>
-  std::unordered_map<Edge<G>, W, XorTupleHash<Edge<G>>>
+  std::unordered_map<Edge<G>, W, utils::XorTupleHash<Edge<G>>>
   generate_random_weights(const G &graph, W min_weight, W max_weight);
 
 private:

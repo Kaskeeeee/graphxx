@@ -32,6 +32,7 @@
 
 #pragma once
 
+/// algorithms namespace contains all the algorithms available and related support structures
 namespace graphxx::algorithms {
 
 /// @brief Status of the vertices during visit algorithms

@@ -42,6 +42,7 @@
 #include <utility>       // std::declval
 #include <vector>        // std::vector
 
+/// algorithms namespace contains all the algorithms available and related support structures
 namespace graphxx::algorithms {
 
 /// @brief Stucture of the node, containing informations about the parent (which

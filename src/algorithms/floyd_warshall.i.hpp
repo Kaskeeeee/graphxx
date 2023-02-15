@@ -34,7 +34,7 @@
 #include "base.hpp"                      // Edge
 #include "exceptions.hpp"     // exceptions::InvariantViolationException
 #include "graph_concepts.hpp" // Graph
-#include "numeric_utils.hpp"  // sum_will_overflow
+#include "numeric_utils.hpp"  // utils::sum_will_overflow
 
 #include <cstdint> // size_t
 #include <limits>  // std::numeric_limits
@@ -70,7 +70,7 @@ floyd_warshall(const G &graph, Weight weight) {
         auto &v_to_u = matrix[v][u];
         auto &u_to_w = matrix[u][w];
         auto &v_to_w = matrix[v][w];
-        if (!sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
+        if (!utils::sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
             v_to_u.distance + u_to_w.distance < v_to_w.distance) {
           v_to_w.distance = v_to_u.distance + u_to_w.distance;
           v_to_w.parent = u_to_w.parent;

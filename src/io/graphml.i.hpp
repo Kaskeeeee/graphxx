@@ -33,7 +33,7 @@
 #include "base.hpp"           // Vertex
 #include "exceptions.hpp"     // exceptions::BadGraphmlParseException
 #include "graph_concepts.hpp" // Graph
-#include "graph_utils.hpp"    // get_sorted_edges
+#include "graph_utils.hpp"    // utils::get_sorted_edges
 #include "io/graphml.hpp"     // graphml_serialize
 #include "pugixml.hpp"        // pugi::xml_document
 #include "string_utils.hpp"   // trim
@@ -63,7 +63,7 @@ void graphml_serialize(
   std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
 
   // declaring GraphML-Attributes for nodes
-  for (auto vertex : get_sorted_vertices(graph)) {
+  for (auto vertex : utils::get_sorted_vertices(graph)) {
     GraphMLProperties vertex_properties = get_vertex_properties(vertex);
     for (const auto &[name, value] : vertex_properties) {
       if (vertex_key_ids.contains(name)) {
@@ -80,7 +80,7 @@ void graphml_serialize(
   }
 
   // declaring GraphML-Attributes for edges
-  for (auto [source, target] : get_sorted_edges(graph)) {
+  for (auto [source, target] : utils::get_sorted_edges(graph)) {
     if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
       if (inserted_edges.contains({target, source}))
         continue;
@@ -109,7 +109,7 @@ void graphml_serialize(
       << "<graph id=\"G\" edgedefault=\"" << edgedefault << "\">" << std::endl;
 
   // declaring nodes
-  for (auto vertex : get_sorted_vertices(graph)) {
+  for (auto vertex : utils::get_sorted_vertices(graph)) {
     out << "\t\t"
         << "<node id=\"n" << vertex << "\">" << std::endl;
 
@@ -130,7 +130,7 @@ void graphml_serialize(
   // declaring edges
   int edge_count = 0;
   inserted_edges.clear();
-  for (auto [source, target] : get_sorted_edges(graph)) {
+  for (auto [source, target] : utils::get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
 
       if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
@@ -184,7 +184,7 @@ template <concepts::Graph G>
 void graphml_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphMLProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphMLProperties, XorTupleHash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphMLProperties, utils::XorTupleHash<Edge<G>>>
         &edge_properties) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load(in);

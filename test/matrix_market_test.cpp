@@ -84,13 +84,13 @@ TEST_CASE("directed list graph object is correctly serialized in matrix market "
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       REQUIRE(utils::contains(
           s, (std::to_string(source + 1) + " " + std::to_string(target + 1))));
     }
   }
 
-  std::unordered_map<Edge<G>, int, XorTupleHash<Edge<G>>> weights_int;
+  std::unordered_map<Edge<G>, int, utils::XorTupleHash<Edge<G>>> weights_int;
   weights_int[{a, c}] = 10;
   weights_int[{a, d}] = 32;
   weights_int[{d, c}] = 5;
@@ -112,7 +112,7 @@ TEST_CASE("directed list graph object is correctly serialized in matrix market "
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       int w = weights_int.contains({source, target})
                   ? weights_int[{source, target}]
                   : 1;
@@ -122,7 +122,7 @@ TEST_CASE("directed list graph object is correctly serialized in matrix market "
     }
   }
 
-  std::unordered_map<Edge<G>, double, XorTupleHash<Edge<G>>> weights_float;
+  std::unordered_map<Edge<G>, double, utils::XorTupleHash<Edge<G>>> weights_float;
   weights_float[{a, c}] = 10.0;
   weights_float[{a, d}] = 32.5;
   weights_float[{d, c}] = 0.002;
@@ -144,7 +144,7 @@ TEST_CASE("directed list graph object is correctly serialized in matrix market "
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       double w = weights_float.contains({source, target})
                      ? weights_float[{source, target}]
                      : 1;
@@ -251,13 +251,13 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       REQUIRE(utils::contains(
           s, (std::to_string(source + 1) + " " + std::to_string(target + 1))));
     }
   }
 
-  std::unordered_map<Edge<G>, int, XorTupleHash<Edge<G>>> weights_int;
+  std::unordered_map<Edge<G>, int, utils::XorTupleHash<Edge<G>>> weights_int;
   weights_int[{a, c}] = 10;
   weights_int[{a, d}] = 32;
   weights_int[{d, c}] = 5;
@@ -279,7 +279,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       int w = weights_int.contains({source, target})
                   ? weights_int[{source, target}]
                   : 1;
@@ -289,7 +289,7 @@ TEST_CASE(
     }
   }
 
-  std::unordered_map<Edge<G>, double, XorTupleHash<Edge<G>>> weights_float;
+  std::unordered_map<Edge<G>, double, utils::XorTupleHash<Edge<G>>> weights_float;
   weights_float[{a, c}] = 10.0;
   weights_float[{a, d}] = 32.5;
   weights_float[{d, c}] = 0.002;
@@ -311,7 +311,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       double w = weights_float.contains({source, target})
                      ? weights_float[{source, target}]
                      : 1;
@@ -423,13 +423,13 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       REQUIRE(utils::contains(
           s, (std::to_string(source + 1) + " " + std::to_string(target + 1))));
     }
   }
 
-  std::unordered_map<Edge<G>, int, XorTupleHash<Edge<G>>> weights_int;
+  std::unordered_map<Edge<G>, int, utils::XorTupleHash<Edge<G>>> weights_int;
   weights_int[{a, c}] = 10;
   weights_int[{a, d}] = 32;
   weights_int[{d, c}] = 5;
@@ -451,7 +451,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       int w = weights_int.contains({source, target})
                   ? weights_int[{source, target}]
                   : 1;
@@ -461,7 +461,7 @@ TEST_CASE(
     }
   }
 
-  std::unordered_map<Edge<G>, double, XorTupleHash<Edge<G>>> weights_float;
+  std::unordered_map<Edge<G>, double, utils::XorTupleHash<Edge<G>>> weights_float;
   weights_float[{a, c}] = 10.0;
   weights_float[{a, d}] = 32.5;
   weights_float[{d, c}] = 0.002;
@@ -483,7 +483,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       double w = weights_float.contains({source, target})
                      ? weights_float[{source, target}]
                      : 1;
@@ -590,13 +590,13 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       REQUIRE(utils::contains(
           s, (std::to_string(source + 1) + " " + std::to_string(target + 1))));
     }
   }
 
-  std::unordered_map<Edge<G>, int, XorTupleHash<Edge<G>>> weights_int;
+  std::unordered_map<Edge<G>, int, utils::XorTupleHash<Edge<G>>> weights_int;
   weights_int[{a, c}] = 10;
   weights_int[{a, d}] = 32;
   weights_int[{d, c}] = 5;
@@ -618,7 +618,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       int w = weights_int.contains({source, target})
                   ? weights_int[{source, target}]
                   : 1;
@@ -628,7 +628,7 @@ TEST_CASE(
     }
   }
 
-  std::unordered_map<Edge<G>, double, XorTupleHash<Edge<G>>> weights_float;
+  std::unordered_map<Edge<G>, double, utils::XorTupleHash<Edge<G>>> weights_float;
   weights_float[{a, c}] = 10.0;
   weights_float[{a, d}] = 32.5;
   weights_float[{d, c}] = 0.002;
@@ -650,7 +650,7 @@ TEST_CASE(
                         std::to_string(g.num_vertices()) + " " +
                         std::to_string(g.num_edges())));
 
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       double w = weights_float.contains({source, target})
                      ? weights_float[{source, target}]
                      : 1;

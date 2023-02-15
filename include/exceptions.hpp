@@ -35,6 +35,7 @@
 #include <exception> // std::exception
 #include <string>    // std::string
 
+/// exceptions namespaces is reserved to the exceptions used throughout the library
 namespace graphxx::exceptions {
 
 /// @brief Generic graph exceptions from which the other ones inherits

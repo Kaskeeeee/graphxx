@@ -39,6 +39,7 @@
 #include <functional> // std::function
 #include <vector>     // std::vector
 
+/// algorithms namespace contains all the algorithms available and related support structures
 namespace graphxx::algorithms {
 
 /// @brief Implementation of Ford Fulkerson algorithm. Ford Fulkerson performs a

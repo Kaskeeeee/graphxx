@@ -35,7 +35,8 @@
 #include "graph_concepts.hpp" // concepts::Numeric
 #include <limits>             // std::numeric_limits::max()
 
-namespace graphxx {
+/// utils namespace contains all the utilities functions used throughout the project
+namespace graphxx::utils {
 
 /// @brief Checks if the sum of two numbers will overflow
 /// @tparam T numeric type
@@ -47,4 +48,4 @@ template <concepts::Numeric T> bool sum_will_overflow(T lhs, T rhs) {
                  : (std::numeric_limits<T>::min() - lhs) > rhs;
 }
 
-} // namespace graphxx
+} // namespace graphxx::utils

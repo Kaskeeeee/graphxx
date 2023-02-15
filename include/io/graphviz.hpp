@@ -34,13 +34,14 @@
 
 #include "base.hpp"              // Vertex
 #include "graph_concepts.hpp"    // Graph
-#include "utils/tuple_utils.hpp" // XorTupleHash
+#include "utils/tuple_utils.hpp" // utils::XorTupleHash
 
 #include <fstream>       // std::ostream
 #include <functional>    // std::function
 #include <string>        // std::string
 #include <unordered_map> // std::unordered_map
 
+/// io namespace contains the functions to serialize and deserialize graphs
 namespace graphxx::io {
 
 using GraphvizProperties = std::unordered_map<std::string, std::string>;
@@ -108,7 +109,7 @@ template <concepts::Graph G>
 void graphviz_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphvizProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphvizProperties, XorTupleHash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphvizProperties, utils::XorTupleHash<Edge<G>>>
         &edge_properties);
 
 } // namespace graphxx::io

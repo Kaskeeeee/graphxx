@@ -38,6 +38,7 @@
 #include <algorithm> // std::reverse
 #include <vector>    // std::vector
 
+/// algorithms namespace contains all the algorithms available and related support structures
 namespace graphxx::algorithms {
 
 /// @brief function that construct a path from the source vertex to the target

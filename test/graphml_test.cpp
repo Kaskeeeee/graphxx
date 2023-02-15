@@ -113,7 +113,7 @@ TEST_CASE("directed list graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -138,7 +138,7 @@ TEST_CASE("directed list graph object is correctly serialized",
     }
 
     int edge_count = 0;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -146,7 +146,7 @@ TEST_CASE("directed list graph object is correctly serialized",
   }
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
@@ -164,7 +164,7 @@ TEST_CASE("directed list graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -186,7 +186,7 @@ TEST_CASE("directed list graph object is correctly serialized",
     }
 
     int edge_count = 0;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -219,7 +219,7 @@ TEST_CASE("directed list graph object is correctly deserialized",
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   SECTION("parse simple graph file") {
@@ -334,7 +334,7 @@ TEST_CASE("directed list graph object is preserved in serialization and "
   vertex_properties[b] = {{"label", "B"}};
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
@@ -440,7 +440,7 @@ TEST_CASE("undirected list graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -466,7 +466,7 @@ TEST_CASE("undirected list graph object is correctly serialized",
 
     int edge_count = 0;
     std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       if (inserted_edges.contains({target, source}))
         continue;
 
@@ -479,7 +479,7 @@ TEST_CASE("undirected list graph object is correctly serialized",
   }
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
@@ -501,7 +501,7 @@ TEST_CASE("undirected list graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -524,7 +524,7 @@ TEST_CASE("undirected list graph object is correctly serialized",
 
     int edge_count = 0;
     std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       if (inserted_edges.contains({target, source}))
         continue;
 
@@ -561,7 +561,7 @@ TEST_CASE("undirected list graph object is correctly deserialized",
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   SECTION("parse simple graph file") {
@@ -679,7 +679,7 @@ TEST_CASE("undirected list graph object is preserved in serialization and "
   vertex_properties[b] = {{"label", "B"}};
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
@@ -782,7 +782,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -807,7 +807,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
     }
 
     int edge_count = 0;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -815,7 +815,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
   }
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
@@ -833,7 +833,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -855,7 +855,7 @@ TEST_CASE("directed matrix graph object is correctly serialized",
     }
 
     int edge_count = 0;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       std::string edge = "<edge id=\"e" + std::to_string(edge_count++) +
                          "\" source=\"n" + std::to_string(source) +
                          "\" target=\"n" + std::to_string(target) + "\">";
@@ -888,7 +888,7 @@ TEST_CASE("directed matrix graph object is correctly deserialized",
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   SECTION("parse simple graph file") {
@@ -1003,7 +1003,7 @@ TEST_CASE("directed matrix graph object is preserved in serialization and "
   vertex_properties[b] = {{"label", "B"}};
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
@@ -1109,7 +1109,7 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -1135,7 +1135,7 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
 
     int edge_count = 0;
     std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       if (inserted_edges.contains({target, source}))
         continue;
 
@@ -1148,7 +1148,7 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
   }
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   edge_properties[{a, c}] = {{"weight", "10"}};
@@ -1170,7 +1170,7 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
     std::string s = out.str();
 
     int key_count = 0;
-    for (auto v : get_sorted_vertices(g)) {
+    for (auto v : utils::get_sorted_vertices(g)) {
       std::string node = "<node id=\"n" + std::to_string(v) + "\">";
       REQUIRE(utils::contains(s, node));
 
@@ -1193,7 +1193,7 @@ TEST_CASE("undirected matrix graph object is correctly serialized",
 
     int edge_count = 0;
     std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
-    for (auto [source, target] : get_sorted_edges(g)) {
+    for (auto [source, target] : utils::get_sorted_edges(g)) {
       if (inserted_edges.contains({target, source}))
         continue;
 
@@ -1230,7 +1230,7 @@ TEST_CASE("undirected matrix graph object is correctly deserialized",
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   SECTION("parse simple graph file") {
@@ -1348,7 +1348,7 @@ TEST_CASE("undirected matrix graph object is preserved in serialization and "
   vertex_properties[b] = {{"label", "B"}};
 
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
   edge_properties[{b, b}] = {{"weight", "10"}};
   edge_properties[{d, c}] = {{"weight", "5"}, {"foo", "bar"}};
@@ -1396,7 +1396,7 @@ TEST_CASE("parse file in bad format throws a bad graphml exception",
   std::unordered_map<Vertex<G>, std::unordered_map<std::string, std::string>>
       vertex_properties;
   std::unordered_map<Edge<G>, std::unordered_map<std::string, std::string>,
-                     XorTupleHash<Edge<G>>>
+                     utils::XorTupleHash<Edge<G>>>
       edge_properties;
 
   const std::string GRAPHVIZ_INPUT = "foo";

@@ -33,7 +33,7 @@
 #include "base.hpp"              // Directedness
 #include "exceptions.hpp"        // exceptions::NoSuchEdgeException
 #include "list_graph.hpp"        // AdjacencyListGraph
-#include "utils/tuple_utils.hpp" // get_elements_from_index
+#include "utils/tuple_utils.hpp" // utils::get_elements_from_index
 
 #include <algorithm> // std::ranges::find_if
 #include <cstdint>   // size_t
@@ -118,11 +118,11 @@ void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
 
   auto find_iterator = std::ranges::find_if(
       _adj[source], [&](auto edge) { return get_target(edge) == target; });
-  set_elements_from_index<2>(*find_iterator, attributes);
+  utils::set_elements_from_index<2>(*find_iterator, attributes);
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
     auto inverse_find_iterator = std::ranges::find_if(
         _adj[target], [&](auto edge) { return get_target(edge) == source; });
-    set_elements_from_index<2>(*inverse_find_iterator, attributes);
+    utils::set_elements_from_index<2>(*inverse_find_iterator, attributes);
   }
 }
 
@@ -131,7 +131,7 @@ typename AdjacencyListGraph<Id, D, AttributesType...>::Attributes
 AdjacencyListGraph<Id, D, AttributesType...>::get_attributes(
     Vertex source, Vertex target) const {
   const Edge edge = get_edge(source, target);
-  return get_elements_from_index<2>(edge);
+  return utils::get_elements_from_index<2>(edge);
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>

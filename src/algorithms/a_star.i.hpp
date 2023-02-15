@@ -35,7 +35,7 @@
 #include "build_path.hpp"        // build_path
 #include "exceptions.hpp"        // exceptions::InvariantViolationException
 #include "graph_concepts.hpp"    // Graph
-#include "numeric_utils.hpp"     // sum_will_overflow
+#include "numeric_utils.hpp"     // utils::sum_will_overflow
 
 #include <limits> // std::numeric_limits
 #include <queue>  // std::priority_queue
@@ -89,8 +89,8 @@ a_star(const G &graph, Vertex<G> source, Vertex<G> target,
       Distance new_heuristic_distance =
           alternative_distance + heuristic_weight(v);
 
-      if (sum_will_overflow(distance_tree[u].distance, edge_weight) ||
-          sum_will_overflow(alternative_distance, heuristic_weight(v))) {
+      if (utils::sum_will_overflow(distance_tree[u].distance, edge_weight) ||
+          utils::sum_will_overflow(alternative_distance, heuristic_weight(v))) {
         distance_tree[v].distance = distance_upperbound;
         distance_tree[v].parent = u;
         queue.push({distance_upperbound, v});

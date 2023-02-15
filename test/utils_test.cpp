@@ -39,14 +39,13 @@
 
 namespace utils_test {
 using namespace graphxx;
-using namespace graphxx::utils;
 TEST_CASE("Tuple utilities test", "[tuple][utils]") {
   SECTION("get elements from index correctly") {
     std::tuple test{22, false, 3.5f};
 
-    auto elements_from_0 = get_elements_from_index<0>(test);
-    auto elements_from_1 = get_elements_from_index<1>(test);
-    auto elements_from_2 = get_elements_from_index<2>(test);
+    auto elements_from_0 = utils::get_elements_from_index<0>(test);
+    auto elements_from_1 = utils::get_elements_from_index<1>(test);
+    auto elements_from_2 = utils::get_elements_from_index<2>(test);
 
     REQUIRE(std::get<0>(elements_from_0) == std::get<0>(test));
     REQUIRE(std::get<1>(elements_from_0) == std::get<1>(test));
@@ -62,7 +61,7 @@ TEST_CASE("Tuple utilities test", "[tuple][utils]") {
     std::tuple test{22, false, 3.5f};
     std::tuple elements{true, 14.2f};
 
-    set_elements_from_index<1>(test, std::tuple{true, 12.3f});
+    utils::set_elements_from_index<1>(test, std::tuple{true, 12.3f});
     REQUIRE(std::get<0>(test) == 22);
     REQUIRE(std::get<1>(test) == true);
     REQUIRE(std::get<2>(test) == 12.3f);
