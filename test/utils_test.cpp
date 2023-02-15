@@ -30,12 +30,12 @@
  * @version v1.0
  */
 
+#include "build_path.hpp"
 #include "catch.hpp"
 #include "exceptions.hpp"
+#include "string_utils.hpp"
 #include "tuple"
 #include "tuple_utils.hpp"
-#include "string_utils.hpp"
-#include "build_path.hpp"
 
 namespace utils_test {
 using namespace graphxx;
@@ -88,9 +88,13 @@ TEST_CASE("String utils", "[string_utils]") {
 
 TEST_CASE("build correct path", "[build_path]") {
   SECTION("finds correct path") {
-    struct node { unsigned int parent; };
-                        //      0                 1                   2                3                    4                   5
-    std::vector<node> v{node{.parent = 0u},node{.parent = 0u},node{.parent = 2u}, node{.parent = 4u}, node{.parent = 2u}, node{.parent = 3u}};
+    struct node {
+      unsigned int parent;
+    };
+
+    std::vector<node> v{node{.parent = 0u}, node{.parent = 0u},  // 0, 1
+                        node{.parent = 2u}, node{.parent = 4u},  // 2, 3
+                        node{.parent = 2u}, node{.parent = 3u}}; // 4, 5
     std::vector<node> res = algorithms::build_path(v, 2u, 5u);
     REQUIRE(res[0].parent == 2);
     REQUIRE(res[1].parent == 2);
