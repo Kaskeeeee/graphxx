@@ -73,7 +73,7 @@ dijkstra(const G &graph, Vertex<G> source, Weight weight) {
             "negative edge weight found");
       }
 
-      if (sum_will_overflow(distance_tree[u].distance, edge_weight)) {
+      if (utils::sum_will_overflow(distance_tree[u].distance, edge_weight)) {
         continue;
       }
 

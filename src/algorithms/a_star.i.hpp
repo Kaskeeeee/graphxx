@@ -86,14 +86,14 @@ a_star(const G &graph, Vertex<G> source, Vertex<G> target,
             "negative edge weight found");
       }
 
-      bool overflow = sum_will_overflow(distance_tree[u].distance, edge_weight);
+      bool overflow = utils::sum_will_overflow(distance_tree[u].distance, edge_weight);
 
       Distance alternative_distance =
           (!overflow) ? distance_tree[u].distance + edge_weight
                       : distance_upperbound;
 
       overflow = overflow ||
-                 sum_will_overflow(alternative_distance, heuristic_weight(v));
+                 utils::sum_will_overflow(alternative_distance, heuristic_weight(v));
 
       Distance new_heuristic_distance =
           (!overflow) ? alternative_distance + heuristic_weight(v)

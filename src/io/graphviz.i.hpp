@@ -72,7 +72,7 @@ void graphviz_serialize(
       << "{" << '\n';
 
   // insert vertices properties
-  for (auto vertex : get_sorted_vertices(graph)) {
+  for (auto vertex : utils::get_sorted_vertices(graph)) {
     out << vertex;
     GraphvizProperties vertex_properties = get_vertex_properties(vertex);
     if (!vertex_properties.empty()) {
@@ -93,7 +93,7 @@ void graphviz_serialize(
 
   // insert edges
   std::set<std::pair<Vertex<G>, Vertex<G>>> inserted_edges;
-  for (auto [source, target] : get_sorted_edges(graph)) {
+  for (auto [source, target] : utils::get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
 
       if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
@@ -180,7 +180,7 @@ template <concepts::Graph G>
 void graphviz_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphvizProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphvizProperties, XorTupleHash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphvizProperties, utils::XorTupleHash<Edge<G>>>
         &edge_properties) {
   using Traits = GraphvizTraits<G::DIRECTEDNESS>;
 

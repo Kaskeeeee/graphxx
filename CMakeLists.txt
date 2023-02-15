@@ -189,7 +189,7 @@ if(DOXYGEN_FOUND)
 
         # Add a target for generating documentation with Doxygen
         doxygen_add_docs(doc
-                ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src/algorithms ${PROJECT_SOURCE_DIR}/include/algorithms
+                ${PROJECT_SOURCE_DIR}/include/
                 COMMENT "Generating API documentation with Doxygen"
         )
 endif()

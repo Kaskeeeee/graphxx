@@ -40,8 +40,17 @@
 #include <tuple>   // std::tuple
 #include <vector>  // std::vector
 
+/// graphxx namespace contains the main features of the graphxx library
 namespace graphxx {
 
+/// @brief Represents a graph implemented with an adjacency matrix.
+///        Vertices are represented by id that correspond to positions in a
+///        vector. Edges are tuple composed by source vertex, target vertex and
+///        a variable number of attributes.
+/// @tparam ...AttributesType Types of edges attributes. They can be a variable
+/// number.
+/// @tparam D Graph directedness
+/// @tparam IdType Numeric type representing vertices
 template <concepts::Identifier IdType = DefaultIdType,
           Directedness D = Directedness::DIRECTED, typename... AttributesType>
 class AdjacencyMatrixGraph {

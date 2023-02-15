@@ -35,6 +35,7 @@
 #include <iterator>      // std::bidirectional_iterator_tag
 #include <unordered_map> // std::unordered_map
 
+// graphxx namespace contains the main features of the graphxx library
 namespace graphxx {
 
 /// @brief A map adapter which provides an iterator on the values instead

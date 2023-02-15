@@ -38,7 +38,8 @@
 #include <numeric> // std::iota
 #include <vector>  // std::vector
 
-namespace graphxx {
+/// utils namespace contains all the utilities functions used throughout the project
+namespace graphxx::utils {
 
 /// @brief Get vector of sorted graph vertices
 /// @tparam G type of graph
@@ -69,4 +70,4 @@ std::vector<std::pair<Vertex<G>, Vertex<G>>> get_sorted_edges(const G &graph) {
   return edges;
 }
 
-} // namespace graphxx
+} // namespace graphxx::utils

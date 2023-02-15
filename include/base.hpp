@@ -35,6 +35,7 @@
 #include <cstddef> // size_t
 #include <limits>  // std::numeric_limits
 
+/// graphxx namespace contains the main features of the graphxx library
 namespace graphxx {
 
 /// The id type that is used to identify vertices and edges

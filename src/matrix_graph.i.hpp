@@ -126,9 +126,9 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::set_attributes(
   if (!has_edge(source, target))
     return;
 
-  set_elements_from_index<2>(_adj[source][target], attributes);
+  utils::set_elements_from_index<2>(_adj[source][target], attributes);
   if (DIRECTEDNESS == Directedness::UNDIRECTED) {
-    set_elements_from_index<2>(_adj[target][source], attributes);
+    utils::set_elements_from_index<2>(_adj[target][source], attributes);
   }
 }
 
@@ -136,7 +136,7 @@ template <concepts::Identifier Id, Directedness D, typename... AttributesType>
 typename AdjacencyMatrixGraph<Id, D, AttributesType...>::Attributes
 AdjacencyMatrixGraph<Id, D, AttributesType...>::get_attributes(
     Vertex source, Vertex target) const {
-  return get_elements_from_index<2>(get_edge(source, target));
+  return utils::get_elements_from_index<2>(get_edge(source, target));
 }
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>

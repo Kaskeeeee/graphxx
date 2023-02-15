@@ -38,6 +38,7 @@
 #include <fstream>    // std::ostream
 #include <functional> // std::function
 
+/// io namespace contains the functions to serialize and deserialize graphs
 namespace graphxx::io {
 
 /// @brief Writes a graph object into an output stream in Matrix Market NIST

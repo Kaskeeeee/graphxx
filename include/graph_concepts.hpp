@@ -38,6 +38,7 @@
 #include <cstdint>  // size_t
 #include <ranges>   // std::ranges::range_value_t
 
+/// graphxx namespace contains the main features of the graphxx library
 namespace graphxx::concepts {
 
 /// @brief Type of the values contained in a range

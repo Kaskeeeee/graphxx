@@ -36,7 +36,8 @@
 #include <functional> // std::function
 #include <tuple>      // std::tuple
 
-namespace graphxx {
+/// utils namespace contains all the utilities functions used throughout the project
+namespace graphxx::utils {
 
 /// @brief Extracts from a tuple all the elements starting from an index and
 /// returns a new tuple with the extracted elements
@@ -80,4 +81,4 @@ template <typename Tuple> struct XorTupleHash {
   }
 };
 
-} // namespace graphxx
+} // namespace graphxx::utils

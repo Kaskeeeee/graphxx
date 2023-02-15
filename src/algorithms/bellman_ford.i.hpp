@@ -62,7 +62,7 @@ bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
         auto target_distance = distance_tree[graph.get_target(edge)].distance;
         auto edge_target = graph.get_target(edge);
 
-        if (!sum_will_overflow(source_distance, edge_weight) &&
+        if (!utils::sum_will_overflow(source_distance, edge_weight) &&
             source_distance != distance_upperbound &&
             source_distance + edge_weight < target_distance) {
           distance_tree[edge_target].distance = source_distance + edge_weight;
@@ -85,7 +85,7 @@ bellman_ford(const G &graph, Vertex<G> source, Weight weight) {
       auto edge_source = graph.get_source(edge);
       auto edge_target = graph.get_target(edge);
 
-      if (!sum_will_overflow(distance_tree[edge_source].distance,
+      if (!utils::sum_will_overflow(distance_tree[edge_source].distance,
                              weight(edge)) &&
           distance_tree[edge_source].distance + weight(edge) <
               distance_tree[edge_target].distance) {

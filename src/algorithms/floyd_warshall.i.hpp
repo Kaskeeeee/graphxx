@@ -70,7 +70,7 @@ floyd_warshall(const G &graph, Weight weight) {
         auto &v_to_u = matrix[v][u];
         auto &u_to_w = matrix[u][w];
         auto &v_to_w = matrix[v][w];
-        if (!sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
+        if (!utils::sum_will_overflow(v_to_u.distance, u_to_w.distance) &&
             v_to_u.distance + u_to_w.distance < v_to_w.distance) {
           v_to_w.distance = v_to_u.distance + u_to_w.distance;
           v_to_w.parent = u_to_w.parent;

@@ -41,6 +41,7 @@
 #include <utility>    // std::declval
 #include <vector>     // std::vector
 
+/// algorithms namespace contains all the algorithms available and related support structures
 namespace graphxx::algorithms {
 
 /// @brief Implementation of Kruskal algorithm. Starting by creating a forest

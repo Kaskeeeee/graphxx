@@ -118,10 +118,10 @@ void GraphGenerator::generate_random_graph(G &graph, int num_vertices,
 }
 
 template <concepts::Graph G, concepts::Numeric W>
-std::unordered_map<Edge<G>, W, XorTupleHash<Edge<G>>>
+std::unordered_map<Edge<G>, W, utils::XorTupleHash<Edge<G>>>
 GraphGenerator::generate_random_weights(const G &graph, W min_weight,
                                         W max_weight) {
-  std::unordered_map<Edge<G>, W, XorTupleHash<Edge<G>>> weights;
+  std::unordered_map<Edge<G>, W, utils::XorTupleHash<Edge<G>>> weights;
 
   if (min_weight > max_weight) {
     std::swap(min_weight, max_weight);

@@ -40,6 +40,7 @@
 #include <tuple>   // std::tuple
 #include <vector>  // std::vector
 
+/// graphxx namespace contains the main features of the graphxx library
 namespace graphxx {
 
 /// @brief Represents a graph implemented with an adjacency list.

@@ -41,6 +41,7 @@
 #include <string>        // std::string
 #include <unordered_map> // std::unordered_map
 
+/// io namespace contains the functions to serialize and deserialize graphs
 namespace graphxx::io {
 
 using GraphMLProperties = std::unordered_map<std::string, std::string>;
@@ -104,7 +105,7 @@ template <concepts::Graph G>
 void graphml_deserialize(
     std::istream &in, G &graph,
     std::unordered_map<Vertex<G>, GraphMLProperties> &vertex_properties,
-    std::unordered_map<Edge<G>, GraphMLProperties, XorTupleHash<Edge<G>>>
+    std::unordered_map<Edge<G>, GraphMLProperties, utils::XorTupleHash<Edge<G>>>
         &edge_properties);
 
 } // namespace graphxx::io

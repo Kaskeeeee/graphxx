@@ -30,23 +30,22 @@
  * @version v1.0
  */
 
+#include "build_path.hpp"
 #include "catch.hpp"
 #include "exceptions.hpp"
+#include "string_utils.hpp"
 #include "tuple"
 #include "tuple_utils.hpp"
-#include "string_utils.hpp"
-#include "build_path.hpp"
 
 namespace utils_test {
 using namespace graphxx;
-using namespace graphxx::utils;
 TEST_CASE("Tuple utilities test", "[tuple][utils]") {
   SECTION("get elements from index correctly") {
     std::tuple test{22, false, 3.5f};
 
-    auto elements_from_0 = get_elements_from_index<0>(test);
-    auto elements_from_1 = get_elements_from_index<1>(test);
-    auto elements_from_2 = get_elements_from_index<2>(test);
+    auto elements_from_0 = utils::get_elements_from_index<0>(test);
+    auto elements_from_1 = utils::get_elements_from_index<1>(test);
+    auto elements_from_2 = utils::get_elements_from_index<2>(test);
 
     REQUIRE(std::get<0>(elements_from_0) == std::get<0>(test));
     REQUIRE(std::get<1>(elements_from_0) == std::get<1>(test));
@@ -62,7 +61,7 @@ TEST_CASE("Tuple utilities test", "[tuple][utils]") {
     std::tuple test{22, false, 3.5f};
     std::tuple elements{true, 14.2f};
 
-    set_elements_from_index<1>(test, std::tuple{true, 12.3f});
+    utils::set_elements_from_index<1>(test, std::tuple{true, 12.3f});
     REQUIRE(std::get<0>(test) == 22);
     REQUIRE(std::get<1>(test) == true);
     REQUIRE(std::get<2>(test) == 12.3f);
@@ -79,19 +78,23 @@ TEST_CASE("Exceptions test", "[exceptions]") {
 
 TEST_CASE("String utils", "[string_utils]") {
   SECTION("no string between delimiters") {
-    REQUIRE(get_text_between_delimiters("1abcdef", "1", "0") == "");
+    REQUIRE(utils::get_text_between_delimiters("1abcdef", "1", "0") == "");
   }
 
   SECTION("ignores second open delimiter") {
-    REQUIRE(get_text_between_delimiters("{{abcdef}", "{", "}") == "{abcdef");
+    REQUIRE(utils::get_text_between_delimiters("{{abcdef}", "{", "}") == "{abcdef");
   }
 }
 
 TEST_CASE("build correct path", "[build_path]") {
   SECTION("finds correct path") {
-    struct node { unsigned int parent; };
-                        //      0                 1                   2                3                    4                   5
-    std::vector<node> v{node{.parent = 0u},node{.parent = 0u},node{.parent = 2u}, node{.parent = 4u}, node{.parent = 2u}, node{.parent = 3u}};
+    struct node {
+      unsigned int parent;
+    };
+
+    std::vector<node> v{node{.parent = 0u}, node{.parent = 0u},  // 0, 1
+                        node{.parent = 2u}, node{.parent = 4u},  // 2, 3
+                        node{.parent = 2u}, node{.parent = 3u}}; // 4, 5
     std::vector<node> res = algorithms::build_path(v, 2u, 5u);
     REQUIRE(res[0].parent == 2);
     REQUIRE(res[1].parent == 2);
