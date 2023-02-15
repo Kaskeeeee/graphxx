@@ -36,6 +36,7 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
+#include <cstdint>
 #include <limits>
 #include <map>
 

@@ -36,6 +36,8 @@
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
 
+#include <cstdint>
+
 namespace bfs_test {
 using namespace graphxx;
 using namespace algorithms;

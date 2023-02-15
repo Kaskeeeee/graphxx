@@ -37,6 +37,7 @@
 #include "io/graphviz.hpp"        // graphviz_serialize
 #include "utils/string_utils.hpp" // get_text_between_delimiters
 
+#include <cstdint>       // size_t
 #include <fstream>       // std::ostream
 #include <functional>    // std::function
 #include <set>           // std::set

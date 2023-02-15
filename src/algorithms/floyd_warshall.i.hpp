@@ -36,8 +36,9 @@
 #include "graph_concepts.hpp" // Graph
 #include "numeric_utils.hpp"  // sum_will_overflow
 
-#include <limits> // std::numeric_limits
-#include <vector> // std::vector
+#include <cstdint> // size_t
+#include <limits>  // std::numeric_limits
+#include <vector>  // std::vector
 
 namespace graphxx::algorithms {
 

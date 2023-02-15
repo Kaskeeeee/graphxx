@@ -35,6 +35,7 @@
 #include "base.hpp" // G::Vertex
 
 #include <concepts> // std::unsigned_integral
+#include <cstdint>  // size_t
 #include <ranges>   // std::ranges::range_value_t
 
 namespace graphxx::concepts {

@@ -32,13 +32,13 @@
 
 #pragma once
 
-#include <cstdint> // uint64_t
+#include <cstdint> // size_t
 #include <limits>  // std::numeric_limits
 
 namespace graphxx {
 
 /// The id type that is used to identify vertices and edges
-using DefaultIdType = uint64_t;
+using DefaultIdType = size_t;
 
 /// @brief enum whose values are used to distinguish between directed and
 /// undirected graphs

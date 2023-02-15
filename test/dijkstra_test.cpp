@@ -35,6 +35,8 @@
 #include "dijkstra.hpp"
 #include "list_graph.hpp"
 #include "matrix_graph.hpp"
+
+#include <cstdint>
 #include <limits>
 
 namespace dijkstra_test {
@@ -98,7 +100,7 @@ TEST_CASE("Dijkstra shortest paths for directed list graph",
       }
 
       bool is_a_neighbor = false;
-      for (auto &&edge: graph[a]) {
+      for (auto &&edge : graph[a]) {
         if (graph.get_target(edge) == v) {
           is_a_neighbor = true;
           break;

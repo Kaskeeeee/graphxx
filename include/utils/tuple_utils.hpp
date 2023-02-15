@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <cstdint>    // size_t
 #include <functional> // std::function
 #include <tuple>      // std::tuple
 

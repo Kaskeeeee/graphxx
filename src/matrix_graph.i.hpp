@@ -35,6 +35,8 @@
 #include "matrix_graph.hpp"      // AdjacencyMatrixGraph
 #include "utils/tuple_utils.hpp" // get_elements_from_index
 
+#include <cstdint> // size_t
+
 namespace graphxx {
 
 template <concepts::Identifier Id, Directedness D, typename... AttributesType>

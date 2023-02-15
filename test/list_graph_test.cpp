@@ -34,6 +34,7 @@
 #include "catch.hpp"
 #include "list_graph.hpp"
 
+#include <cstdint>
 #include <string>
 
 namespace list_graph_test {

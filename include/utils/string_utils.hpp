@@ -32,9 +32,10 @@
 
 #pragma once
 
-#include <locale> // std::locale
-#include <string> // std::string
-#include <vector> // std::vector
+#include <cstdint> // size_t
+#include <locale>  // std::locale
+#include <string>  // std::string
+#include <vector>  // std::vector
 
 namespace graphxx::utils {
 

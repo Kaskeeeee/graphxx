@@ -34,6 +34,7 @@
 #include "exceptions.hpp"     // exceptions::BadMatrixMarketParseException
 #include "graph_concepts.hpp" // Graph
 
+#include <cstdint>    // size_t
 #include <fstream>    // std::ostream
 #include <functional> // std::function
 #include <sstream>    // std::stringstream

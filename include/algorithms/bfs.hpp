@@ -36,6 +36,7 @@
 #include "base.hpp"            // Vertex
 #include "graph_concepts.hpp"  // Graph
 
+#include <cstdint>    // size_t
 #include <functional> // std::function
 #include <vector>     // std::vector
 

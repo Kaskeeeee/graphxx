@@ -36,6 +36,7 @@
 #include "utils/tuple_utils.hpp" // get_elements_from_index
 
 #include <algorithm> // std::ranges::find_if
+#include <cstdint>   // size_t
 
 namespace graphxx {
 

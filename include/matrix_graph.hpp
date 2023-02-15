@@ -36,8 +36,9 @@
 #include "base.hpp"              // DefaultIdType
 #include "graph_concepts.hpp"    // concepts::Identifier
 
-#include <tuple>  // std::tuple
-#include <vector> // std::vector
+#include <cstdint> // size_t
+#include <tuple>   // std::tuple
+#include <vector>  // std::vector
 
 namespace graphxx {
 

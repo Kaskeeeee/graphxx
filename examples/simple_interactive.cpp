@@ -33,6 +33,7 @@
 #include "algorithms/bfs.hpp"
 #include "list_graph.hpp"
 
+#include <cstdint>
 #include <iostream>
 
 using namespace graphxx;

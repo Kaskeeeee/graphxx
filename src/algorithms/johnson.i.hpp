@@ -36,7 +36,8 @@
 #include "base.hpp"                    // Edge
 #include "graph_concepts.hpp"          // Graph
 
-#include <vector> // std::vector
+#include <cstdint> // size_t
+#include <vector>  // std::vector
 
 namespace graphxx::algorithms {
 

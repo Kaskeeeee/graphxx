@@ -34,6 +34,7 @@
 #include "catch.hpp"
 #include "matrix_graph.hpp"
 
+#include <cstdint>
 #include <string>
 
 namespace matrix_graph_test {
