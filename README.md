@@ -168,9 +168,9 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 ## Authors
 
--   **[Matteo Cavaliere](https://github.com/Kaskeeeee)**
--   **[Cristiano Di Bari](https://github.com/cridiba)**
--   **[Michele Quaresmini](https://github.com/swagbeota)**
--   **[Andrea Cinelli](https://github.com/ccine)**
+-   **[Matteo Cavaliere](https://github.com/Kaskeeeee)** (VR477235)
+-   **[Cristiano Di Bari](https://github.com/cridiba)** (VR476576)
+-   **[Michele Quaresmini](https://github.com/swagbeota)** (VR474275)
+-   **[Andrea Cinelli](https://github.com/ccine)** (VR473639)
 
 **[Back to top](#table-of-contents)**

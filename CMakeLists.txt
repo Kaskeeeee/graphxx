@@ -48,24 +48,10 @@ option(BUILD_TEST "Enable tests" OFF)
 # ###############################################################################
 include(CheckCXXCompilerFlag)
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-        add_compile_options("-Weverything")
-        add_compile_options("-Wno-c++98-compat")
-        add_compile_options("-Wno-c++98-compat-pedantic")
-        add_compile_options("-Wno-padded")
-        add_compile_options("-Wno-undefined-func-template")
-        add_compile_options("-Wno-documentation-unknown-command")
-        add_compile_options("-Wno-global-constructors")
-        add_compile_options("-Wno-exit-time-destructors")
-        add_compile_options("-Wno-sign-conversion")
-        add_compile_options("-Wno-weak-vtables")
-        add_compile_options("-Wno-weak-template-vtables")
-        add_compile_options("-Wno-documentation")
-elseif(CMAKE_COMPILER_IS_GNUCXX)
-        add_compile_options("-Wall")
-        add_compile_options("-Wextra")
-        add_compile_options("-Wpedantic")
-endif()
+add_compile_options("-Wall")
+add_compile_options("-Wextra")
+add_compile_options("-Wpedantic")
+add_compile_options("-Werror")
 
 # ###############################################################################
 # BUILD TYPE

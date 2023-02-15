@@ -51,7 +51,7 @@ floyd_warshall(const G &graph, Weight weight) {
   std::vector<std::vector<FloydWarshallNode<Vertex<G>, Distance>>> matrix(
       num_vertices,
       std::vector<FloydWarshallNode<Vertex<G>, Distance>>(
-          num_vertices, FloydWarshallNode{.distance = distance_upperbound,
+          num_vertices, FloydWarshallNode<Vertex<G>, Distance>{.distance = distance_upperbound,
                                           .parent = INVALID_VERTEX<G>}));
 
   for (Vertex<G> u = 0; u < num_vertices; u++) {

@@ -187,7 +187,7 @@ void graphml_deserialize(
     std::unordered_map<Edge<G>, GraphMLProperties, utils::XorTupleHash<Edge<G>>>
         &edge_properties) {
   pugi::xml_document doc;
-  pugi::xml_parse_result result = doc.load(in);
+  doc.load(in);
 
   std::unordered_map<std::string, Vertex<G>> vertices_ids = {};
   std::unordered_map<std::string, std::string> attributes_names = {};
