@@ -38,6 +38,7 @@
 /// exceptions namespaces is reserved to the exceptions used throughout the library
 namespace graphxx::exceptions {
 
+
 /// @brief Generic graph exceptions from which the other ones inherits
 /// its extends std::exception by adding a custom message
 struct GraphException : public std::exception {
@@ -50,13 +51,6 @@ struct GraphException : public std::exception {
 
 protected:
   std::string _message;
-};
-
-/// @brief Exception thrown when trying to do some operations on vertices that
-/// don't exist
-struct NoSuchVertexException : GraphException {
-  NoSuchVertexException()
-      : GraphException("Vertex is missing from graph exception"){};
 };
 
 /// @brief Exception thrown when trying to do some operations on edges that

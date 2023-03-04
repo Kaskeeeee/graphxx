@@ -59,7 +59,6 @@ TEST_CASE("Tuple utilities test", "[tuple][utils]") {
 
   SECTION("set elements from index") {
     std::tuple test{22, false, 3.5f};
-    std::tuple elements{true, 14.2f};
 
     utils::set_elements_from_index<1>(test, std::tuple{true, 12.3f});
     REQUIRE(std::get<0>(test) == 22);
