@@ -107,11 +107,11 @@ int main(int argc, char **argv) {
   DistanceMatrixMap dm(distances, boost_graph);
 
   bench
-      .run("floyd warshall graphxx",
+      .run("johnson graphxx",
            [&]() { graphxx::algorithms::johnson(list_graph); })
-      .run("floyd warshall matrix graphxx",
+      .run("johnson matrix graphxx",
            [&]() { graphxx::algorithms::johnson(matrix_graph); })
-      .run("floyd warshall boost", [&]() {
+      .run("johnson boost", [&]() {
         boost::johnson_all_pairs_shortest_paths(boost_graph, dm,
                                                 boost::weight_map(weight_pmap));
       });

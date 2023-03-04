@@ -36,7 +36,8 @@
 #include <locale>  // std::locale
 #include <string>  // std::string
 #include <vector>  // std::vector
-/// utils namespace contains all the utilities functions used throughout the project
+/// utils namespace contains all the utilities functions used throughout the
+/// project
 namespace graphxx::utils {
 
 /// @brief  Searches the input string for the first occurring word among those
@@ -49,7 +50,7 @@ namespace graphxx::utils {
 /// the function returns string::npos.
 inline size_t find_first_of(const std::string &input,
                             const std::vector<std::string> &find,
-                            size_t &index_found, const size_t &pos = 0) {
+                            size_t &index_found, const size_t pos = 0) {
   size_t first_found = std::string::npos;
   size_t current_found = std::string::npos;
 

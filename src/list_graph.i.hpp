@@ -70,7 +70,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::add_edge(
       },
       attributes);
 
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     if (source != target) {
       std::apply(
           [&](auto &&...props) {
@@ -104,7 +104,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::remove_edge(Vertex source,
   std::erase_if(_adj[source],
                 [&](auto &&edge) { return get_target(edge) == target; });
 
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     std::erase_if(_adj[target],
                   [&](auto &&edge) { return get_target(edge) == source; });
   }
@@ -119,7 +119,7 @@ void AdjacencyListGraph<Id, D, AttributesType...>::set_attributes(
   auto find_iterator = std::ranges::find_if(
       _adj[source], [&](auto edge) { return get_target(edge) == target; });
   utils::set_elements_from_index<2>(*find_iterator, attributes);
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     auto inverse_find_iterator = std::ranges::find_if(
         _adj[target], [&](auto edge) { return get_target(edge) == source; });
     utils::set_elements_from_index<2>(*inverse_find_iterator, attributes);

@@ -64,7 +64,7 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::add_edge(
       },
       attributes);
 
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     std::apply(
         [&](auto &&...props) {
           _adj[target].emplace(source,
@@ -102,7 +102,7 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::remove_edge(
     _adj[source].erase(target);
   }
 
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     if (_adj[target].contains(source)) {
       _adj[target].erase(source);
     }
@@ -127,7 +127,7 @@ void AdjacencyMatrixGraph<Id, D, AttributesType...>::set_attributes(
     return;
 
   utils::set_elements_from_index<2>(_adj[source][target], attributes);
-  if (DIRECTEDNESS == Directedness::UNDIRECTED) {
+  if constexpr (DIRECTEDNESS == Directedness::UNDIRECTED) {
     utils::set_elements_from_index<2>(_adj[target][source], attributes);
   }
 }
