@@ -96,7 +96,7 @@ void graphviz_serialize(
   for (auto [source, target] : utils::get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
 
-      if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+      if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED)
         if (inserted_edges.contains({target, source}))
           continue;
 
@@ -277,7 +277,7 @@ void graphviz_deserialize(
                              inserted_vertices[target_vertex_name]}] =
                 properties;
 
-            if (G::DIRECTEDNESS == Directedness::UNDIRECTED) {
+            if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED) {
               edge_properties[{inserted_vertices[target_vertex_name],
                                inserted_vertices[source_vertex_name]}] =
                   properties;

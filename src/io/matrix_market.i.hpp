@@ -48,9 +48,9 @@ void mm_serialize(std::ostream &out, const G &graph,
                   std::function<WeightType(Edge<G>)> get_weight) {
 
   std::string number_format = "";
-  if (std::is_integral_v<WeightType>) {
+  if constexpr (std::is_integral_v<WeightType>) {
     number_format = "integer";
-  } else if (std::is_floating_point_v<WeightType>) {
+  } else if constexpr (std::is_floating_point_v<WeightType>) {
     number_format = "real";
   } else {
     throw exceptions::InvariantViolationException(

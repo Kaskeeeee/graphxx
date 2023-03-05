@@ -81,7 +81,7 @@ void graphml_serialize(
 
   // declaring GraphML-Attributes for edges
   for (auto [source, target] : utils::get_sorted_edges(graph)) {
-    if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+    if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED)
       if (inserted_edges.contains({target, source}))
         continue;
 
@@ -133,7 +133,7 @@ void graphml_serialize(
   for (auto [source, target] : utils::get_sorted_edges(graph)) {
     if (!inserted_edges.contains({source, target})) {
 
-      if (G::DIRECTEDNESS == Directedness::UNDIRECTED)
+      if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED)
         if (inserted_edges.contains({target, source}))
           continue;
 
@@ -202,16 +202,14 @@ void graphml_deserialize(
   pugi::xml_attribute directedness = graph_node.attribute("edgedefault");
 
   // check graph directedness
-  if (G::DIRECTEDNESS == Directedness::UNDIRECTED &&
-      std::string(directedness.value()) != "undirected") {
-    throw exceptions::UndirectedGraphParseException();
-  }
+  if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED) 
+    if (std::string(directedness.value()) != "undirected")
+      throw exceptions::UndirectedGraphParseException();
 
-  if (G::DIRECTEDNESS == Directedness::DIRECTED &&
-      std::string(directedness.value()) != "directed") {
-    throw exceptions::DirectedGraphParseException();
-  }
-
+  if constexpr (G::DIRECTEDNESS == Directedness::DIRECTED)
+    if (std::string(directedness.value()) != "directed")
+      throw exceptions::DirectedGraphParseException();
+  
   // get GraphML-Attributes
   for (pugi::xml_node key_node : graphml_node.children("key")) {
     pugi::xml_attribute attribute_id = key_node.attribute("id");
@@ -252,7 +250,7 @@ void graphml_deserialize(
       edge_properties[{source, target}]
                      [attributes_names[attribute_key.value()]] = value;
 
-      if (G::DIRECTEDNESS == Directedness::UNDIRECTED) {
+      if constexpr (G::DIRECTEDNESS == Directedness::UNDIRECTED) {
         edge_properties[{target, source}]
                        [attributes_names[attribute_key.value()]] = value;
       }
